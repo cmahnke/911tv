@@ -18,9 +18,17 @@ function App() {
   const ttPageNrRef = useRef(null);
   const ttTimeRef = useRef(null);
   const ttBodyRef = useRef(null);
-  const videoJsRef = useRef(null);
 
-  var showTeletextRef = useRef(null);
+  const channels = Object.keys(urls)
+  var curChannel = channels[0]
+
+  function parseProgramms (urls, chan) {
+    // TODO: This is just a PoC
+    var streams = Object.values(urls[chan]);
+    return streams[0];
+
+  }
+
   function toggleTeletext(e) {
     e.preventDefault();
     if (ttRef.current.getAttribute('class') == 'visible') {
@@ -31,10 +39,22 @@ function App() {
   }
 
   function zapChannel(e, direction) {
+    //TODO: Handle wraparound
+    var i = channels.indexOf(curChannel);
     if (direction) {
-      console.log('Next channel (down)');
+      if (i == channels.length - 1) {
+        curChannel = channels[0];
+      } else {
+        curChannel = channels[i + 1];
+      }
+      console.log(`Next channel (down), now ${curChannel}`);
     } else {
-      console.log('Previous channel (up)');
+      if (i == 0) {
+        curChannel = channels[channels.length - 1];
+      } else {
+        curChannel = channels[i - 1];
+      }
+      console.log(`Previous channel (up), now ${curChannel}`);
     }
   }
 
@@ -102,7 +122,7 @@ function App() {
             <div ref={ttBodyRef} id="tt-body">
             </div>
           </div>
-          <VideoJS options={videoJsOptions} id="video-js-player" ref={videoJsRef}/>
+          <VideoJS options={videoJsOptions} id="video-js-player"/>
         </div>
         <div id="controls">
           <button type="button" className="toggle-teletext" onClick={toggleTeletext}>&nbsp;</button>
