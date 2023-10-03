@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import VideoJS from './video.jsx';
 import "@fontsource/press-start-2p";
 import './App.scss'
@@ -14,6 +14,7 @@ function App() {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+  const tvFrameRef = useRef(null);
   const ttRef = useRef(null);
   const ttPageNrRef = useRef(null);
   const ttTimeRef = useRef(null);
@@ -58,6 +59,18 @@ function App() {
     }
   }
 
+  function toggelFullscreen(e) {
+    e.preventDefault();
+    if (document.fullscreenElement || tvFrameRef.current.getAttribute('class') == 'fullscreen') {
+      document.exitFullscreen();
+      console.log('Exiting Fullscreen');
+    } else {
+      console.log('Entering Fullscreen');
+      tvFrameRef.current.requestFullscreen();
+    }
+
+  }
+
   // See https://codepen.io/jsanderson/pen/yoLLjv
   function tick(elem) {
     var currTime = new Date();
@@ -98,6 +111,7 @@ function App() {
   }, []);
 
   // See https://videojs.com/guides/react/
+  //src: '//vjs.zencdn.net/v/oceans.mp4',
   const videoJsOptions = {
     autoplay: true,
     controls: true,
@@ -105,6 +119,7 @@ function App() {
     muted: true,
     sources: [
       {
+        /* src: parseProgramms(urls, curChannel),*/
         src: '//vjs.zencdn.net/v/oceans.mp4',
         type: 'video/mp4',
       },
@@ -112,7 +127,7 @@ function App() {
   };
   return (
     <>
-      <div id="tv-frame">
+      <div id="tv-frame" ref={tvFrameRef}>
         <div id="tube">
           <div id="teletext" ref={ttRef} className="visible">
             <div id="tt-header">
@@ -128,9 +143,9 @@ function App() {
           <button type="button" className="toggle-teletext" onClick={toggleTeletext}>&nbsp;</button>
           <button type="button" className="zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>&nbsp;</button>
           <button type="button" className="zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>&nbsp;</button>
+          <button type="button" className="toggle-fullscreen" onClick={toggelFullscreen}>&nbsp;</button>
         </div>
       </div>
-
     </>
   )
 }

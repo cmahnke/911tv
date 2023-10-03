@@ -10,6 +10,7 @@
   background-color: black;
 }
 
+
 #tv-frame {
   /* Todo check this */
   aspect-ratio: 4 / 3;
@@ -19,6 +20,10 @@
   z-index: 2;
   background-color: gray;
   flex-direction: column;
+
+  .fullscreen {
+
+  }
 }
 
 #controls {
