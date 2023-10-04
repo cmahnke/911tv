@@ -3,6 +3,7 @@
 import json, re, sys
 from pathlib import Path
 import frontmatter
+import markdown
 
 content_dir = './contents'
 content_pattern = '*.md'
@@ -13,7 +14,8 @@ for file in Path(content_dir).glob(content_pattern):
     print(f"Loading file {file}", end="", flush=True, file=sys.stderr)
     post = frontmatter.load(file)
     if 'number' in post and 'title' in post:
-        page['content'] = post.content
+        page['markdown'] = post.content
+        page['html'] = markdown.markdown(post.content)
         page['number'] = post['number']
         page['title'] = post['title']
         pages.append(page)

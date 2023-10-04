@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useRef, useCallback, forwardRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import VideoJS from './video.jsx';
 import TVStatic from './noise.jsx';
+import 'normalize.css';
 import "@fontsource/press-start-2p";
 import './App.scss'
 import urls from './assets/json/urls.json';
 import pages from './assets/json/pages.json';
-//import { markdown as intro } from './assets/md/100-intro.md'
-//import { markdown as about } from './assets/md/200-about.md'
-
 
 function App() {
   const playerRef = useRef(null);
@@ -22,7 +20,7 @@ function App() {
   const ttTimeRef = useRef(null);
   const ttBodyRef = useRef(null);
 
-  const staticNoiseRe = useRef(null);
+  //const staticNoiseRe = useRef(null);
 
   const timeDiffCookieName = 'timediff';
   const timeCodeCookieName = 'timecode';
@@ -35,10 +33,12 @@ function App() {
   }
 
   // TODO: This will be provided by JSON
-  const meta = {'metadata': {'start': '2001-09-11T02:00:00+00:00', 'end': '2001-09-17T00:50:00+00:00'}};
+  const meta = {'metadata': {'start': '2001-09-11T02:00:00+00:00', 'end': '2001-09-17T00:50:00+00:00', 'timezone': 'EDT'}};
   // TODO: Handle timezone
   const startDate = new Date(meta.metadata.start);
   const endDate = new Date(meta.metadata.end);
+  const timezone = new Date(meta.metadata.timezone);
+
   console.log(`Starting at ${startDate}`);
   var localTime = new Date();
   var timeDiff;
@@ -51,6 +51,11 @@ function App() {
   }
   var appTime = new Date(localTime - timeDiff);
 
+
+  var currPage = getPage(100);
+  console.log(currPage);
+
+
   const channels = Object.keys(urls)
   var curChannel = channels[0]
 
@@ -58,6 +63,13 @@ function App() {
     // TODO: This is just a PoC
     var streams = Object.values(urls[chan]);
     return streams[0];
+  }
+
+  function getPage(number) {
+    //TODO: Hook references to other pages in here, when routing exists
+    return pages.filter(obj => {
+      return obj.number == number
+    })[0];
   }
 
   function toggleTeletext(e) {
@@ -101,10 +113,10 @@ function App() {
 
   function toggelStatic(e) {
     //console.log(this.props.children);
-    if (noiseRef.current.getAttribute('class') == 'top') {
-      noiseRef.current.setAttribute('class', '');
+    if (noiseRef.current.getAttribute('class') == 'show') {
+      noiseRef.current.setAttribute('class', 'hide');
     } else {
-      noiseRef.current.setAttribute('class', 'top');
+      noiseRef.current.setAttribute('class', 'show');
     }
   }
 
@@ -127,6 +139,7 @@ function App() {
   }
 
   useEffect(() => {
+    ttBodyRef.current.innerHTML = currPage.html;
     const interval = setInterval(() => {
       // TODO: Assignments to the 'localTime' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect
       localTime = new Date();
@@ -145,8 +158,8 @@ function App() {
     muted: true,
     sources: [
       {
-        src: parseProgramms(urls, curChannel),
-        /* src: '//vjs.zencdn.net/v/oceans.mp4', */
+        /*src: parseProgramms(urls, curChannel),*/
+        src: '//vjs.zencdn.net/v/oceans.mp4',
         type: 'video/mp4',
       },
     ],

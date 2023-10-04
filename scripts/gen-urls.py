@@ -2,13 +2,18 @@
 
 import datetime, json, re, sys
 import requests
+from pytz import timezone
+from termcolor import cprint
 
 # See https://archive.org/details/911
 template = 'https://archive.org/details/911?time={time}&chan={chan}'
 chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'GLVSN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
 timespan = ((11, 2), (17, 0))
-metadata = {'year':  2001, 'month': 9}
+metadata = {'year':  2001, 'month': 9, 'timezone': 'EDT'}
 extended = True
+
+tz = timezone('America/New_York')
+metadata['tz-offset'] = tz.utcoffset(datetime.datetime.now()).total_seconds()
 
 def gen_timecode(days):
     # Format: 200109111200
@@ -33,13 +38,14 @@ def get_redirect_url(url):
         if req.status_code == 302 or req.status_code == 301:
             return req.headers['Location']
         else:
-            print(f"\n{url} returned {req.status_code}", file=sys.stderr)
+            cprint(f"\n{url} returned {req.status_code}", "red", file=sys.stderr)
     except requests.exceptions.ReadTimeout:
-        print(f"\nTimeout for {url}", file=sys.stderr)
+        cprint(f"\nTimeout for {url}", "red", file=sys.stderr)
 
 times = gen_timecode(timespan)
 
 urls = {'channels': {}}
+print(f"Processing {len(chans)} channels", file=sys.stderr)
 for chan in chans:
     print(f"Processing {chan}, {len(times.items())} items", file=sys.stderr)
     urls['channels'][chan] = {}
@@ -50,7 +56,7 @@ for chan in chans:
         try:
             redirect = get_redirect_url(url)
         except requests.exceptions.ConnectionError:
-            print(f"\nFailed to get {url}", file=sys.stderr)
+            cprint(f"\nFailed to get {url}", "red", file=sys.stderr)
             continue
         if redirect != None:
             url_match = re.search(r'/details/911/day/(?P<day>\d{8})#id/(?P<id>.*)/start/(?P<time>\d{2}:\d{2}:\d{2}UTC/chan/(?P<chan>.*))', redirect)
@@ -69,15 +75,17 @@ for chan in chans:
             entry['start_time'] = round((dt - video_start).total_seconds())
             # TODO: check end times
         else:
-            print(f"\n{url} returned no redirect", file=sys.stderr)
+            entry['id'] = None
+            entry['video_url'] = None
+            cprint(f"Adding null for {url}", "red", file=sys.stderr)
 
         urls['channels'][chan][dt.isoformat()] = entry
-        print('', flush=True, file=sys.stderr)
+    print('', flush=True, file=sys.stderr)
 
 # TODO: Generate missing timecodes for faster static noise
 
 urls['metadata'] = metadata
 
-dump = json.dumps(urls, indent=4)
+dump = json.dumps(urls, indent=4, default=str)
 print(dump)
 #print('\n'.join(urls))

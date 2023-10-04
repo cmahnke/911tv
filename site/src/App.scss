@@ -48,22 +48,21 @@
   flex-direction: column;
   justify-content: flex-start;
   z-index: -11;
+  transition: opacity 1.5s ease-in-out;
+  opacity: 0;
 
-  &.top {
-    /*z-index: 1;*/
-    animation: increase-noise 5s linear forwards;
-  }
-
-  @keyframes increase-noise {
-  0% {
-    opacity: 0;
-    z-index: -11;
-  }
-  100% {
+  &.show {
     z-index: -2;
-    opacity: 100;
+    transition: opacity 1.5s ease-in-out;
+    opacity: 1;
   }
-}
+
+  &.hide {
+    z-index: -11;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out, z-index .5s linear 1.5s;
+  }
+
 }
 
 #controls {
@@ -81,7 +80,7 @@
   justify-content: flex-start;
   font-family: 'Press Start 2P', monospace;
   pointer-events: none;
-  font-size: calc( 100vh / 30);
+  font-size: calc( 100vh / 34);
 
   &.visible {
     /*display: 1;*/
@@ -112,6 +111,14 @@
 
   #tt-body {
     pointer-events: inherit;
+    margin-right: 0.4rem;
+    margin-left: 0.4rem;
+    line-height: 1.2;
+
+    p {
+      margin-block-start: unset;
+      margin-block-end: unset;
+    }
 
     .listleft, .listright {
       float:left;
@@ -132,8 +139,11 @@
       text-align:center;
       background-color:#0000ff;
       color:#ffff00;
-      margin:0px;
-      padding:20px 0px;
+      padding: 0.4rem;
+      margin-bottom: 0.4rem;
+      font-size: 2em;
+      margin-block-start: unset;
+      margin-block-end: unset;
     }
 
     h3 {
