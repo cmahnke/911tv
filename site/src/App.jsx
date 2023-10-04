@@ -6,6 +6,7 @@ import TVStatic from './noise.jsx';
 import "@fontsource/press-start-2p";
 import './App.scss'
 import urls from './assets/json/urls.json';
+import pages from './assets/json/pages.json';
 //import { markdown as intro } from './assets/md/100-intro.md'
 //import { markdown as about } from './assets/md/200-about.md'
 
