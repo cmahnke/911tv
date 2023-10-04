@@ -26,11 +26,14 @@ def gen_timecode(days):
     return timestamps
 
 def get_redirect_url(url):
-    req = requests.get(url, allow_redirects=False)
-    if req.status_code == 302 or req.status_code == 301:
-        return req.headers['Location']
-    else:
-        print(f"{url} returned {req.status_code}")
+    try:
+        req = requests.get(url, allow_redirects=False)
+        if req.status_code == 302 or req.status_code == 301:
+            return req.headers['Location']
+        else:
+            print(f"{url} returned {req.status_code}")
+    except requests.exceptions.ReadTimeout:
+        print(f"Timeout for {url}")
 
 times = gen_timecode(timespan)
 

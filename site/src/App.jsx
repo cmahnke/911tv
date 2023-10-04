@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Cookies from 'js-cookie';
 import VideoJS from './video.jsx';
+import TVStatic from './noise.jsx';
 import "@fontsource/press-start-2p";
 import './App.scss'
 import urls from './assets/json/urls.json';
@@ -14,11 +16,22 @@ function App() {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
+  const rootRef = useRef(null);
   const tvFrameRef = useRef(null);
+  const staticRef = useRef(null);
   const ttRef = useRef(null);
   const ttPageNrRef = useRef(null);
   const ttTimeRef = useRef(null);
   const ttBodyRef = useRef(null);
+
+  // TODO: This will be provides by JSON
+  const startDateStr= '2001-09-11T02:00:00+00:00';
+  // TODO: Handle timezone
+  const startDate = new Date(startDateStr);
+  console.log(`Starting at ${startDate}`);
+  var localTime = new Date();
+  const timeDiff = localTime - startDate;
+  var appTime = new Date(localTime - timeDiff);
 
   const channels = Object.keys(urls)
   var curChannel = channels[0]
@@ -66,16 +79,29 @@ function App() {
       console.log('Exiting Fullscreen');
     } else {
       console.log('Entering Fullscreen');
-      tvFrameRef.current.requestFullscreen();
+      rootRef.current.requestFullscreen();
     }
+  }
 
+  function toggelStatic(e) {
+    if (staticRef.current.getAttribute('class') == 'top') {
+      staticRef.current.setAttribute('class', '');
+    } else {
+      staticRef.current.setAttribute('class', 'top');
+    }
   }
 
   // See https://codepen.io/jsanderson/pen/yoLLjv
-  function tick(elem) {
-    var currTime = new Date();
+  function tick(elem, time) {
+    var currTime;
+    if (time !== undefined) {
+      currTime = new Date();
+    } else {
+      currTime = time;
+    }
     var currMin;
     var currHour;
+    var currSecond;
 
     //leading zeroes
     if (String(currTime.getMinutes()).length == 1) {
@@ -90,6 +116,12 @@ function App() {
       currHour = String(currTime.getHours());
     }
 
+    if (String(currTime.getSeconds()).length == 1) {
+      currSecond = '0' + String(currTime.getSeconds());
+    } else {
+      currSecond = String(currTime.getSeconds());
+    }
+
     elem.innerHTML =
       days[currTime.getDay()] +
       " " +
@@ -99,13 +131,19 @@ function App() {
       " " +
       currHour +
       ":" +
-      currMin;
+      currMin +
+      ":" +
+      currSecond;
   }
 
   //tick(ttTimeRef.current);
   useEffect(() => {
     const interval = setInterval(() => {
-      tick(ttTimeRef.current);
+      //var time = new Date();
+      localTime = new Date();
+      tick(ttTimeRef.current, localTime);
+      appTime = new Date(localTime - timeDiff);
+      Cookies.set('timecode', String(appTime), {expires: 14});
     }, 1000);
     return () => clearInterval(interval);
   }, []);
@@ -125,25 +163,34 @@ function App() {
       },
     ],
   };
+
+  const noiseOpts = {
+    id: "tv-static",
+    ref: staticRef
+  };
   return (
     <>
-      <div id="tv-frame" ref={tvFrameRef}>
-        <div id="tube">
-          <div id="teletext" ref={ttRef} className="visible">
-            <div id="tt-header">
-              <div ref={ttPageNrRef} id="tt-page-nr">100</div>
-              <div ref={ttTimeRef} id="tt-time">&nbsp;</div>
+      <div id="container" ref={rootRef}>
+        <div id="tv-frame" ref={tvFrameRef}>
+          <div id="tube">
+            <div id="teletext" ref={ttRef} className="visible">
+              <div id="tt-header">
+                <div ref={ttPageNrRef} id="tt-page-nr">100</div>
+                <div ref={ttTimeRef} id="tt-time">&nbsp;</div>
+              </div>
+              <div ref={ttBodyRef} id="tt-body">
+              </div>
             </div>
-            <div ref={ttBodyRef} id="tt-body">
-            </div>
+            <TVStatic options={noiseOpts} id="tv-static"/>
+            <VideoJS options={videoJsOptions} id="video-js-player"/>
           </div>
-          <VideoJS options={videoJsOptions} id="video-js-player"/>
-        </div>
-        <div id="controls">
-          <button type="button" className="toggle-teletext" onClick={toggleTeletext}>&nbsp;</button>
-          <button type="button" className="zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>&nbsp;</button>
-          <button type="button" className="zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>&nbsp;</button>
-          <button type="button" className="toggle-fullscreen" onClick={toggelFullscreen}>&nbsp;</button>
+          <div id="controls">
+            <button type="button" className="toggle-teletext" onClick={toggleTeletext}>&nbsp;</button>
+            <button type="button" className="zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>&nbsp;</button>
+            <button type="button" className="zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>&nbsp;</button>
+            <button type="button" className="toggle-fullscreen" onClick={toggelFullscreen}>&nbsp;</button>
+            <button type="button" className="toggle-static" onClick={toggelStatic}>&nbsp;</button>
+          </div>
         </div>
       </div>
     </>
