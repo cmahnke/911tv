@@ -1,16 +1,9 @@
-import React from "react";
+import React, { forwardRef } from "react";
 // See https://stackoverflow.com/a/23572465
 
-export const TVStatic = (props) => {
-  //if (props.ref !== undefinded) {
-    const noiseRef = React.useRef(null);
-    var canvas;
-    var context;
-    /*
-  } else {
-    const noiseRef = props.ref;
-  }
-  */
+export const TVStatic = (props, noiseRef) => {
+  var canvas;
+  var context;
   var time = 0;
 
   var makeNoise = function() {
@@ -39,4 +32,4 @@ export const TVStatic = (props) => {
   return <canvas id={props.id} ref={noiseRef} className="tv-static"></canvas>
 }
 
-export default TVStatic;
+export default forwardRef(TVStatic);

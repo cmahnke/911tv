@@ -49,9 +49,21 @@
   justify-content: flex-start;
   z-index: -11;
 
-  .top {
-    z-index: 1;
+  &.top {
+    /*z-index: 1;*/
+    animation: increase-noise 5s linear forwards;
   }
+
+  @keyframes increase-noise {
+  0% {
+    opacity: 0;
+    z-index: -11;
+  }
+  100% {
+    z-index: -2;
+    opacity: 100;
+  }
+}
 }
 
 #controls {

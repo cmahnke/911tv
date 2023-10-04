@@ -15,7 +15,9 @@ def gen_timecode(days):
     global metadata
     timestamps = {}
     timestamp = datetime.datetime(metadata['year'], metadata['month'], days[0][0], days[0][1], tzinfo=datetime.timezone.utc)
+    metadata['start'] = timestamp
     end = datetime.datetime(metadata['year'], metadata['month'], days[1][0], days[1][1], 59, 59, tzinfo=datetime.timezone.utc)
+    metadata['end'] = end
     step = datetime.timedelta(minutes=10)
 
     result = []
@@ -31,22 +33,24 @@ def get_redirect_url(url):
         if req.status_code == 302 or req.status_code == 301:
             return req.headers['Location']
         else:
-            print(f"{url} returned {req.status_code}")
+            print(f"\n{url} returned {req.status_code}", file=sys.stderr)
     except requests.exceptions.ReadTimeout:
-        print(f"Timeout for {url}")
+        print(f"\nTimeout for {url}", file=sys.stderr)
 
 times = gen_timecode(timespan)
 
-urls = {}
+urls = {'channels': {}}
 for chan in chans:
-    urls[chan] = {}
+    print(f"Processing {chan}, {len(times.items())} items", file=sys.stderr)
+    urls['channels'][chan] = {}
     for time, dt in times.items():
+        print('.', end="", flush=True, file=sys.stderr)
         entry = {}
         url = eval('f"' + template + '"', {}, {'chan': chan, 'time': time})
         try:
             redirect = get_redirect_url(url)
         except requests.exceptions.ConnectionError:
-            print(f"Failed to get {entry['url']}", file=sys.stderr)
+            print(f"\nFailed to get {url}", file=sys.stderr)
             continue
         if redirect != None:
             url_match = re.search(r'/details/911/day/(?P<day>\d{8})#id/(?P<id>.*)/start/(?P<time>\d{2}:\d{2}:\d{2}UTC/chan/(?P<chan>.*))', redirect)
@@ -63,10 +67,12 @@ for chan in chans:
             video_start = video_start.replace(tzinfo=datetime.timezone.utc)
             t = round((dt - video_start).total_seconds())
             entry['start_time'] = round((dt - video_start).total_seconds())
+            # TODO: check end times
         else:
-            print(f"{url} returned no redirect", file=sys.stderr)
+            print(f"\n{url} returned no redirect", file=sys.stderr)
 
-        urls[chan][dt.isoformat()] = entry
+        urls['channels'][chan][dt.isoformat()] = entry
+        print('', flush=True, file=sys.stderr)
 
 # TODO: Generate missing timecodes for faster static noise
 

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 
-export const VideoJS = (props) => {
+export const VideoJS = (props, playerRef) => {
   const placeholderRef = React.useRef(null);
-  const playerRef = React.useRef(null);
+  //const playerRef = React.useRef(null);
   const { options, onReady } = props;
 
   React.useEffect(() => {
@@ -39,8 +39,7 @@ export const VideoJS = (props) => {
       }
     };
   }, [playerRef]);
-
-  return <div ref={placeholderRef} className="video-container"></div>
+  return <div ref={placeholderRef} className="video-container" ></div>
 };
 
-export default VideoJS;
+export default forwardRef(VideoJS);
