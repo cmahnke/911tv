@@ -1,4 +1,5 @@
 import React, { forwardRef } from "react";
+import PropTypes from 'prop-types';
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 

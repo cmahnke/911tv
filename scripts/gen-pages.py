@@ -15,7 +15,7 @@ for file in Path(content_dir).glob(content_pattern):
     post = frontmatter.load(file)
     if 'number' in post and 'title' in post:
         page['markdown'] = post.content
-        page['html'] = markdown.markdown(post.content)
+        page['html'] = markdown.markdown(post.content, extensions=['attr_list'])
         page['number'] = post['number']
         page['title'] = post['title']
         pages.append(page)

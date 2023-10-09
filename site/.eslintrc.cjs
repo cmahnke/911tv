@@ -16,10 +16,17 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    'react/prop-types': [1], 
+    'react/prop-types': [1],
     'no-unused-vars': [
       'warn',
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
     ]
   },
+  'overrides': [
+    {
+      'files': ['*.gjson', '*.geojson', '*.json'],
+      parser: 'eslint-plugin-json-es',
+      extends: 'plugin:eslint-plugin-json-es/recommended'
+    }
+  ]
 }
