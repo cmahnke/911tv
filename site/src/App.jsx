@@ -1,13 +1,11 @@
-import React, { useEffect, useRef } from 'react';
-import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
-import { BrowserRouter as Router, Route, useLoaderData } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { isMobileSafari } from 'react-device-detect';
-import parse, { domToReact } from 'html-react-parser';
-import Cookies from 'js-cookie';
 import VideoJS from './video.jsx';
-import TVStatic from './noise.jsx';
-import { DateTime, Duration } from "luxon";
-import 'normalize.css';
+import TVStatic from './TVStatic.jsx';
+import Teletext from './Teletext.jsx';
+import Timer from './classes/Timer.js';
+import { DateTime } from "luxon";
 import "@fontsource/press-start-2p";
 import './App.scss'
 import urls from './assets/json/urls.json';
@@ -15,33 +13,21 @@ import pages from './assets/json/pages.json';
 
 /**
  * TODO:
- * * Info box
  * * CSS
- *   * Bundle SVGs
+ *   * Info box
+ *   * Frame
  * * Texts and links
+ *   * Links without reload / rerender
  * * Video adressing
  */
 
 function App() {
   const playerRef = useRef(null);
-
   const rootRef = useRef(null);
   const tvFrameRef = useRef(null);
   const noiseRef = useRef(null);
   const ttRef = useRef(null);
-  const ttPageNrRef = useRef(null);
-  const ttTimeRef = useRef(null);
-  const ttBodyRef = useRef(null);
   const infoRef = useRef(null);
-  //const appTimeRef = useRef(null);
-
-  const timeDiffCookieName = 'timediff';
-  const timeCodeCookieName = 'timecode';
-  var teletextPageSelector = [];
-  const urlParams = new URLSearchParams(window.location.search);
-  const params= useParams();
-  let currPage = getPage(params.page);
-  //console.log('Current page: ' + JSON.stringify(currPage));
 
   /*
    * Dates and times of video URLs are in UTC,
@@ -49,36 +35,25 @@ function App() {
    * App time is the UTC time of the ongoing event, it needs to be convertet into EDT
    */
 
+  var reset = false;
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('reset') !== null && urlParams.get('reset') !== undefined) {
+    reset = true;
+  }
   const startDate = DateTime.fromISO(urls.metadata.start);
   const endDate = DateTime.fromISO(urls.metadata.end);
-  const timezone = urls.metadata.timezone;
-
-  console.log(`Starting at ${startDate.setZone("utc").toString()}`);
-  var localTime = DateTime.local({ setZone: false });
-  var timeDiff;
-
-  if (urlParams.get('reset') !== null && urlParams.get('reset') !== undefined) {
-    Cookies.remove(timeDiffCookieName)
-    Cookies.remove(timeCodeCookieName)
-  }
-  if (Cookies.get(timeDiffCookieName) === undefined) {
-    timeDiff = localTime.diff(startDate);
-    Cookies.set(timeDiffCookieName, String(timeDiff), {expires: 14});
-  } else {
-    let cookieDiff = Duration.fromISO(Cookies.get(timeDiffCookieName));
-    // Fallback to apptime if diffence is greater then play length
-    if (DateTime.now().minus(cookieDiff) > endDate) {
-      timeDiff = localTime.diff(cookieDiff);
-    } else {
-      timeDiff = cookieDiff;
-    }
-  }
-  var appTime = localTime.minus(timeDiff).setZone('utc', { keepLocalTime: true })
-  var displayTime = appTime.setZone(timezone);
-  console.log(`Starting time is ${startDate}, time difference to current running time ${localTime} is ${timeDiff}, calculated application time is ${appTime}, local event time (as '${timezone}' used for display) is ${displayTime}`);
+  const timer = new Timer(startDate, endDate, urls.metadata.timezone, reset);
+  pages[300] = urls.events;
 
   const channels = Object.keys(urls.channels)
   var curChannel = channels[0]
+
+  const router = createBrowserRouter([
+    {
+      path: "/:page?",
+      element: <Teletext ref={ttRef} pages={pages} timer={timer} curChannel={() => {return curChannel}} />,
+    },
+  ]);
 
   function parseProgramms (chan, time) {
     //All times from `urls.json` are UTC
@@ -93,39 +68,35 @@ function App() {
         if ('meta_url' in urls.channels[chan][times[i]]) {
           video['info'] = urls.channels[chan][times[i]]['meta_url']
         }
-        console.log('Returning program ' + appTime + video);
+        console.log('Returning program ' + time + video);
         return video;
       }
     }
   }
 
+/*
   function getPage(number) {
     if (number === undefined) {
       number = 100;
     }
     const options = {
       replace: ({ name, attribs, children }) => {
-        if (name === 'a' && attribs.href) {
-          return <Link to={attribs.href}>{domToReact(children)}</Link>;
+        if (name === 'a' && attribs.href && !attribs.href.startsWith('http')) {
+          //return <Link to={attribs.href}>{domToReact(children)}</Link>;
+          return <Link onClick={() => dialPage(attribs.href, true)}>{domToReact(children)}</Link>;
         }
       }
     };
     let page = pages.filter(obj => {
       return obj.number == number
     })[0];
-    page['react'] = parse(`<div>${page.html}</div>`, options);
-    console.log(page.react);
+    if (page === undefined) {
+      return undefined;
+    }
+    page['react'] = parse(`<div class="md-content">${page.html}</div>`, options);
     return page;
   }
-
-  function toggleTeletext() {
-    if (ttRef.current.getAttribute('class') == 'visible') {
-      ttRef.current.setAttribute('class', 'hidden');
-    } else {
-      ttRef.current.setAttribute('class', 'visible');
-    }
-  }
-
+*/
   function zapChannel(e, direction) {
     var i = channels.indexOf(curChannel);
     if (direction) {
@@ -143,6 +114,10 @@ function App() {
       }
       console.log(`Previous channel (up), now ${curChannel}`);
     }
+    //TODO Fix this
+    //ttFooterRef.current.innerHTML = `${curChannel}`;
+    const event = new CustomEvent('channelChange', { detail: {channel: curChannel}});
+    ttRef.current.dispatchEvent(event);
   }
 
   function toggleFullscreen() {
@@ -155,50 +130,29 @@ function App() {
     }
   }
 
-  function toggleStatic() {
-    if (noiseRef.current.getAttribute('class') == 'show') {
-      noiseRef.current.setAttribute('class', 'hide');
-    } else {
-      noiseRef.current.setAttribute('class', 'show');
-    }
+  function toggleButton(ref) {
+    ref.current.classList.toggle('hide');
+    ref.current.classList.toggle('show');
   }
 
   function toggleInfo() {
-    if (infoRef.current.getAttribute('class') == 'show') {
-      infoRef.current.querySelector('div').innerHTML = parseProgramms(curChannel, appTime)['meta']
-      infoRef.current.setAttribute('class', 'hide');
-    } else {
-      infoRef.current.setAttribute('class', 'show');
+    if (infoRef.current.classList.contains('show')) {
+      infoRef.current.querySelector('div a').setAttribute('href', parseProgramms(curChannel, timer.appTime)['info']);
     }
-  }
-
-  // Uses time without correct time zone (appTime)
-  function formatTimecode(date) {
-    return date.setZone(timezone).setLocale('en-us').toFormat('EEE MMM dd hh:mm:ss');
-  }
-
-  function tick(elem, time) {
-    elem.innerHTML = formatTimecode(time);
+    infoRef.current.classList.toggle('hide');
+    infoRef.current.classList.toggle('show');
   }
 
   useEffect(() => {
+    const event = new CustomEvent('channelChange', { detail: {channel: curChannel}});
+    ttRef.current.dispatchEvent(event);
 
-
-    //ttBodyRef.current.innerHTML = currPage.html;
-    //ttBodyRef.current = currPage.react;
-    const interval = setInterval(() => {
-      // TODO: Assignments to the 'localTime' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect
-      localTime = DateTime.local({ setZone: false });
-      appTime = localTime.minus(timeDiff).setZone('utc', { keepLocalTime: true })
-      tick(ttTimeRef.current, appTime);
-      Cookies.set(timeCodeCookieName, String(appTime), {expires: 14});
-    }, 1000);
-    return () => clearInterval(interval);
   }, []);
 
-  var stream = parseProgramms(curChannel, appTime);
+  var stream = parseProgramms(curChannel, timer.appTime);
   if (stream['info'] !== undefined) {
-    //infoRef.current.querySelector('div').setAttribute('href', stream['info']);
+    //TODO : Set info URL
+    //infoRef.current.querySelector('div a').setAttribute('href', stream['info']);
   }
 
   // See https://videojs.com/guides/react/
@@ -210,42 +164,32 @@ function App() {
     sources: [
       {
         src: stream['url'],
-        /*src: '//vjs.zencdn.net/v/oceans.mp4',*/
         type: 'video/mp4',
       },
     ],
   };
 
-  const noiseOpts = {
-    id: "tv-static"
-  };
   return (
     <>
       <div id="container" ref={rootRef}>
         <div id="tv-frame" ref={tvFrameRef}>
           <div id="tube">
-            <div id="teletext" ref={ttRef} className="visible">
-              <div id="tt-header">
-                <div ref={ttPageNrRef} id="tt-page-nr">100</div>
-                <div ref={ttTimeRef} id="tt-time">{formatTimecode(appTime)}</div>
-              </div>
-              <div ref={ttBodyRef} id="tt-body">{ currPage.react }</div>
-            </div>
+            <RouterProvider router={router} />
             <div id="info-container">
-              <div ref={infoRef} id="info">
+              <div ref={infoRef} id="info" className="hide">
                 <button type="button" className="button toggle-info" onClick={toggleInfo}>
                   <i className="info-icon"></i>
                 </button>
                 <div className="info-text">
-                  <a href="">Stream Metadata</a>
+                  <a target="_blank" href="">Stream Metadata</a>
                 </div>
               </div>
             </div>
-            <TVStatic options={noiseOpts} ref={noiseRef} id="tv-static"/>
+            <TVStatic ref={noiseRef} id="tv-static" className="hide" />
             <VideoJS options={videoJsOptions} ref={playerRef} id="video-js-player"/>
           </div>
           <div id="controls">
-            <button type="button" className="button toggle-teletext" onClick={toggleTeletext}>
+            <button type="button" className="button toggle-teletext" onClick={() => toggleButton(ttRef)}>
               <i className="icon"></i>
             </button>
             <button type="button" className="button zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>
@@ -254,10 +198,10 @@ function App() {
             <button type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
               <i className="icon"></i>
             </button>
-            <button type="button" className={'button toggle-fullscreen' + (isMobileSafari ? '' : 'hidden')} onClick={toggleFullscreen}>
+            <button type="button" className={'button toggle-fullscreen' + (isMobileSafari ? '' : 'hide')} onClick={toggleFullscreen}>
               <i className="icon"></i>
             </button>
-            <button type="button" className="button toggle-static" onClick={toggleStatic}>
+            <button type="button" className="button toggle-static" onClick={() => toggleButton(noiseRef)}>
               <i className="icon"></i>
             </button>
           </div>

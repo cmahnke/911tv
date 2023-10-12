@@ -41,7 +41,7 @@ def get_redirect_url(url):
         if req.status_code == 302 or req.status_code == 301:
             return req.headers['Location']
         else:
-            cprint(f"\n{url} returned {req.status_code}", "red", file=sys.stderr)
+            cprint(f"\nResolving Redirect: {url} returned {req.status_code}", "red", file=sys.stderr)
     except requests.exceptions.ReadTimeout:
         cprint(f"\nTimeout for {url}", "red", file=sys.stderr)
 
@@ -51,7 +51,7 @@ def get_media_type(url):
         if head.status_code == 200:
             return head.headers['Content-Type']
         else:
-            cprint(f"\n{url} returned {head.status_code}", "red", file=sys.stderr)
+            cprint(f"\nGetting media type: {url} returned {head.status_code}", "red", file=sys.stderr)
     except Exception as e:
         cprint(f"\nError (${e}) for {url}", "red", file=sys.stderr)
 
@@ -80,7 +80,7 @@ def condense(channels):
         last_url = None
         last_timecode = None
         for timecode, urls in sorted_timecodes.items():
-            if last_url != urls['video_url']['src']:
+            if urls['video_url'] != None and last_url != urls['video_url']['src']:
                 condensed_timecodes[timecode] = urls
                 last_url = urls['video_url']['src']
                 last_timecode = timecode
