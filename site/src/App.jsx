@@ -1,25 +1,15 @@
 import { useEffect, useRef } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { isMobileSafari } from 'react-device-detect';
-import VideoJS from './video.jsx';
+import VideoJS from './VideoJS.jsx';
 import TVStatic from './TVStatic.jsx';
-import Teletext from './Teletext.jsx';
+import Teletext, { subTitlesPageNr } from './Teletext.jsx';
 import Timer from './classes/Timer.js';
 import { DateTime } from "luxon";
 import "@fontsource/press-start-2p";
 import './App.scss'
 import urls from './assets/json/urls.json';
 import pages from './assets/json/pages.json';
-
-/**
- * TODO:
- * * CSS
- *   * Info box
- *   * Frame
- * * Texts and links
- *   * Links without reload / rerender
- * * Video adressing
- */
 
 function App() {
   const playerRef = useRef(null);
@@ -43,10 +33,15 @@ function App() {
   const startDate = DateTime.fromISO(urls.metadata.start);
   const endDate = DateTime.fromISO(urls.metadata.end);
   const timer = new Timer(startDate, endDate, urls.metadata.timezone, reset);
-  pages[300] = urls.events;
+  if (subTitlesPageNr in pages) {
+    console.log("Can't initialize subtitels page");
+  }
+  pages[subTitlesPageNr] = urls.events;
 
   const channels = Object.keys(urls.channels)
   var curChannel = channels[0]
+
+  const videoEventHandler = [{ name: 'play', handler: () => {} }];
 
   const router = createBrowserRouter([
     {
@@ -74,29 +69,6 @@ function App() {
     }
   }
 
-/*
-  function getPage(number) {
-    if (number === undefined) {
-      number = 100;
-    }
-    const options = {
-      replace: ({ name, attribs, children }) => {
-        if (name === 'a' && attribs.href && !attribs.href.startsWith('http')) {
-          //return <Link to={attribs.href}>{domToReact(children)}</Link>;
-          return <Link onClick={() => dialPage(attribs.href, true)}>{domToReact(children)}</Link>;
-        }
-      }
-    };
-    let page = pages.filter(obj => {
-      return obj.number == number
-    })[0];
-    if (page === undefined) {
-      return undefined;
-    }
-    page['react'] = parse(`<div class="md-content">${page.html}</div>`, options);
-    return page;
-  }
-*/
   function zapChannel(e, direction) {
     var i = channels.indexOf(curChannel);
     if (direction) {
@@ -114,8 +86,7 @@ function App() {
       }
       console.log(`Previous channel (up), now ${curChannel}`);
     }
-    //TODO Fix this
-    //ttFooterRef.current.innerHTML = `${curChannel}`;
+
     const event = new CustomEvent('channelChange', { detail: {channel: curChannel}});
     ttRef.current.dispatchEvent(event);
   }
@@ -150,9 +121,9 @@ function App() {
   }, []);
 
   var stream = parseProgramms(curChannel, timer.appTime);
+  var stream_info;
   if (stream['info'] !== undefined) {
-    //TODO : Set info URL
-    //infoRef.current.querySelector('div a').setAttribute('href', stream['info']);
+    stream_info = stream['info'];
   }
 
   // See https://videojs.com/guides/react/
@@ -162,10 +133,13 @@ function App() {
     fill: true,
     muted: true,
     sources: [
+      stream['url']
+      /*
       {
         src: stream['url'],
         type: 'video/mp4',
       },
+      */
     ],
   };
 
@@ -181,12 +155,12 @@ function App() {
                   <i className="info-icon"></i>
                 </button>
                 <div className="info-text">
-                  <a target="_blank" href="">Stream Metadata</a>
+                  <a target="_blank" rel="noreferrer" href={stream_info}>Stream Metadata</a>
                 </div>
               </div>
             </div>
             <TVStatic ref={noiseRef} id="tv-static" className="hide" />
-            <VideoJS options={videoJsOptions} ref={playerRef} id="video-js-player"/>
+            <VideoJS options={videoJsOptions} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player"/>
           </div>
           <div id="controls">
             <button type="button" className="button toggle-teletext" onClick={() => toggleButton(ttRef)}>

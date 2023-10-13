@@ -68,9 +68,8 @@ jobs:
           yarn run vite build
 
       - name: Deploy site
-        working-directory: ./site
         uses: peaceiris/actions-gh-pages@v3.9.3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./site/dist
           force_orphan: true

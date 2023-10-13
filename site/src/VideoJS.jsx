@@ -5,8 +5,7 @@ import "video.js/dist/video-js.css";
 
 export const VideoJS = (props, playerRef) => {
   const placeholderRef = React.useRef(null);
-  //const playerRef = React.useRef(null);
-  const { options, onReady } = props;
+  const { options, onReady, eventHandlers } = props;
 
   React.useEffect(() => {
     // Make sure Video.js player is only initialized once
@@ -20,6 +19,12 @@ export const VideoJS = (props, playerRef) => {
         player.log("player is ready");
         onReady && onReady(player);
       }));
+
+      if (eventHandlers !== undefined && eventHandlers.length > 0) {
+        eventHandlers.forEach((eventHandler) => {
+          player.on(eventHandler.name, eventHandler.handler);
+        });
+      }
 
       // You can update player in the `else` block here, for example:
     } else {
@@ -41,6 +46,17 @@ export const VideoJS = (props, playerRef) => {
     };
   }, [playerRef]);
   return <div ref={placeholderRef} className="video-container" ></div>
+};
+
+VideoJS.propTypes = {
+  onReady: PropTypes.func,
+  options: PropTypes.object,
+  eventHandlers: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+      handler: PropTypes.func
+    })
+  )
 };
 
 export default forwardRef(VideoJS);

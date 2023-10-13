@@ -1,7 +1,10 @@
 import { useEffect, useRef, forwardRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
 import parse, { domToReact } from 'html-react-parser';
+import Timer from './classes/Timer.js';
 import PropTypes from 'prop-types';
+
+export const subTitlesPageNr = 300;
 
 export const Teletext = (props, ttRef) => {
   const timer = props.timer;
@@ -9,12 +12,10 @@ export const Teletext = (props, ttRef) => {
   const curChannel = props.curChannel;
 
   const navigate = useNavigate();
+  const location = useLocation();
   var teletextSelectorBuffer = [];
-  //const params = useParams();
   const {page = 100} = useParams()
-  const currPage = getPage(page);
-
-  console.log(currPage);
+  const curPage = getPage(page);
 
   const ttPageNrRef = useRef(null);
   const ttTimeRef = useRef(null);
@@ -33,15 +34,14 @@ export const Teletext = (props, ttRef) => {
       if (getPage(page) === undefined) {
         page = 404;
       }
-      console.log(`from ${currPage.number} -> ${page}`)
-      if (page != currPage.number) {
-        console.log(`Dailing ${page}`)
+      if (page != curPage.number) {
         dialPage(page, true);
       }
       teletextSelectorBuffer = []
     }
   }
 
+  /*
   function hasPage(number) {
     let page = pages.filter(obj => {
       return obj.number == number
@@ -51,17 +51,20 @@ export const Teletext = (props, ttRef) => {
     }
     return true;
   }
+  */
 
   function dialPage(nr, count) {
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    function updateTTNumber(from, to) {
+    function updateTTNumber(from, to, duration) {
+      if (duration === undefined) {
+        duration = 40;
+      }
       let promises = [];
       for (let i = from; i < to; i++) {
-        //console.log((i - from));
-        promises.push(sleep((i - from) * 90).then(() => {
+        promises.push(sleep((i - from) * duration).then(() => {
           ttPageNrRef.current.innerHTML = i;
         }));
       }
@@ -72,9 +75,7 @@ export const Teletext = (props, ttRef) => {
       nr = nr.substring(1);
     }
     if (count) {
-      //TODO: This is not always the latest value
-      let start = currPage.number;
-      console.log(`Counting from ${start} to ${nr}`)
+      let start = curPage.number;
       if (start > nr) {
         Promise.all(updateTTNumber(start, 900)).then(() => {
           Promise.all(updateTTNumber(100, nr)).then(() => {
@@ -109,46 +110,54 @@ export const Teletext = (props, ttRef) => {
     if (page === undefined) {
       return undefined;
     }
+
     if (!Array.isArray(page)) {
-      page['react'] = parse(`<div class="md-content">${page.html}</div>`, options);
+      if (!Array.isArray(page.html)) {
+        page['react'] = parse(`<div class="md-content">${page.html}</div>`, options);
+      } else {
+        // TODO: Handle multiple HTML elements here
+      }
     } else {
-      console.log('event array page not implemented yet')
+      // TODO: Handle list of pages (subtitles) here
+      console.log('Event array page not implemented yet')
+      for (const ts in page) {
+        //Calculate ms to event
+        //create callback
+        //setTimeout(callback, ms)
+        //TODO, check how to clean up
+      }
     }
     return page;
   }
 
   useEffect(() => {
     ttRef.current.addEventListener('channelChange', function(e) {
-      console.log(e);
       ttFooterRef.current.innerHTML = e.detail.channel;
     })
-    //ttFooterRef.current.innerHTML = `${curChannel}`;
-    console.log(`effect ${currPage.number}`)
-    //TODO: this Maskes change of currPAge
-    window.removeEventListener('keyup', teletextSelector)
+    //window.removeEventListener('keyup', teletextSelector)
     window.addEventListener('keyup', teletextSelector);
     const interval = setInterval(() => {
       ttTimeRef.current.innerHTML = timer.formatTimecode();
     }, 1000);
-  }, []);
+  }, [location]);
 
   return (
     <div id="teletext" ref={ttRef} className="show">
       <div id="tt-header">
-        <div ref={ttPageNrRef} id="tt-page-nr">{currPage.number}</div>
+        <div ref={ttPageNrRef} id="tt-page-nr">{curPage.number}</div>
         <div ref={ttTimeRef} id="tt-time">{timer.formatTimecode()}</div>
       </div>
-      <div ref={ttBodyRef} id="tt-body">{ currPage.react }</div>
+      <div ref={ttBodyRef} id="tt-body">{ curPage.react }</div>
       <div ref={ttFooterRef} id="tt-footer">{ curChannel() }</div>
     </div>
   )
 }
 
-
-/*
 Teletext.propTypes = {
-  name: PropTypes.string
+  name: PropTypes.string,
+  timer: PropTypes.instanceOf(Timer),
+  pages: PropTypes.arrayOf(PropTypes.object),
+  curChannel: PropTypes.string
 };
-*/
 
 export default forwardRef(Teletext);

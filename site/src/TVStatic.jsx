@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-//import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
 // See https://stackoverflow.com/a/23572465
 
@@ -35,11 +35,9 @@ export const TVStatic = (props, noiseRef) => {
   return <canvas id={props.id} ref={noiseRef} className={className}></canvas>
 }
 
-/*
 TVStatic.propTypes = {
   id: PropTypes.string,
   className: PropTypes.string
 };
-*/
 
 export default forwardRef(TVStatic);
