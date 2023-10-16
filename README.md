@@ -56,9 +56,11 @@ In addition, the following software components were used:
 ## Presentation
 
 * [JavaScript Cookie](https://github.com/js-cookie/js-cookie)
+* [howler.js](https://howlerjs.com/)
 * [Luxon](https://moment.github.io/luxon/)
 * [Normalize.css](https://necolas.github.io/normalize.css/)
 * [React](https://reactjs.org/)
+* [react-cookie-consent](https://github.com/Mastermindzh/react-cookie-consent)
 * [react-device-detect](https://github.com/duskload/react-device-detect#readme)
 * [React Router](https://github.com/remix-run/react-router)
 * [video.js](https://videojs.com/)
@@ -103,6 +105,26 @@ There are several other interesting Teletext related sites, that might be intere
 * [Suite of tools for processing teletext signals recorded on VHS](https://github.com/ali1234/vhs-teletext)
 * [The Teletext Archive](http://www.teletextarchive.com/)
 
+## Static Noise
+
+# Generating a static noise sound
+
+```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -t 10 output.mp3
+```
+
+A simple example using `ffmpeg`.
+
+```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -af 'aphaser=type=s:speed=.5:decay=.25:in_gain=0.15:out_gain=0.6' -ac 2 -t 6 output.mp3
+```
+
+An example with oscillation, see [`ffmpeg` documentation](https://ffmpeg.org/ffmpeg-filters.html#aphaser) for more options. Make sure, that frequency and length end up.
+
+# Further Links
+
+* [Create video and audio noise, artifacts, and errors with `ffmpeg`](https://stackoverflow.com/a/15795112)
+
 # TODO:
 
 * CSS
@@ -110,17 +132,34 @@ There are several other interesting Teletext related sites, that might be intere
   * Frame
   * Buttons
 * Texts and links
-  * Subtitles
   * Content
 * Video addressing
+  * Seek
+  * Segmentation
+    * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
 * Data preprocessing
-  * Check why GLVSN isn't working
   * check if sub pages are needed
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 * Reduce size
-  * check [JSON compression](https://github.com/KilledByAPixel/JSONCrush)
+  * check [JSON compression](https://github.com/KilledByAPixel/JSONCrush) and [VitePress](https://vitepress.dev/guide/data-loading)
+* Sound for static noise, see https://stackoverflow.com/questions/54886538/how-to-use-howler-js-in-react and https://github.com/goldfire/howler.js#methods
 
-![Projektemacher](./site/src/assets/svg/cm.svg)
+## Known Issues
+
+* Check Times
+* Try to find source for duplicated static noise
+* Test subtitle generation
+* Data preprocessing
+  * Check why GLVSN isn't working
+
+## Further ideas
+
+* Electron App
+* Compress `urls.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush)
+
+<p align="center">
+  ![Projektemacher Logo](./site/src/assets/svg/cm.svg)
+</p>

@@ -64,7 +64,6 @@ def extract_details(days):
     for day in gen_timecode(days, 60*24):
         day = day[0:8]
         cprint(f"Extracting events from {day}", "red", file=sys.stderr)
-        details[day] = {}
         details_html = requests.get(details_prefix + day).content
         soup = BeautifulSoup(details_html, 'html.parser')
         for event in soup.css.select('#events .evmark'):
@@ -72,7 +71,7 @@ def extract_details(days):
             timestamp = datetime.datetime.strptime(f"{day} {time}", '%Y%m%d %I:%M%p')
             timestamp = timestamp.replace(tzinfo=tz)
             text = event.find('div', {'class': 'evtext'}).text.strip()
-            details[day][timestamp.isoformat()] = text
+            details[timestamp.isoformat()] = text
     return details
 
 def condense(channels):

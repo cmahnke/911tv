@@ -9,6 +9,7 @@ from termcolor import cprint
 
 content_dir = './contents'
 content_pattern = '*.md'
+subpage_seperator = '<!--more-->'
 
 def check_page_size(md):
     html = markdown.markdown(md, extensions=['attr_list'])
@@ -32,8 +33,14 @@ for file in Path(content_dir).glob(content_pattern):
     if 'number' in post and 'title' in post:
         # Do a sanity check
         check_page_size(post.content)
-        #TODO: Split pages if required here 
-        html = markdown.markdown(post.content, extensions=['attr_list'])
+        #TODO: Split pages if required here
+        if subpage_seperator in post.content:
+            html = []
+            for subpage in post.content.split(subpage_seperator):
+                html.append(markdown.markdown(subpage, extensions=['attr_list']))
+
+        else:
+            html = markdown.markdown(post.content, extensions=['attr_list'])
         page['markdown'] = post.content
         page['html'] = html
         page['number'] = post['number']

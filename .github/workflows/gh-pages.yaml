@@ -7,6 +7,10 @@ on:
   schedule:
     - cron:  '0 7 * * */2'
 
+permissions:
+  packages: write
+  contents: write
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -16,21 +20,9 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
 
-      - name: Free some disk space
-        run: |
-          sudo rm -rf /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
-
       - uses: actions/checkout@v4
         with:
           submodules: true  # Fetch Hugo themes (true OR recursive)
-
-      - name: Login to GitHub Packages Docker Registry
-        uses: docker/login-action@v3.0.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
-          logout: false
 
       - name: Set up Python
         uses: actions/setup-python@v4
