@@ -1,33 +1,28 @@
 import { forwardRef, useImperativeHandle, useEffect, useRef } from "react";
 import PropTypes from 'prop-types';
-import { Howl, Howler } from 'howler';
+import { Howl } from 'howler';
 import './TVStatic.scss';
 import bgNoise from '../assets/mp3/TVStatic.mp3';
 
 export const TVStatic = (props, ref) => {
-  const animationLength = 1.5;
+  const animationLengthMs = 1500;
   var showState = true;
   const canvasRef = useRef(null);
-
-  const noisePlayer = new Howl({
-    src: [bgNoise],
-    autoplay: true,
-    loop: true
-  })
-  // The HTML element would be noisePlayer._sounds[0]._node
+  var noisePlayer;
 
   function show() {
     showState = true;
     canvasRef.current.classList.remove("hide");
     canvasRef.current.classList.add("show");
-    noisePlayer.fade(0, 1, animationLength);
+    noisePlayer.fade(0, 1, animationLengthMs);
+
   }
 
   function hide() {
     showState = false;
     canvasRef.current.classList.remove("show");
     canvasRef.current.classList.add("hide");
-    noisePlayer.fade(1, 0, animationLength);
+    noisePlayer.fade(1, 0, animationLengthMs);
   }
 
   function toggle() {
@@ -67,6 +62,17 @@ export const TVStatic = (props, ref) => {
     var time = 0;
     var canvas = canvasRef.current;
     var context = canvas.getContext("2d");
+
+    //somehow this can be initilized twice
+    if (noisePlayer === undefined) {
+      console.log('During development hot reload will use the noise sound twice');
+      noisePlayer = new Howl({
+        src: [bgNoise],
+        autoplay: true,
+        loop: true
+      })
+    }
+    // The HTML element would be noisePlayer._sounds[0]._node
 
     const interval = setInterval(() => {
       makeNoise();

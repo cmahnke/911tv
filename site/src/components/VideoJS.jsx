@@ -44,6 +44,7 @@ export const VideoJS = (props, playerRef) => {
         playerRef.current = null;
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerRef]);
   return <div ref={placeholderRef} className="video-container" ></div>
 };

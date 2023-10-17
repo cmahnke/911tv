@@ -70,6 +70,7 @@ def extract_details(days):
             time = event.find('div', {'class': 'evtime'}).text.strip()
             timestamp = datetime.datetime.strptime(f"{day} {time}", '%Y%m%d %I:%M%p')
             timestamp = timestamp.replace(tzinfo=tz)
+            timestamp = timestamp.astimezone(datetime.timezone.utc)
             text = event.find('div', {'class': 'evtext'}).text.strip()
             details[timestamp.isoformat()] = text
     return details
@@ -158,7 +159,12 @@ if __name__ == '__main__':
     cprint(f"Using {pool_size} processes", "orange", file=sys.stderr)
     times = gen_timecode(timespan)
 
-    urls = {'channels': {}}
+    urls = {
+        'metadata': metadata,
+        'events': extract_details(timespan),
+        'channels': {}
+    }
+
     print(f"Processing {len(chans)} channels", file=sys.stderr)
     for chan in chans:
         cprint(f"Processing {chan}, {len(times.items())} items", 'green', file=sys.stderr)
@@ -179,9 +185,6 @@ if __name__ == '__main__':
         urls['channels'] = condense(urls['channels'])
 
     fix_missing(urls['channels'])
-
-    urls['metadata'] = metadata
-    urls['events'] = extract_details(timespan)
 
     dump = json.dumps(urls, indent=4, default=str)
     print(dump)

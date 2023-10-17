@@ -58,8 +58,8 @@
 
   #info {
     position: absolute;
-    right: 1em;
-    bottom: 1.5em;
+    right: .6em;
+    bottom: .6em;
     transition: width;
     z-index: 10;
     background-color: rgba(88, 88, 88, 0.65);
@@ -125,53 +125,69 @@
   }
 }
 
-#controls {
+#tv-footer {
   position: absolute;
   bottom: 0;
-  width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
   height: 5%;
+  width: 100%;
+  flex-wrap: nowrap;
 
-  .button {
-    border-radius: 1em;
-    border: 1px solid transparent;
-    font-size: 1em;
-    font-family: inherit;
-    background-color: #1a1a1a;
-    cursor: pointer;
-    transition: border-color 0.25s;
-    margin: 0 .3em;
+  &>div.tv-footer-spacer:first-child {
+    visibility: hidden;
+    margin-right: auto;
+  }
 
-    &:hover {
-      border-color: #646cff;
-    }
-    &:focus,
-    &:focus-visible {
-      outline: 4px auto -webkit-focus-ring-color;
-    }
+  #tv-brand {
+    content: svg-load("assets/svg/cm.svg", fill=#696969);
+    display: flex;
+    margin-left:auto;
+  }
 
-    &.hide {
-      display: none;
-    }
+  #tv-controls {
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-left: auto;
 
-    &.toggle-teletext {
-      .icon {
-        content: svg-load("assets/svg/teletext.svg", stroke=#fff);
+    .button {
+      border-radius: 1em;
+      border: 1px solid transparent;
+      font-size: 1em;
+      font-family: inherit;
+      background-color: #1a1a1a;
+      cursor: pointer;
+      transition: border-color 0.25s;
+      margin: 0 .3em;
+
+      &:hover {
+        border-color: #646cff;
       }
-    }
+      &:focus,
+      &:focus-visible {
+        outline: 4px auto -webkit-focus-ring-color;
+      }
 
-    .icon {
-      height: 100%;
-      width: 100%;
+      &.hide {
+        display: none;
+      }
+
+      &.toggle-teletext {
+        .icon {
+          content: svg-load("assets/svg/teletext.svg", stroke=#fff);
+        }
+      }
+
+      .icon {
+        height: 100%;
+        width: 100%;
+      }
+
     }
 
   }
-
 }
-
-
 
 #tube {
   /* margin: calc(100vh / 100 * 5 ) calc( 100vw / 100 * 5); */

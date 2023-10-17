@@ -7,7 +7,7 @@ class Timer {
   static cookieTTL = 365;
 
   constructor(startDate, endDate, timezone, reset) {
-    this.startDate = startDate;
+    this.startDate = startDate.setZone('utc');
     this.endDate = endDate;
     this.timezone = timezone;
     this.localTime = DateTime.local({ setZone: false });
@@ -34,7 +34,7 @@ class Timer {
     }
     this.setTimes();
 
-    console.log(`Starting time is ${this.startDate}, time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time (as '${this.timezone}' used for display) is ${this.displayTime}`);
+    console.log(`Starting time is ${this.startDate} (UTC), time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time (as '${this.timezone}' used for display) is ${this.displayTime}`);
 
     this.interval = setInterval(() => {
       this.setTimes();
@@ -44,7 +44,7 @@ class Timer {
 
   setTimes() {
     this.localTime = DateTime.local({ setZone: false });
-    this.appTime = this.localTime.minus(this.timeDiff).setZone('utc', { keepLocalTime: true });
+    this.appTime = this.localTime.minus(this.timeDiff).setZone('utc');
     this.displayTime = this.appTime.setZone(this.timezone);
   }
 

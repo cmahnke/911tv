@@ -6,14 +6,31 @@ import VideoJS from './components/VideoJS.jsx';
 import TVStatic from './components/TVStatic.jsx';
 import Teletext, { subTitlesPageNr } from './components/Teletext.jsx';
 import { DateTime } from "luxon";
-import JSONCrush from 'jsoncrush';
+//import JSONCrush from 'jsoncrush';
+//import LZString from 'lz-string';
 import Timer from './classes/Timer.js';
 import "@fontsource/press-start-2p";
 import './App.scss'
-import urls from './assets/json/urls.json';
-import pages from './assets/json/pages.json';
+import urlsImport from './assets/json/urls.json';
+import pagesImport from './assets/json/pages.json';
+
+const consentCookieName = 'iaConsent';
+
+function parseJson(json) {
+  /*
+  if (typeof json == "object" && Object.keys(json).length == 2) {
+    if ('type' in json && json.type === 'lzstring') {
+      return JSON.parse(JSONCrush.uncrush(json['content']));
+    } else if ('type' in json && json.type === 'jsoncrush') {
+      return JSON.parse(LZString.decompress(json['content']));
+    }
+  }
+  */
+  return json;
+}
 
 function App() {
+  const audioContext = new AudioContext();
   const playerRef = useRef(null);
   const rootRef = useRef(null);
   const tvFrameRef = useRef(null);
@@ -21,12 +38,12 @@ function App() {
   const teletextRef = useRef(null);
   const infoRef = useRef(null);
 
+  const urls = parseJson(urlsImport);
+  const pages = parseJson(pagesImport);
+
   const channels = Object.keys(urls.channels)
   var channel = channels[0]
   var reset = false;
-  const consentCookieName = 'iaConsent';
-
-  //JSONCrush.uncrush()
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
@@ -78,18 +95,35 @@ function App() {
     //player.currentTime(666);
   }
 
-  function parseProgramms (chan, time) {
+  function parseProgramms (chan, time, offset) {
+    function generateQueryParams(start, length) {
+      const defaultLength = 35;
+      const prefix = '?t=';
+      const suffix = '&ignore=x.mp4';
+      if (length === undefined || length === null) {
+        length = defaultLength;
+      }
+      //?t=4226/4261&ignore=x.mp4
+      return `${prefix}${start}/${start + length}${suffix}`;
+    }
+
     //All times from `urls.json` are UTC
     let times = Object.keys(urls.channels[chan]);
+    times.sort((date1, date2) => new Date(date1) - new Date(date2))
 
     for (let i = 0; i < times.length; i++) {
       if (DateTime.fromISO(times[i]) <= time && DateTime.fromISO(times[i + 1]) > time) {
-        let video = { start: time - DateTime.fromISO(times[i]) }
-        if ('video_url' in urls.channels[chan][times[i]]) {
-          video['url'] = urls.channels[chan][times[i]]['video_url']
+        if (offset === undefined || offset === null || !Number.isInteger(offset)) {
+          offset = 0;
         }
-        if ('meta_url' in urls.channels[chan][times[i]]) {
-          video['info'] = urls.channels[chan][times[i]]['meta_url']
+        let entry = urls.channels[chan][times[i + offset]]
+
+        let video = { start: time - DateTime.fromISO(times[i]) }
+        if ('video_url' in entry) {
+          video['url'] = entry['video_url']
+        }
+        if ('meta_url' in entry) {
+          video['info'] = entry['meta_url']
         }
         console.log('Returning program ' + time, video);
         return video;
@@ -119,6 +153,19 @@ function App() {
     const newProgramme = parseProgramms(channel, timer.appTime)['url'];
     console.log(`${logPrefix}${channel} (${newProgramme['src']})`);
     playerRef.current.src(newProgramme);
+  }
+
+  function toggleAudio() {
+    if (audioStatus()) {
+      console.log('Audio is suspended');
+    }
+  }
+
+  function audioStatus() {
+    if (audioContext.state === "suspended") {
+      return false;
+    }
+    return true;
   }
 
   function toggleFullscreen() {
@@ -182,22 +229,29 @@ function App() {
             <TVStatic ref={noiseRef} id="tv-static" className="show" />
             <VideoJS options={videoJsOptions} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player"/>
           </div>
-          <div id="controls">
-            <button type="button" className="button toggle-teletext" onClick={() => teletextRef.current.toggle()}>
-              <i className="icon"></i>
-            </button>
-            <button type="button" className="button zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>
-              <i className="icon"></i>
-            </button>
-            <button type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
-              <i className="icon"></i>
-            </button>
-            <button type="button" className={'button toggle-fullscreen' + (isMobileSafari ? '' : 'hide')} onClick={toggleFullscreen}>
-              <i className="icon"></i>
-            </button>
-            <button type="button" className="button toggle-static" onClick={() => noiseRef.current.toggle()}>
-              <i className="icon"></i>
-            </button>
+          <div id="tv-footer">
+            <div className="tv-footer-spacer"></div>
+            <div id="tv-brand">&nbsp;</div>
+            <div id="tv-controls">
+              <button type="button" className={'button toggle-audio' + (audioStatus() ? 'disabled' : 'enabled')} onClick={toggleAudio}>
+                <i className="icon"></i>
+              </button>
+              <button type="button" className="button toggle-teletext" onClick={() => teletextRef.current.toggle()}>
+                <i className="icon"></i>
+              </button>
+              <button type="button" className="button zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>
+                <i className="icon"></i>
+              </button>
+              <button type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
+                <i className="icon"></i>
+              </button>
+              <button type="button" className={'button toggle-fullscreen' + (isMobileSafari ? '' : 'hide')} onClick={toggleFullscreen}>
+                <i className="icon"></i>
+              </button>
+              <button type="button" className="button toggle-static" onClick={() => noiseRef.current.toggle()}>
+                <i className="icon"></i>
+              </button>
+            </div>
           </div>
         </div>
         <CookieConsent cookieName={consentCookieName} cookieValue={true} onAccept={playVideo} expires={999} overlay="true" overlayClasses="consent-overlay" location="bottom">

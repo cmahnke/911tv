@@ -52,6 +52,8 @@ In addition, the following software components were used:
 * [Python Frontmatter](https://github.com/eyeseast/python-frontmatter)
 * [Requests](https://requests.readthedocs.io/)
 * [termcolor](https://github.com/termcolor/termcolor)
+* [JSONCrush](https://github.com/KilledByAPixel/JSONCrush)
+* [lz-string](https://github.com/pieroxy/lz-string)
 
 ## Presentation
 
@@ -116,10 +118,33 @@ ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -t 10 output.mp3
 A simple example using `ffmpeg`.
 
 ```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white[s1];anoisesrc=a=0.2:c=pink[s2];[s1][s2]join[s1]' -map "[s1]"  -t 6  output.mp3
+```
+In stereo.
+
+```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -af 'apulsator=timing=hz:hz=.5:amount=.4' -ac 2 -t 6 output.mp3
+```
+
+With channel oscillation.
+
+```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -af 'tremolo=f=.5:d=.2' -ac 2 -t 6 output.mp3
+```
+
+Modulate along a sinus curve, like in the `TVStatic.jsx` canvas element.
+
+```
 ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -af 'aphaser=type=s:speed=.5:decay=.25:in_gain=0.15:out_gain=0.6' -ac 2 -t 6 output.mp3
 ```
 
-An example with oscillation, see [`ffmpeg` documentation](https://ffmpeg.org/ffmpeg-filters.html#aphaser) for more options. Make sure, that frequency and length end up.
+Another example with oscillation, see [`ffmpeg` documentation](https://ffmpeg.org/ffmpeg-filters.html#aphaser) for more options. Make sure, that frequency and length end up.
+
+```
+ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white[s1];[s1]tremolo=f=.5:d=.3[s1];[s1]apulsator=timing=hz:hz=.5:amount=.4' -ac 2 -t 8 output.mp3
+```
+
+It's also possible to combine effects, this was used to create the final effect.
 
 # Further Links
 
@@ -133,6 +158,7 @@ An example with oscillation, see [`ffmpeg` documentation](https://ffmpeg.org/ffm
   * Buttons
 * Texts and links
   * Content
+  * Multiple sub pages (manually split)
 * Video addressing
   * Seek
   * Segmentation
@@ -140,25 +166,23 @@ An example with oscillation, see [`ffmpeg` documentation](https://ffmpeg.org/ffm
   * Channel switching without loading
   * Handle (buffering) events
 * Data preprocessing
-  * check if sub pages are needed
+  * check if generated sub pages are needed
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
-* Reduce size
-  * check [JSON compression](https://github.com/KilledByAPixel/JSONCrush) and [VitePress](https://vitepress.dev/guide/data-loading)
 * Sound for static noise, see https://stackoverflow.com/questions/54886538/how-to-use-howler-js-in-react and https://github.com/goldfire/howler.js#methods
 
 ## Known Issues
 
-* Check Times
-* Try to find source for duplicated static noise
-* Test subtitle generation
+* Subtitle generation untested
+* Check if Audio context is suspended
 * Data preprocessing
-  * Check why GLVSN isn't working
+  * GLVSN does't seem to be working
+  * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
+
 
 ## Further ideas
 
 * Electron App
-* Compress `urls.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush)
 
 <p align="center">
   ![Projektemacher Logo](./site/src/assets/svg/cm.svg)
