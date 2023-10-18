@@ -18,6 +18,7 @@ export const Teletext = (props, ref) => {
   var cleanup = [];
   const {page = 100} = useParams();
   const curPage = getPage(page);
+  var title = curPage.title;
 
   const teletextPageNrRef = useRef(null);
   const teletextTimeRef = useRef(null);
@@ -93,7 +94,11 @@ export const Teletext = (props, ref) => {
     const options = {
       replace: ({ name, attribs, children }) => {
         if (name === 'a' && attribs.href && !attribs.href.startsWith('http')) {
-          return <Link onClick={() => dialPage(attribs.href, true)}>{domToReact(children)}</Link>;
+          let className = 'page';
+          if (attribs.class) {
+            className += ` ${attribs.class}`;
+          }
+          return <Link onClick={() => dialPage(attribs.href, true)} className={className}>{domToReact(children)}</Link>;
         }
       }
     };
@@ -162,6 +167,7 @@ export const Teletext = (props, ref) => {
   }));
 
   useEffect(() => {
+    document.title = '9/11 TV: ' + title;
     //while (cleanup.length) cleanup.pop()();
     window.removeEventListener('keyup', teletextSelector);
     window.addEventListener('keyup', teletextSelector);

@@ -15,6 +15,8 @@ import urlsImport from './assets/json/urls.json';
 import pagesImport from './assets/json/pages.json';
 
 const consentCookieName = 'iaConsent';
+// Length of video chnks to request, longer times take longer to load
+const chunkLength = 90;
 
 function parseJson(json) {
   /*
@@ -90,11 +92,12 @@ function App() {
   ]);
 
   function playVideo () {
-    playerRef.current.log.level('debug');
     playerRef.current.play();
+    //TODO: Calculate the start time in seconds depending on `appTime` ond `chunkLength`
     //player.currentTime(666);
   }
 
+  // Use `offset` to get the previuos (`-1`) or next (`1`) video
   function parseProgramms (chan, time, offset) {
     function generateQueryParams(start, length) {
       const defaultLength = 35;

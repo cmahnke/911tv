@@ -5,7 +5,7 @@ import browserslistToEsbuild from 'browserslist-to-esbuild';
 import strip from '@rollup/plugin-strip';
 import lzstring from './src/plugins/rollup-plugin-lz-string.js';
 import jsoncrush from './src/plugins/rollup-plugin-jsoncrush.js';
-
+import { join } from 'path';
 
 const jsonGlob = 'src/assets/json/*.json';
 
@@ -33,5 +33,13 @@ export default defineConfig({
         assetFileNames: `assets/[name].[ext]`
       }
     }
+  },
+  resolve: {
+    alias: [
+      {
+        find: /~(.+)/,
+        replacement: join(process.cwd(), 'node_modules/$1'),
+      },
+    ],
   }
 })

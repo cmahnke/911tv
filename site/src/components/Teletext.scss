@@ -1,3 +1,19 @@
+$height-divisor: 34;
+$aspect-ratio: 1.2;
+$text-size: calc( 100vh / $height-divisor);
+$text-width: calc($text-size / $aspect-ratio);
+/* Teletext colors */
+$magenta: #ff00ff;
+$cyan: #00ffff;
+$red: #ff0000;
+$green: #00ff00;
+$yellow: #ffff00;
+$blue: #00ffff;
+$white: #ffffff;
+$black: #000000;
+/* Font with graphic symbols */
+@use '../assets/scss/unscii-16.scss';
+
 #teletext {
   aspect-ratio: inherit;
   position:  absolute;
@@ -9,7 +25,7 @@
   justify-content: flex-start;
   font-family: 'Press Start 2P', monospace;
   /*pointer-events: none;*/
-  font-size: calc( 100vh / 34);
+  font-size: $text-size;
 
   &.show {
     /*display: 1;*/
@@ -39,23 +55,31 @@
   }
 
   #teletext-body {
-    pointer-events: inherit;
     margin-right: 0.4rem;
     margin-left: 0.4rem;
     line-height: 1.2;
     flex-grow: 20;
     display: flex;
     flex-direction: column;
+    pointer-events: auto;
+    max-height: 100%;
 
     .teletext-subtitle-spacer {
       flex-grow: 20;
+    }
+
+    .md-content {
+      position: relative;
+      height: 100%;
+      hyphens: auto;
+      text-align: justify;
     }
 
     .teletext-subtitle {
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      margin-bottom: calc( 100vh / 34);
+      margin-bottom: calc( 100vh / $height-divisor);
       background-color: black;
       width: 100%;
       text-align: center;
@@ -64,79 +88,140 @@
 
     p {
       margin-block-start: unset;
-      margin-block-end: unset;
-    }
-
-    .listleft, .listright {
-      float:left;
-      margin:5px 0px;
-    }
-
-    .listleft {
-      width:90%;
-      color:#00ffff;
-    }
-
-    .listright {
-      width:10%;
-      text-align:right;
+      margin-block-end: calc( 100vh / $height-divisor);
     }
 
     h1 {
       text-align:center;
-      background-color:#0000ff;
-      color:#ffff00;
-      padding: 0.4rem;
-      margin-boteletextom: 0.4rem;
-      font-size: 2em;
+      background-color: #0000ff;
+      color: #ffff00;
+      font-size: calc($text-size * 2);
+      margin-block-start: unset;
+      margin-block-end: unset;
+    }
+
+    h2 {
+      font-size: calc($text-size * 2);
+      color: #ffffff;
+      text-align:center;
+      margin-block-start: unset;
+      margin-block-end: unset;
+    }
+
+    h3 {
+      font-size: $text-size;
+
       margin-block-start: unset;
       margin-block-end: unset;
     }
 
     ul {
+      margin-block-start: calc( 100vh / $height-divisor);
+      margin-block-end: calc( 100vh / $height-divisor);
+      margin-inline-start: unset;
+      margin-inline-end: unset;
+      padding-inline-start: calc($text-width * 3);
       li {
 
         &::marker {
-          content: '* '
+          content: '* ';
         }
       }
     }
 
-    h3 {
-      color:#ffff00;
+    ul:has(li a.page) {
+      padding-inline-start: unset;
+      li {
+        color: #00ffff;
+
+        &::marker {
+          content: '';
+        }
+
+        .page {
+          color: #0000ff;
+          float: right;
+        }
+      }
+    }
+
+    ul:has(li a.nav) {
+      margin-block-end: unset;
+      position: absolute;
+      bottom: 0;
+      color: #ff0000;
+      width: 100%;
+      background-color:#0000ff;
+
+      li {
+        .nav {
+          color: #ff0000;
+          float: right;
+        }
+      }
+    }
+
+    code {
+      font-family: unset;
+      font-size: unset;
     }
 
     hr {
-      height:6px;
-      width:100%;
-      color:#0000ff;
-      background-color:#0000ff;
-      border:1px solid #0000ff;
-      margin:20px 0px;
+      height: 6px;
+      width: 100%;
+      color: #0000ff;
+      background-color: #0000ff;
+      border: 1px solid #0000ff;
+      margin-top: calc( (100vh / $height-divisor - 8px) / 2);
+      margin-bottom: calc( (100vh / $height-divisor - 8px) / 2);
+
+      &.empty-line {
+        background-color: unset;
+        color: unset;
+        border: none;
+        margin: unset;
+        height: calc( 100vh / $height-divisor);
+      }
     }
 
-    #red, #green, #yellow, #blue {
-      width:25%;
-      display:inline;
-      border:0px;
-      float:left;
-      text-align:center;
+    a {
+      color: #0000ff;
+      pointer-events: auto;
     }
 
-    #red {
-      color:#ff0000;
-    }
+    pre.teletext-graphic {
+      font-family: 'UNSCII 2.0';
+      line-height: 1;
+      text-shadow: 0 0 1px $white, 0 0 1px $white, 0 0 1px $white, 0 0 1px $white;
+      width: max-content;
+      position: relative;
+      margin: unset;
+      color: $white;
 
-    #green {
-      color:#00ff00;
-    }
+      &.right {
+        float: right;
+      }
 
-    #yellow {
-      color:#ffff00;
-    }
+      &.left {
+        float: left;
+      }
 
-    #blue {
-      color:#00ffff;
+      &.bottom-left {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+
+      &.bottom-right {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+      }
+
+      &.center {
+        margin: auto;
+      }
+
     }
 
   }
@@ -150,5 +235,40 @@
     width: 100%;
     text-align: center;
     justify-content: center;
+  }
+
+  .red {
+    color: $red !important;
+    text-shadow: 0 0 1px $red, 0 0 1px $red, 0 0 1px $red, 0 0 1px $red !important;
+  }
+
+  .blue {
+    color: $blue !important;
+    text-shadow: 0 0 1px $blue, 0 0 1px $blue, 0 0 1px $blue, 0 0 1px $blue !important;
+  }
+
+  .green {
+    color: $green !important;
+    text-shadow: 0 0 1px $green, 0 0 1px $green, 0 0 1px $green, 0 0 1px $green !important;
+  }
+
+  .cyan {
+    color: $cyan !important;
+    text-shadow: 0 0 1px $cyan, 0 0 1px $cyan, 0 0 1px $cyan, 0 0 1px $cyan !important;
+  }
+
+  .magenta {
+    color: $magenta !important;
+    text-shadow: 0 0 1px $magenta, 0 0 1px $magenta, 0 0 1px $magenta, 0 0 1px $magenta !important;
+  }
+
+  .white {
+    color: $white !important;
+    text-shadow: 0 0 1px $white, 0 0 1px $white, 0 0 1px $white, 0 0 1px $white !important;
+  }
+
+  .yellow {
+    color: $yellow !important;
+    text-shadow: 0 0 1px $yellow, 0 0 1px $yellow, 0 0 1px $yellow, 0 0 1px $yellow !important;
   }
 }

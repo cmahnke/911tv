@@ -14,11 +14,11 @@ Of course, it is no longer possible today to recreate the reception situation of
 
 # How
 
-In 2007, the Internet Archive set up the [September 11 Television Archive](https://archive.org/details/sept_11_tv_archive), a collection of TV broadcasts from 20 channels over 7 days, totalling about 3000 hours of material. Although mainly US channels, it also includes some international channels such as [BBC](https://en.wikipedia.org/wiki/BBC), [NTV](https://en.wikipedia.org/wiki/NTV_(Russia)), [TV Azteca](https://en.wikipedia.org/wiki/TV_Azteca) [MCM](https://en.wikipedia.org/wiki/MCM_(TV_channel)) and [CCTV-3](https://en.wikipedia.org/wiki/CCTV-3).
+In 2007, the Internet Archive set up the [September 11 Television Archive](https://archive.org/details/sept_11_tv_archive), a collection of TV broadcasts from 20 channels over 7 days, totalling about 3000 hours of material. Although mainly US channels, it also includes some international channels such as [BBC](https://en.wikipedia.org/wiki/BBC), [NTV](https://en.wikipedia.org/wiki/NTV_(Russia)), [TV Azteca](https://en.wikipedia.org/wiki/TV_Azteca), [MCM](https://en.wikipedia.org/wiki/MCM_(TV_channel)) and [CCTV-3](https://en.wikipedia.org/wiki/CCTV-3).
 
 In addition, there is a [day view](https://archive.org/details/911), which is presented like an [EPG](https://en.wikipedia.org/wiki/Electronic_program_guide), which allows a good overview, but unfortunately also prevents immersion, as it forces constant interaction.
 
-Therefore, this website summarises the videos and presents them in a very reduced user interface.
+Therefore, this website summarises the videos and presents them in a very reduced user interface: As an TV set.
 
 Contrary to current media usage habits, the TV programme is linear, but you can change channels.
 Key events can be displayed as teletext sub titles. Teletext can also be deactivated and the "TV" displayed in full-screen mode. Loading the teletext panels can take some time.
@@ -33,29 +33,39 @@ The implementation of this project was only possible through the publication of 
 The following examples have influenced the user interface:
 * [Static TV noise](https://impossiblue.github.io/log/140528/index.html) by Bjørn Sortland
 * [Teletext](https://codepen.io/jsanderson/pen/yoLLjv) by `jsanderson`
+* [image-to-sextants](https://bitbucket.org/rahardy/image-to-sextants/) by Rob Hardy
 
 ## Fonts and icons
 
 * ["Press Start 2P" font](https://fonts.google.com/specimen/Press+Start+2P)
+* ["UNSCII 2.0" font](http://viznut.fi/unscii/)
 * [Info icon](https://commons.wikimedia.org/wiki/File:Infobox_info_icon.svg)
 * [Teletext icon](https://commons.wikimedia.org/wiki/File:IEC_60417_-_Ref-No_5463.svg)
+
+## Images
+
+All images are used as [derivative works](https://en.wikipedia.org/wiki/Derivative_work).
+
+* [Title image by Robert Clark](https://www.worldpressphoto.org/collection/photo-contest/2002/robert-clark/1)
 
 ## Software components
 
 In addition, the following software components were used:
 
-## Data processing
+### Data processing
 
 * [Python](https://www.python.org/)
 * [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
-* [Python-Markdown](https://python-markdown.github.io/)
 * [Python Frontmatter](https://github.com/eyeseast/python-frontmatter)
+* [Python-Markdown](https://python-markdown.github.io/)
+* [Python Pillow](https://python-pillow.org/)
+* [NumPy](https://numpy.org/)
 * [Requests](https://requests.readthedocs.io/)
 * [termcolor](https://github.com/termcolor/termcolor)
 * [JSONCrush](https://github.com/KilledByAPixel/JSONCrush)
 * [lz-string](https://github.com/pieroxy/lz-string)
 
-## Presentation
+### Presentation
 
 * [JavaScript Cookie](https://github.com/js-cookie/js-cookie)
 * [howler.js](https://howlerjs.com/)
@@ -67,7 +77,7 @@ In addition, the following software components were used:
 * [React Router](https://github.com/remix-run/react-router)
 * [video.js](https://videojs.com/)
 
-## Development
+### Development
 
 * [browserslist-to-esbuild](https://github.com/marcofugaro/browserslist-to-esbuild)
 * [esbuild](https://esbuild.github.io/)
@@ -85,6 +95,42 @@ In addition, the following software components were used:
 9/11 on TV is a [Projektemacher](https://projektemacher.org/) project.
 
 I had the idea about 10 years ago, around 2012, when I was regularly watching public domain films in the Internet Archive and stumbled across the 911 TV collection by chance. The initial idea was some sort of installation including a TV-Set, but the current web page is easier to implement.
+
+# More Media
+
+The focus is on visual media, like images, photo books and movies. these lists aren't exhaustive.
+
+## Images
+
+* [Time: 9/11: The Photographs That Moved Them Most](https://time.com/3449480/911-the-photographs-that-moved-them-most/)
+* [The New York Times: The Photographs of 9/11](https://www.nytimes.com/2021/09/11/us/9-11-photos-images.html)
+* [AP PHOTOS: 20 images that documented the enormity of 9/11](https://apnews.com/article/september-11-photos-80f1c7348e93ea7532a23e1afc23eacf)
+* [The Washington Post: The most iconic photos from Sept. 11 and its aftermath](https://www.washingtonpost.com/news/retropolis/wp/2018/09/11/the-most-iconic-photos-from-sept-11-and-its-aftermath/)
+* [Magnum photos: 20 Years On: Remembering The 9/11 Attacks](https://www.magnumphotos.com/newsroom/20-years-remembering-9-11-attack/)
+
+## Books
+
+* ***Here is New York: A Democracy of Photographs*** by Gilles Peress and Michael Shulan, published by Scalo, Zurich, Berlin and New York, 2002, ISBN 978-3908247661
+* ***Aftermath: Unseen 9/11 Photos by a New York City Cop*** by John Botte, published by Regan Books, New York, 2006, ISBN 978-0060789718x
+* ***New York September*** 11 by David Halberstam and Steve McCurry published by Magnum Photos Inc., New York, 2001, ISBN 978-1576871300
+* ***Newyorkseptembereleventwothousandone*** by Giorgio Baravalle, Cari Modine, et al, published by F & W Publications, Millbrook, 2001, ISBN 978-0970576828
+* ***Aftermath*** by Joel Meyerowitz, published by Phaidon Press, New York, 2006, ISBN 978-0714846552
+* ***Mayday! Mayday! Mayday!: The Day the Towers Fell*** by Steve Spak, published by Xlibris, Bloomington, 2004 ISBN 9781413427707
+
+## Movies
+
+The Wikipedia has a [complete list](https://en.wikipedia.org/wiki/Category:Films_based_on_the_September_11_attacks).
+
+If your wondering, why Cloverfield is part of this list, it's because I consider it an metaphor for the 9/11 attacks.
+
+* [United 93](https://en.wikipedia.org/wiki/United_93_(film)), 2006
+* [World Trade Center](https://en.wikipedia.org/wiki/World_Trade_Center_(film)), 2006
+* [Cloverfield](https://en.wikipedia.org/wiki/Cloverfield), 2008
+* [9/11](https://en.wikipedia.org/wiki/9/11_(2017_film))
+
+## Alternative Media
+
+Even though it promotes [conspiracy theories](https://en.wikipedia.org/wiki/9/11_conspiracy_theories), the movie series [Loose Change](https://en.wikipedia.org/wiki/Loose_Change) is noteworthy for illustrating cultural impact.
 
 # Notes
 ## Technical data
@@ -109,7 +155,7 @@ There are several other interesting Teletext related sites, that might be intere
 
 ## Static Noise
 
-# Generating a static noise sound
+### Generating a static noise sound
 
 ```
 ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white' -t 10 output.mp3
@@ -146,9 +192,19 @@ ffmpeg -f lavfi -i 'anoisesrc=a=0.1:c=white[s1];[s1]tremolo=f=.5:d=.3[s1];[s1]ap
 
 It's also possible to combine effects, this was used to create the final effect.
 
-# Further Links
+### Further Links
 
 * [Create video and audio noise, artifacts, and errors with `ffmpeg`](https://stackoverflow.com/a/15795112)
+
+## Converting images
+
+Images that should be included in the videotext need some preprocessing. The requirements are described in the ['image-to-sextants' README](https://bitbucket.org/rahardy/image-to-sextants/src/main/README.md).
+
+Short version: You need to resize to match the aspect ratio, the height should be less the 80px, if you want to keep a header ans footer,
+
+```
+convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
+```
 
 # TODO:
 
@@ -158,31 +214,31 @@ It's also possible to combine effects, this was used to create the final effect.
   * Buttons
 * Texts and links
   * Content
-  * Multiple sub pages (manually split)
+    * Other resources
 * Video addressing
   * Seek
   * Segmentation
     * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
-* Data preprocessing
-  * check if generated sub pages are needed
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
-* Sound for static noise, see https://stackoverflow.com/questions/54886538/how-to-use-howler-js-in-react and https://github.com/goldfire/howler.js#methods
 
 ## Known Issues
 
+* Clock gets out of sync / duplicated. Maybe after following link
+* Detection of suspended audio not working yet
 * Subtitle generation untested
-* Check if Audio context is suspended
 * Data preprocessing
   * GLVSN does't seem to be working
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 
-
 ## Further ideas
 
 * Electron App
+* Data preprocessing
+  * Multiple sub pages (manually split)
+  * check if generated sub pages are needed
 
 <p align="center">
   ![Projektemacher Logo](./site/src/assets/svg/cm.svg)
