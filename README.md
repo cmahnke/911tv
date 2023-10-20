@@ -42,6 +42,7 @@ The following examples have influenced the user interface:
 * ["UNSCII 2.0" font](http://viznut.fi/unscii/)
 * [Info icon](https://commons.wikimedia.org/wiki/File:Infobox_info_icon.svg)
 * [Teletext icon](https://commons.wikimedia.org/wiki/File:IEC_60417_-_Ref-No_5463.svg)
+* [Power icon](https://commons.wikimedia.org/wiki/File:IEC5009_Standby_Symbol.svg)
 
 ## Images
 
@@ -222,6 +223,14 @@ It's also possible to combine effects, this was used to create the final effect.
 
 * [Create video and audio noise, artifacts, and errors with `ffmpeg`](https://stackoverflow.com/a/15795112)
 
+## 1kHz Sine noise
+
+```
+ffmpeg -f lavfi -i 'sine=frequency=1000' -ac 2 -t 8 1khz.mp3
+```
+
+Used for [closedown](https://en.wikipedia.org/wiki/Sign-on_and_sign-off).
+
 ## Converting images
 
 Images that should be included in the videotext need some preprocessing. The requirements are described in the ['image-to-sextants' README](https://bitbucket.org/rahardy/image-to-sextants/src/main/README.md).
@@ -248,9 +257,16 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
   * Handle (buffering) events
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
+* Check Colors in teletext graphics
+* Implement time overflow check
+  * Generate test card
 
 ## Known Issues
 
+* Graphic and Text clash
+* Browser issues
+  * Mobile browsers (portrait mode) not working yet
+* Implement time parsing from URL
 * Border of TV set can be slimmer
 * Clock gets out of sync / duplicated. Maybe after following link
 * Detection of suspended audio not working yet
@@ -261,6 +277,7 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 
 ## Further ideas
 
+* Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) of [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
 * Electron App
 * Data preprocessing
   * Multiple sub pages (manually split)

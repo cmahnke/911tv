@@ -13,6 +13,8 @@ All images are used as [derivative works](https://en.wikipedia.org/wiki/Derivati
 * ["UNSCII 2.0" font](http://viznut.fi/unscii/){:target="_blank" rel="noreferrer"}
 * [Info icon](https://commons.wikimedia.org/wiki/File:Infobox_info_icon.svg){:target="_blank" rel="noreferrer"}
 * [Teletext icon](https://commons.wikimedia.org/wiki/File:IEC_60417_-_Ref-No_5463.svg){:target="_blank" rel="noreferrer"}
+* [Power icon](https://commons.wikimedia.org/wiki/File:IEC5009_Standby_Symbol.svg){:target="_blank" rel="noreferrer"}
+
 
 <!-- -->
 * Back [210](210){:class="nav"}

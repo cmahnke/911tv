@@ -197,8 +197,10 @@ function App() {
 
   var stream = parseProgramms(channel, timer.appTime);
   var stream_info;
-  if (stream['info'] !== undefined) {
+  if (stream !== undefined && stream['info'] !== undefined) {
     stream_info = stream['info'];
+  } else {
+    console.log('Stream is undefined, expect crash!')
   }
 
   // See https://videojs.com/guides/react/
@@ -230,14 +232,14 @@ function App() {
                 </div>
               </div>
             </div>
-            <TVStatic ref={noiseRef} id="tv-static" className="show" />
+            <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
             <VideoJS options={videoJsOptions} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player"/>
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>
-            <div id="tv-brand">&nbsp;</div>
+            <div id="tv-brand"><a target="_blank" rel="noreferrer" className="tv-brand-link" href="https://projektemacher.org/">%nbsp;</a></div>
             <div id="tv-controls">
-              <button type="button" className={'button toggle-audio' + (audioStatus() ? 'disabled' : 'enabled')} onClick={toggleAudio}>
+              <button type="button" className={'button toggle-audio ' + (audioStatus() ? 'enabled' : 'disabled')} onClick={toggleAudio}>
                 <i className="icon"></i>
               </button>
               <button type="button" className="button toggle-teletext" onClick={() => teletextRef.current.toggle()}>
@@ -249,10 +251,10 @@ function App() {
               <button type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className={'button toggle-fullscreen' + (isMobileSafari ? '' : 'hide')} onClick={toggleFullscreen}>
+              <button type="button" className={'button toggle-fullscreen ' + (isMobileSafari ? 'hide' : '')} onClick={toggleFullscreen}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button toggle-static" onClick={() => noiseRef.current.toggle()}>
+              <button type="button" className="button toggle-power" onClick={() => { teletextRef.current.toggle(); noiseRef.current.toggle() } }>
                 <i className="icon"></i>
               </button>
             </div>

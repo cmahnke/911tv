@@ -1,6 +1,7 @@
 @use "sass:map";
 
-$height-divisor: 34;
+/* Optimized height is 34 */
+$height-divisor: 43;
 $aspect-ratio: 1.2;
 $text-size: calc( 100vh / $height-divisor);
 $text-width: calc($text-size / $aspect-ratio);
@@ -23,6 +24,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
   font-family: 'Press Start 2P', monospace;
   pointer-events: none;
   font-size: $text-size;
+  color: map.get($colors, 'white');
 
   &.show {
     /* display: 1; */
@@ -127,12 +129,16 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
 
     ul:has(li a.page) {
       padding-inline-start: unset;
+      list-style-type: none;
+      padding: 0;
 
       li {
         color: #0ff;
 
-        &::marker {
+        &::marker,
+        &::-webkit-details-marker {
           content: '';
+          display: none;
         }
 
         .page {
@@ -143,12 +149,14 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     }
 
     ul:has(li a.nav) {
+      list-style-type: none;
       margin-block-end: unset;
       position: absolute;
       bottom: 0;
       color: #f00;
       width: 100%;
       background-color:#00f;
+      padding: 0;
 
       li {
         .nav {

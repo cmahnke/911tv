@@ -1,10 +1,11 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
 import parse, { domToReact } from 'html-react-parser';
-import { DateTime } from "luxon";
-import './Teletext.scss';
-import Timer from '../classes/Timer.js';
 import PropTypes from 'prop-types';
+import { DateTime } from "luxon";
+import Timer from '../classes/Timer.js';
+
+import './Teletext.scss';
 
 export const subTitlesPageNr = 300;
 

@@ -16,8 +16,16 @@ class Timer {
         Cookies.remove(Timer.timeDiffCookieName);
         Cookies.remove(Timer.timeCodeCookieName);
       } else {
+        //TODO: Setting time not working yet
+        var resetTime = DateTime.fromISO(reset);
+        if (resetTime < this.startDate) {
+          console.log(`Time ${resetTime} earlier then ${this.startDate}`);
+        }
+        if (resetTime > this.endDate) {
+          console.log(`Time ${resetTime} later then ${this.endDate}`);
+        }
+        console.log(`Setting time to ${resetTime}`);
         Cookies.set(Timer.timeCodeCookieName, reset, {expires: Timer.cookieTTL});
-        console.log("Setting time isn't implemented yet");
       }
     }
     if (Cookies.get(Timer.timeDiffCookieName) === undefined) {
