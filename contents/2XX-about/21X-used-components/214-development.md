@@ -13,6 +13,8 @@ number: 214
 * [postcss-svgo](https://github.com/cssnano/cssnano){:target="_blank" rel="noreferrer"}
 * [Sass](https://sass-lang.com/){:target="_blank" rel="noreferrer"}
 * [Vite](https://vitejs.dev/){:target="_blank" rel="noreferrer"}
+* [vite-plugin-stylelint](https://github.com/ModyQyW/vite-plugin-stylelint)
+* [Stylelint](https://github.com/stylelint/stylelint)
 
 <!-- -->
 * Back [210](210){:class="nav"}

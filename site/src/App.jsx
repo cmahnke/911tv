@@ -217,6 +217,7 @@ function App() {
     <>
       <div id="container" ref={rootRef}>
         <div id="tv-frame" ref={tvFrameRef}>
+          <div id="tv-border"></div>
           <div id="tube">
             <RouterProvider router={router} />
             <div id="info-container">

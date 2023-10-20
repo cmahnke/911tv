@@ -1,10 +1,17 @@
+.video-container {
+  aspect-ratio: inherit;
+  height: 85%;
+  width: 85%;
+  position: absolute;
+  background-color: black;
+  z-index: -10;
+}
+
 .video-js {
-
-  .vjs-loading-spinner {
+  .vjs-loading-spinner,
+  .vjs-control-bar,
+  .vjs-big-play-button {
     display: none;
   }
 
-  .vjs-big-play-button  {
-    display: none;
-  }
 }

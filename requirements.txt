@@ -6,3 +6,4 @@ markdown
 termcolor
 numpy
 pillow
+emoji

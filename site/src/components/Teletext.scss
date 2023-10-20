@@ -1,34 +1,31 @@
+@use "sass:map";
+
 $height-divisor: 34;
 $aspect-ratio: 1.2;
 $text-size: calc( 100vh / $height-divisor);
 $text-width: calc($text-size / $aspect-ratio);
+
 /* Teletext colors */
-$magenta: #ff00ff;
-$cyan: #00ffff;
-$red: #ff0000;
-$green: #00ff00;
-$yellow: #ffff00;
-$blue: #00ffff;
-$white: #ffffff;
-$black: #000000;
+$colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #ff0, "blue": #0ff, "white": #fff, "black": #000);
+
 /* Font with graphic symbols */
 @use '../assets/scss/unscii-16.scss';
 
 #teletext {
   aspect-ratio: inherit;
   position:  absolute;
-  height: 90%;
-  width: 90%;
+  height: 85%;
+  width: 85%;
   z-index: -1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   font-family: 'Press Start 2P', monospace;
-  /*pointer-events: none;*/
+  pointer-events: none;
   font-size: $text-size;
 
   &.show {
-    /*display: 1;*/
+    /* display: 1; */
   }
 
   &.hide {
@@ -44,6 +41,7 @@ $black: #000000;
     pointer-events: inherit;
     justify-content: space-between;
     background-color: black;
+    color: map.get($colors, 'white');
   }
 
   #teletext-page-nr {
@@ -93,8 +91,8 @@ $black: #000000;
 
     h1 {
       text-align:center;
-      background-color: #0000ff;
-      color: #ffff00;
+      background-color: #00f;
+      color: #ff0;
       font-size: calc($text-size * 2);
       margin-block-start: unset;
       margin-block-end: unset;
@@ -102,7 +100,7 @@ $black: #000000;
 
     h2 {
       font-size: calc($text-size * 2);
-      color: #ffffff;
+      color: #fff;
       text-align:center;
       margin-block-start: unset;
       margin-block-end: unset;
@@ -110,19 +108,17 @@ $black: #000000;
 
     h3 {
       font-size: $text-size;
-
       margin-block-start: unset;
       margin-block-end: unset;
     }
 
     ul {
-      margin-block-start: calc( 100vh / $height-divisor);
-      margin-block-end: calc( 100vh / $height-divisor);
+      margin-block: calc( 100vh / $height-divisor) calc( 100vh / $height-divisor);
       margin-inline-start: unset;
       margin-inline-end: unset;
       padding-inline-start: calc($text-width * 3);
-      li {
 
+      li {
         &::marker {
           content: '* ';
         }
@@ -131,15 +127,16 @@ $black: #000000;
 
     ul:has(li a.page) {
       padding-inline-start: unset;
+
       li {
-        color: #00ffff;
+        color: #0ff;
 
         &::marker {
           content: '';
         }
 
         .page {
-          color: #0000ff;
+          color: #00f;
           float: right;
         }
       }
@@ -149,13 +146,13 @@ $black: #000000;
       margin-block-end: unset;
       position: absolute;
       bottom: 0;
-      color: #ff0000;
+      color: #f00;
       width: 100%;
-      background-color:#0000ff;
+      background-color:#00f;
 
       li {
         .nav {
-          color: #ff0000;
+          color: #f00;
           float: right;
         }
       }
@@ -169,9 +166,9 @@ $black: #000000;
     hr {
       height: 6px;
       width: 100%;
-      color: #0000ff;
-      background-color: #0000ff;
-      border: 1px solid #0000ff;
+      color: #00f;
+      background-color: #00f;
+      border: 1px solid #00f;
       margin-top: calc( (100vh / $height-divisor - 8px) / 2);
       margin-bottom: calc( (100vh / $height-divisor - 8px) / 2);
 
@@ -185,18 +182,18 @@ $black: #000000;
     }
 
     a {
-      color: #0000ff;
+      color: #00f;
       pointer-events: auto;
     }
 
     pre.teletext-graphic {
-      font-family: 'UNSCII 2.0';
+      font-family: 'UNSCII 2.0', monospace;
       line-height: 1;
-      text-shadow: 0 0 1px $white, 0 0 1px $white, 0 0 1px $white, 0 0 1px $white;
+      text-shadow: 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white);
       width: max-content;
       position: relative;
       margin: unset;
-      color: $white;
+      color: map.get($colors, 'white');
 
       &.right {
         float: right;
@@ -216,14 +213,13 @@ $black: #000000;
         position: absolute;
         bottom: 0;
         right: 0;
+        display: inline-block;
       }
 
       &.center {
         margin: auto;
       }
-
     }
-
   }
 
   #teletext-footer {
@@ -235,40 +231,13 @@ $black: #000000;
     width: 100%;
     text-align: center;
     justify-content: center;
+    color: map.get($colors, 'white');
   }
 
-  .red {
-    color: $red !important;
-    text-shadow: 0 0 1px $red, 0 0 1px $red, 0 0 1px $red, 0 0 1px $red !important;
-  }
-
-  .blue {
-    color: $blue !important;
-    text-shadow: 0 0 1px $blue, 0 0 1px $blue, 0 0 1px $blue, 0 0 1px $blue !important;
-  }
-
-  .green {
-    color: $green !important;
-    text-shadow: 0 0 1px $green, 0 0 1px $green, 0 0 1px $green, 0 0 1px $green !important;
-  }
-
-  .cyan {
-    color: $cyan !important;
-    text-shadow: 0 0 1px $cyan, 0 0 1px $cyan, 0 0 1px $cyan, 0 0 1px $cyan !important;
-  }
-
-  .magenta {
-    color: $magenta !important;
-    text-shadow: 0 0 1px $magenta, 0 0 1px $magenta, 0 0 1px $magenta, 0 0 1px $magenta !important;
-  }
-
-  .white {
-    color: $white !important;
-    text-shadow: 0 0 1px $white, 0 0 1px $white, 0 0 1px $white, 0 0 1px $white !important;
-  }
-
-  .yellow {
-    color: $yellow !important;
-    text-shadow: 0 0 1px $yellow, 0 0 1px $yellow, 0 0 1px $yellow, 0 0 1px $yellow !important;
+  @each $name, $cc in $colors {
+    .#{$name} {
+      color: $cc !important;
+      text-shadow: 0 0 1px $cc, 0 0 1px $cc, 0 0 1px $cc, 0 0 1px $cc !important;
+    }
   }
 }

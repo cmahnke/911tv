@@ -34,6 +34,7 @@ The following examples have influenced the user interface:
 * [Static TV noise](https://impossiblue.github.io/log/140528/index.html) by Bjørn Sortland
 * [Teletext](https://codepen.io/jsanderson/pen/yoLLjv) by `jsanderson`
 * [image-to-sextants](https://bitbucket.org/rahardy/image-to-sextants/) by Rob Hardy
+* [MyRetroTVs](https://www.myretrotvs.com/) by [Joey Cato](https://www.joeycato.com/)
 
 ## Fonts and icons
 
@@ -89,16 +90,18 @@ In addition, the following software components were used:
 * [postcss-svgo](https://github.com/cssnano/cssnano)
 * [Sass](https://sass-lang.com/)
 * [Vite](https://vitejs.dev/)
+* [vite-plugin-stylelint](https://github.com/ModyQyW/vite-plugin-stylelint)
+* [Stylelint](https://github.com/stylelint/stylelint)
 
 # About
 
 9/11 on TV is a [Projektemacher](https://projektemacher.org/) project.
 
-I had the idea about 10 years ago, around 2012, when I was regularly watching public domain films in the Internet Archive and stumbled across the 911 TV collection by chance. The initial idea was some sort of installation including a TV-Set, but the current web page is easier to implement.
+I had the idea about 10 years ago, around 2012, certainly around September, when I was regularly watching public domain films in the Internet Archive and stumbled across the 911 TV collection by chance. The initial idea was some sort of installation including a TV-Set, but the current web page is easier to implement.
 
 # More Media
 
-The focus is on visual media, like images, photo books and movies. these lists aren't exhaustive.
+The focus is on visual media, like images, photo books and movies. These lists aren't exhaustive.
 
 ## Images
 
@@ -121,16 +124,38 @@ The focus is on visual media, like images, photo books and movies. these lists a
 
 The Wikipedia has a [complete list](https://en.wikipedia.org/wiki/Category:Films_based_on_the_September_11_attacks).
 
-If your wondering, why Cloverfield is part of this list, it's because I consider it an metaphor for the 9/11 attacks.
+If your wondering, why Cloverfield is part of this list, it's because I consider it an metaphor for the 9/11 attacks, there is a section on this movie below.
 
 * [United 93](https://en.wikipedia.org/wiki/United_93_(film)), 2006
 * [World Trade Center](https://en.wikipedia.org/wiki/World_Trade_Center_(film)), 2006
 * [Cloverfield](https://en.wikipedia.org/wiki/Cloverfield), 2008
-* [9/11](https://en.wikipedia.org/wiki/9/11_(2017_film))
+* [9/11](https://en.wikipedia.org/wiki/9/11_(2017_film)), 2017
+
+### Cloverfield
 
 ## Alternative Media
 
 Even though it promotes [conspiracy theories](https://en.wikipedia.org/wiki/9/11_conspiracy_theories), the movie series [Loose Change](https://en.wikipedia.org/wiki/Loose_Change) is noteworthy for illustrating cultural impact.
+
+# Frequently asked questions (FAQ)
+
+## Why is the sometimes static noise?
+
+Getting the media files takes some time, this is called buffering. Since time progresses during buffering the application will show the TV set in a state equal to having no signal during buffering, this is especially the case when switching channels.
+
+## Why is it impossible to rewind or forward the video?
+
+To let the viewer experience the true horrors of linear television. 😉
+The main goal of this site is the immersion into the live coverage of that time, which includes the linear experience.
+
+## Why does the site look so strange / ugly?
+
+The page imitates a television set. It's called [skeuomorphism](https://en.wikipedia.org/wiki/Skeuomorph), a common design philopsophy of the 90s, early 2000s, which is the time we are talking about here.
+According to this philosophy, user interfaces should have be analogous to physical objects.
+
+## The Teletext is hard to read, can it be changed?
+
+No, this is intentional to shift (or better: force) the viewers attention of the viewer to the TV transmission and let them turn off the Teletext.
 
 # Notes
 ## Technical data
@@ -143,6 +168,7 @@ Even though it promotes [conspiracy theories](https://en.wikipedia.org/wiki/9/11
 The Wikipedia has an article on [Teletext](https://en.wikipedia.org/wiki/Teletext). There were several JavaScript libraries for Teletext under consideration:
 
 * [@techandsoftware/teletext](https://bitbucket.org/rahardy/teletext/src/master/)
+    There is a [whole family of packages](https://www.npmjs.com/search?q=%40techandsoftware) with Teletext related software by the same author / company, which has been a great help developing the Teletext component.
 * [teletext](https://github.com/andormade/teletext)
 
 But since the Teletext functionality is only used to display some text, the teletext representation doesn't need to be 100% percent accurate.
@@ -209,12 +235,11 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 # TODO:
 
 * CSS
-  * Info box
-  * Frame
   * Buttons
 * Texts and links
   * Content
-    * Other resources
+    * Finish 'Other resources'
+  * More on 'Cloverfield'
 * Video addressing
   * Seek
   * Segmentation
@@ -226,6 +251,7 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 
 ## Known Issues
 
+* Border of TV set can be slimmer
 * Clock gets out of sync / duplicated. Maybe after following link
 * Detection of suspended audio not working yet
 * Subtitle generation untested

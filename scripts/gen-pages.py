@@ -9,6 +9,7 @@ import frontmatter
 import markdown
 from bs4 import BeautifulSoup
 from termcolor import cprint
+import emoji
 
 content_dir = './contents'
 content_pattern = '**/*.md'
@@ -140,7 +141,7 @@ def check_page_size(md):
     if max_length > 40:
         cprint(f"Text from {file} has to long line: {max_length}", "red", file=sys.stderr)
 
-def check_images(md_content, file):
+def check_images(md_content, file, max_height=23):
     search_dir = file.parent
     for match in re.finditer(r'!\[(?P<alt>.*?)]\((?P<src>.*?)\)({:(?P<attrs>.*?)})?', md_content):
         img_src = search_dir.joinpath(match.group('src'))
@@ -149,7 +150,10 @@ def check_images(md_content, file):
             if img.mode == '1':
                 img = img.convert('L')
             img = ImageOps.invert(img)
-            img.thumbnail((60,60), Image.NEAREST)
+            if (img.size[1] > max_height * 3):
+                cprint(f"Resizing image {img_src} height from {img.size[1]} to {max_height * 3}", "yellow", flush=True, file=sys.stderr)
+                img.thumbnail((60, max_height * 3), Image.NEAREST)
+            #img.thumbnail((60,60), Image.NEAREST)
             img = img.resize((round(img.size[0] * (8/9)), img.size[1]))
             ba = numpy.asarray(img).astype(numpy.uint8).flatten()
             converter = ImageToSextants(ba, img.size[0])
@@ -164,6 +168,14 @@ def check_images(md_content, file):
                 md_content = md_content.replace(f"![{match.group('alt')}]({match.group('src')}){{:{match.group('attrs')}}}", html)
     return md_content
 
+def count_headings(md_content):
+    html = markdown.markdown(md_content)
+    count = len(BeautifulSoup(html, features="lxml").find_all(['h1', 'h2']))
+    if count == None:
+        return 0
+    return count
+
+
 pages = []
 for file in Path(content_dir).glob(content_pattern):
     page = {}
@@ -173,7 +185,9 @@ for file in Path(content_dir).glob(content_pattern):
         cprint(f"Processing file {file}", 'green', flush=True, file=sys.stderr)
         # Do a sanity check
         check_page_size(post.content)
-        md_content = check_images(post.content, file)
+        height = 23 - count_headings(post.content)
+        md_content = check_images(post.content, file, height)
+        md_content = emoji.demojize(md_content, delimiters=("", ""))
         if subpage_seperator in post.content:
             html = []
             for subpage in md_content.split(subpage_seperator):
