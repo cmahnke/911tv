@@ -264,16 +264,15 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 * Check Colors in teletext graphics
-* Implement time overflow check
-  * Generate test card
 
 ## Known Issues
 
 * Finish and test detection of ended streams
-* Graphic and Text clash
+* Finish and test test card
+* Teletext: Graphic and Text clash
 * Browser issues
   * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
-* Clock gets out of sync / duplicated. Maybe after following link
+* Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
 * Detection of suspended audio not working yet
 * Subtitle generation untested
 * Data preprocessing

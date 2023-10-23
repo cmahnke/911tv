@@ -200,7 +200,7 @@ def add_end(channels):
 
 # Main program
 if __name__ == '__main__':
-    cprint(f"Using {POOL_SIZE} processes, using {mediainfo_opts['library_file']} as mediainfo dependency", "orange", file=sys.stderr)
+    cprint(f"Using {POOL_SIZE} processes, using { mediainfo_opts['library_file'] if 'library_file' in mediainfo_opts else 'buildin' } as mediainfo dependency", "orange", file=sys.stderr)
     times = gen_timecode(timespan)
 
     urls = {
