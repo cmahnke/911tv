@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { useNavigate, createHashRouter, RouterProvider } from 'react-router-dom';
 import { isMobileSafari } from 'react-device-detect';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
 import VideoJS from './components/VideoJS.jsx';
@@ -39,7 +39,10 @@ function App() {
   const noiseRef = useRef(null);
   const teletextRef = useRef(null);
   const infoRef = useRef(null);
+  const infoContainerRef = useRef(null);
+  const audioToggleRef = useRef(null);
 
+  //const navigate = useNavigate();
   const urls = parseJson(urlsImport);
   const pages = parseJson(pagesImport);
 
@@ -58,6 +61,13 @@ function App() {
   if (urlParams.get('t') !== null && urlParams.get('t') !== undefined) {
     reset = urlParams.get('t');
   }
+  //TODO: This is a dirty hack and doesn't work, since it probably triggers a rerender
+  //if (urlParams.get('r') !== null || urlParams.get('t') !== null) {
+  //  if (window.location.href.includes('?')) {
+  //    const curLoc = window.location.href;
+  //    window.location.href = curLoc.replace(/(.*?)\?(t|r).*/g, "$1");
+  //  }
+  //}
 
   /*
    * Dates and times of video URLs are in UTC,
@@ -84,7 +94,7 @@ function App() {
 
   ];
 
-  const router = createBrowserRouter([
+  const router = createHashRouter([
     {
       path: "/:page?",
       element: <Teletext ref={teletextRef} pages={pages} timer={timer} channel={channel} />,
@@ -160,7 +170,19 @@ function App() {
   }
 
   function toggleAudio() {
-    if (audioStatus()) {
+    console.log('Toggleing audio');
+    if (!audioStatus()) {
+      audioContext.resume();
+      playerRef.current.volume(1);
+      noiseRef.current.unmute();
+      audioToggleRef.current.classList.remove("disabled");
+      audioToggleRef.current.classList.add("enabled");
+    } else {
+      audioContext.suspend();
+      playerRef.current.volume(0);
+      noiseRef.current.mute();
+      audioToggleRef.current.classList.remove("enabled");
+      audioToggleRef.current.classList.add("disabled");
       console.log('Audio is suspended');
     }
   }
@@ -182,12 +204,29 @@ function App() {
     }
   }
 
+  function toggleInfoContainer() {
+    infoContainerRef.current.classList.toggle('hide');
+    infoContainerRef.current.classList.toggle('show');
+  }
+
+  function hideInfoContainer() {
+    infoContainerRef.current.classList.add('hide');
+  }
+
   function toggleInfo() {
     if (infoRef.current.classList.contains('show')) {
       infoRef.current.querySelector('div a').setAttribute('href', parseProgramms(channel, timer.appTime)['info']);
     }
     infoRef.current.classList.toggle('hide');
     infoRef.current.classList.toggle('show');
+  }
+
+  function off() {
+    //TODO: disable sound, maybe hide elements
+    teletextRef.current.toggle();
+    noiseRef.current.toggle();
+    toggleInfoContainer();
+    playerRef.current.volume(0);
   }
 
   function checkStreamEnd(channel) {
@@ -203,12 +242,20 @@ function App() {
   }
 
   useEffect(() => {
+    if (checkStreamEnd(channel)) {
+      hideInfoContainer();
+      teletextRef.current.hide();
+      console.log('Event time passed, displaying test card.')
+      noiseRef.current.changeMode('closedown');
+    }
+  });
+
+  useEffect(() => {
     if (getCookieConsentValue(consentCookieName)) {
       playVideo();
     }
   }, []);
 
-  // TODO: Test this
   if (!checkStreamEnd(channel)) {
     var stream = parseProgramms(channel, timer.appTime);
     var stream_info;
@@ -221,7 +268,7 @@ function App() {
     }
   } else {
     stream = {};
-    console.log('Event time passed, displaying test card.')
+    console.log('Event time passed, using empty video.')
   }
 
   // See https://videojs.com/guides/react/
@@ -229,7 +276,7 @@ function App() {
     autoplay: false,
     controls: true,
     fill: true,
-    muted: true,
+    muted: false,
     preload: 'auto',
     sources: [
       stream['url']
@@ -243,7 +290,7 @@ function App() {
           <div id="tv-border"></div>
           <div id="tube">
             <RouterProvider router={router} />
-            <div id="info-container">
+            <div ref={infoContainerRef} className="show" id="info-container">
               <div ref={infoRef} id="info" className="hide">
                 <button type="button" className="button toggle-info" onClick={toggleInfo}>
                   <i className="info-icon"></i>
@@ -260,7 +307,7 @@ function App() {
             <div className="tv-footer-spacer"></div>
             <div id="tv-brand"><a target="_blank" rel="noreferrer" className="tv-brand-link" href="https://projektemacher.org/">%nbsp;</a></div>
             <div id="tv-controls">
-              <button type="button" className={'button toggle-audio ' + (audioStatus() ? 'enabled' : 'disabled')} onClick={toggleAudio}>
+              <button ref={audioToggleRef} type="button" className={'button toggle-audio ' + (audioStatus() ? 'enabled' : 'disabled')} onClick={toggleAudio}>
                 <i className="icon"></i>
               </button>
               <button type="button" className="button toggle-teletext" onClick={() => teletextRef.current.toggle()}>
@@ -275,7 +322,14 @@ function App() {
               <button type="button" className={'button toggle-fullscreen ' + (isMobileSafari ? 'hide' : '')} onClick={toggleFullscreen}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button toggle-power" onClick={() => { teletextRef.current.toggle(); noiseRef.current.toggle() } }>
+              <button type="button" className="button toggle-power" onClick={() => {
+                    //TODO: Add enabling
+                    teletextRef.current.toggle();
+                    noiseRef.current.toggle();
+                    toggleInfoContainer();
+                    playerRef.current.volume(0);
+                  }
+              }>
                 <i className="icon"></i>
               </button>
             </div>

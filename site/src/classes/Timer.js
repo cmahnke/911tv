@@ -15,29 +15,32 @@ class Timer {
       if (typeof reset == 'boolean' && reset) {
         Cookies.remove(Timer.timeDiffCookieName);
         Cookies.remove(Timer.timeCodeCookieName);
+        this.timeDiff = this.localTime.diff(this.startDate);
       } else {
-        //TODO: Setting time not working yet
-        var resetTime = DateTime.fromISO(reset);
-        if (resetTime < this.startDate) {
-          console.log(`Time ${resetTime} earlier then ${this.startDate}`);
+        var resetDate = DateTime.fromISO(reset);
+        if (resetDate < this.startDate) {
+          console.log(`Time ${resetDate} earlier then ${this.startDate} (startTime)`);
         }
-        if (resetTime > this.endDate) {
-          console.log(`Time ${resetTime} later then ${this.endDate}`);
+        if (resetDate > this.endDate) {
+          console.log(`Time ${resetDate} later then ${this.endDate} (endTime)`);
         }
-        console.log(`Setting time to ${resetTime}`);
-        Cookies.set(Timer.timeCodeCookieName, reset, {expires: Timer.cookieTTL});
+        console.log(`Setting time to ${resetDate}`);
+        //Cookies.set(Timer.timeCodeCookieName, String(resetDate), {expires: Timer.cookieTTL});
+        this.timeDiff = this.localTime.diff(resetDate);
+        Cookies.set(Timer.timeCodeCookieName, String(this.timeDiff), {expires: Timer.cookieTTL});
       }
-    }
-    if (Cookies.get(Timer.timeDiffCookieName) === undefined) {
-      this.timeDiff = this.localTime.diff(this.startDate);
-      Cookies.set(Timer.timeDiffCookieName, String(this.timeDiff), {expires: Timer.cookieTTL});
     } else {
-      let cookieDiff = Duration.fromISO(Cookies.get(Timer.timeDiffCookieName));
-      // Fallback to apptime if diffence is greater then play length
-      if (DateTime.now().minus(cookieDiff) > endDate) {
-        this.timeDiff = this.localTime.diff(cookieDiff);
+      if (Cookies.get(Timer.timeDiffCookieName) === undefined) {
+        this.timeDiff = this.localTime.diff(this.startDate);
+        Cookies.set(Timer.timeDiffCookieName, String(this.timeDiff), {expires: Timer.cookieTTL});
       } else {
-        this.timeDiff = cookieDiff;
+        let cookieDiff = Duration.fromISO(Cookies.get(Timer.timeDiffCookieName));
+        // Fallback to apptime if diffence is greater then play length and no explicit time is requsted
+        if (DateTime.now().minus(cookieDiff) > endDate) {
+          this.timeDiff = this.localTime.diff(cookieDiff);
+        } else {
+          this.timeDiff = cookieDiff;
+        }
       }
     }
     this.setTimes();

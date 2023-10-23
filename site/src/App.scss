@@ -72,6 +72,10 @@ $tube-width: 100%;
   justify-content: flex-start;
   position: absolute;
 
+  &.hide {
+    display: none;
+  }
+
   #info {
     position: absolute;
     right: 5%;

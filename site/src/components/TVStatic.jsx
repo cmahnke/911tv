@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useEffect, useRef } from "react";
+import { forwardRef, useImperativeHandle, useEffect, useState, useRef } from "react";
 import PropTypes from 'prop-types';
 import { Howl } from 'howler';
 import Timer from '../classes/Timer.js';
@@ -8,18 +8,21 @@ import staticNoiseSound from '../assets/mp3/TVStatic.mp3';
 import closeDownSound from '../assets/mp3/1khz.mp3';
 import closeDownBackground from '../assets/svg/Philips_PM5544.svg';
 
-const contents = {
-  'static': {'sound': staticNoiseSound, 'interval': 50},
-  'closedown': {'sound': closeDownSound, 'interval': 1000, 'background': closeDownBackground}
-};
-
 export const TVStatic = (props, ref) => {
   const { timer } = props;
+
+  const contents = {
+    'static': {'sound': staticNoiseSound, 'interval': 50 },
+    'closedown': {'sound': closeDownSound, 'interval': 1000, 'background': closeDownBackground}
+  };
+
   const animationLengthMs = 1500;
   var showState = true;
   const canvasRef = useRef(null);
-  var bgNoise = contents['static']['sound'];
+  //var mode = 'static';
+  var bgNoise ;
   var noisePlayer;
+  const [mode, setMode] = useState('static');
 
   function show() {
     showState = true;
@@ -36,10 +39,18 @@ export const TVStatic = (props, ref) => {
     noisePlayer.fade(1, 0, animationLengthMs);
   }
 
+  function changeMode(newMode) {
+    if (newMode in contents) {
+      console.log(`Setting mode to ${newMode}`);
+      setMode(newMode);
+    }
+  }
+
   function checkClosedown() {
     if (timer.appTime > timer.endDate) {
-      bgNoise = contents['closedown']['sound'];
+      //bgNoise = contents['closedown']['sound'];
       //TODO: Switch to test card
+      changeMode('closedown');
     }
   }
 
@@ -51,16 +62,26 @@ export const TVStatic = (props, ref) => {
     }
   }
 
+  function mute() {
+    if (noisePlayer !== undefined) {
+      noisePlayer.stop();
+    }
+  }
+
+  function unmute() {
+    if (noisePlayer !== undefined) {
+      noisePlayer.play();
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     show: () => { show() },
     hide: () => { hide() },
     toggle: () => { toggle() },
+    changeMode: (mode) => { changeMode(mode) },
+    mute: () => { mute() },
+    unmute: () => { unmute() },
   }));
-
-  function parseSVG(data) {
-    const parser = new DOMParser();
-    return parser.parseFromString(data, 'image/svg+xml').querySelector('svg');
-  }
 
 /*
   useEffect(() => {
@@ -68,6 +89,7 @@ export const TVStatic = (props, ref) => {
   });
 */
   useEffect(() => {
+
     // See https://stackoverflow.com/a/23572465
     var makeNoise = function() {
       var imgd = context.createImageData(canvas.width, canvas.height);
@@ -82,20 +104,35 @@ export const TVStatic = (props, ref) => {
       time = (time + 1) % canvas.height;
     }
 
-    //TODO: Finish this
+    //TODO: Finish this, not working yet
     var makeTestcard = function () {
-      const svg = parseSVG(contents['closedown']['background']);
-      //TODO: Update image here
+      const parser = new DOMParser();
+      var svgDoc = parser.parseFromString(contents['closedown']['background'], 'image/svg+xml').querySelector('svg');
       let template = '';
-      svg.getElementById('header-date').textContent = timer.formatDate();
-      svg.getElementById('footer-time').textContent = timer.formatTime();
-      context.drawImage(svg, 0, 0);
+      svgDoc.getElementById('header-date').textContent = timer.formatDate();
+      svgDoc.getElementById('header-time').textContent = timer.formatTime();
 
+      var svgData = new XMLSerializer().serializeToString(svgDoc);
+      var svg = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"})
+      var url = URL.createObjectURL(svg);
+      var img = new Image();
+      img.src = URL.createObjectURL(svg);
+      context.drawImage(img, 0, 0);
+      /*
+      img.addEventListener('load', e => {
+        context.drawImage(e.target, 0, 0);
+        URL.revokeObjectURL(url);
+      });
+      */
+
+      canvasRef.current.classList.add("testcard")
+      //canvas = canvasRef.current.replaceWith(img);
     }
 
     var time = 0;
     var canvas = canvasRef.current;
     var context = canvas.getContext("2d");
+    bgNoise = contents[mode]['sound'];
 
     //somehow this can be initilized twice
     if (noisePlayer === undefined) {
@@ -109,10 +146,14 @@ export const TVStatic = (props, ref) => {
     // The HTML element would be noisePlayer._sounds[0]._node
 
     const interval = setInterval(() => {
-      makeNoise();
-    }, 50);
+      if (mode === 'static') {
+        makeNoise();
+      } else if (mode === 'closedown') {
+        makeTestcard();
+      }
+    }, contents[mode]['interval']);
     return () => clearInterval(interval);
-  }, [ref]);
+  }, [ref, mode]);
 
   var className = 'tv-static';
   if (props.className !== undefined) {

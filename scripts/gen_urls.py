@@ -110,6 +110,8 @@ def extract_details(days):
             timestamp = timestamp.replace(tzinfo=tz)
             timestamp = timestamp.astimezone(datetime.timezone.utc)
             text = event.find('div', {'class': 'evtext'}).text.strip()
+            if len(text) > 2 * 40:
+                cprint(f"Events text for {timestamp} is to long!", "yellow", file=sys.stderr)
             details[timestamp.isoformat()] = text
     return details
 

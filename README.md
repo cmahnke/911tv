@@ -247,6 +247,29 @@ Short version: You need to resize to match the aspect ratio, the height should b
 convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 ```
 
+## Development
+
+### Generate required data
+
+```
+pip install -r requirements.txt
+./scripts/setup.sh
+```
+
+### Installing dependencies
+
+```
+cd site
+yarn install
+```
+
+### Starting the web server
+
+```
+cd site
+yarn run vite
+```
+
 # TODO:
 
 * CSS
@@ -266,21 +289,19 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 * Check Colors in teletext graphics
 
 ## Known Issues
-
-* Finish and test detection of ended streams
+* Power button not working properly
 * Finish and test test card
 * Teletext: Graphic and Text clash
 * Browser issues
   * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
 * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
-* Detection of suspended audio not working yet
-* Subtitle generation untested
 * Data preprocessing
   * GLVSN does't seem to be working
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 
 ## Further ideas
 
+* Remove `r` and `t` from url after use - without triggering a rerender
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) of [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
 * Border of TV set can be slimmer
 * Electron App

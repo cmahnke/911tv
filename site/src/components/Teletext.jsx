@@ -18,7 +18,8 @@ export const Teletext = (props, ref) => {
   var showState = true;
   var cleanup = [];
   const {page = 100} = useParams();
-  const curPage = getPage(page);
+
+  var curPage = getPage(page);
   var title = curPage.title;
 
   const teletextPageNrRef = useRef(null);
@@ -35,7 +36,7 @@ export const Teletext = (props, ref) => {
     if (teletextSelectorBuffer.length == 3) {
 
       let page = teletextSelectorBuffer.join('')
-      if (getPage(page) === undefined) {
+      if (!checkPage(page)) {
         page = 404;
       }
       if (page != curPage.number) {
@@ -84,9 +85,20 @@ export const Teletext = (props, ref) => {
     }
   }
 
+  function checkPage(number) {
+    if (pages.filter(obj => { return obj.number == number })[0] !== undefined) {
+      return true;
+    }
+    return false;
+  }
+
   function getPage(number) {
     function formatClock(tsDt) {
       return tsDt.setZone(timer.timezone).setLocale('en-us').toFormat('hh:mm')
+    }
+
+    if (!checkPage(number)) {
+      number = 404;
     }
 
     if (number === undefined) {
@@ -113,19 +125,17 @@ export const Teletext = (props, ref) => {
     if (!Array.isArray(parsedPage.html) && typeof parsedPage.markdown !== 'object') {
       parsedPage['react'] = parse(`<div class="md-content">${parsedPage.html}</div>`, options);
     } else if (typeof parsedPage.markdown === 'object') {
-      console.log('TODO: Event array page not tested yet')
       let latest = Object.keys(parsedPage.markdown)[0];
       for (const ts in parsedPage.markdown) {
         let tsDt = DateTime.fromISO(ts);
         if (tsDt > timer.appTime) {
-          const eventDiff = timer.appTime.diff(tsDt).as('milliseconds');
-          console.log(eventDiff);
+          const eventDiff = tsDt.diff(timer.appTime).as('milliseconds');
           const subtitleTimer = setTimeout(() => {
-            //TODO: Add this to teletextBody
-            parse(`<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(tsDt)} ${page[ts]}</div>`);
+            console.log(`Updating subtitle at ${formatClock(tsDt)}`);
+            teletextBodyRef.current.innerHTML = `<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(tsDt)} ${parsedPage.markdown[ts]}</div>`;
           }, eventDiff);
           cleanup.push(() => clearTimeout(subtitleTimer));
-        } else if (tsDt < timer.appTime && tsDt > latest) {
+        } else if (tsDt < timer.appTime && tsDt > DateTime.fromISO(latest)) {
           latest = ts;
         }
       }
@@ -169,14 +179,20 @@ export const Teletext = (props, ref) => {
 
   useEffect(() => {
     document.title = '9/11 TV: ' + title;
-    //while (cleanup.length) cleanup.pop()();
+    if (!checkPage(page)) {
+      const curLoc = window.location.href;
+      window.location.href = curLoc.replace(/(.*?#)\/\d*/g, "$1/404");
+    }
+    if (page !== 300) {
+      while (cleanup.length) cleanup.pop()();
+    }
     window.removeEventListener('keyup', teletextSelector);
     window.addEventListener('keyup', teletextSelector);
     const interval = setInterval(() => {
       teletextTimeRef.current.innerHTML = timer.formatTimecode();
     }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, [location, curPage]);
 
   return (
     <div id="teletext" ref={divRef} className="show">
