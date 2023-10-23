@@ -1,7 +1,9 @@
 9/11 on TV
 ==========
 
-# Why
+You can see this code in action on the [web site](https://911tv.projektemacher.org).
+
+# Why?
 
 [11 September 2001](https://en.wikipedia.org/wiki/September_11_attacks) was not only an unprecedented terrorist attack, but also a special media event. The images have become iconic, of course, but also the density of events and length, mediated by live television coverage were without precedent.
 
@@ -12,7 +14,7 @@ The [impact of the event](https://en.wikipedia.org/wiki/September_11_attacks#Aft
 
 Of course, it is no longer possible today to recreate the reception situation of 9/11, if only because it is now known what happened and how it ended. But this page should at least be an attempt to recreate this situation and thus to create immersion. Contrary to current media usage habits, the television programme is linear, but you can change channels.
 
-# How
+# How?
 
 In 2007, the Internet Archive set up the [September 11 Television Archive](https://archive.org/details/sept_11_tv_archive), a collection of TV broadcasts from 20 channels over 7 days, totalling about 3000 hours of material. Although mainly US channels, it also includes some international channels such as [BBC](https://en.wikipedia.org/wiki/BBC), [NTV](https://en.wikipedia.org/wiki/NTV_(Russia)), [TV Azteca](https://en.wikipedia.org/wiki/TV_Azteca), [MCM](https://en.wikipedia.org/wiki/MCM_(TV_channel)) and [CCTV-3](https://en.wikipedia.org/wiki/CCTV-3).
 
@@ -43,6 +45,7 @@ The following examples have influenced the user interface:
 * [Info icon](https://commons.wikimedia.org/wiki/File:Infobox_info_icon.svg)
 * [Teletext icon](https://commons.wikimedia.org/wiki/File:IEC_60417_-_Ref-No_5463.svg)
 * [Power icon](https://commons.wikimedia.org/wiki/File:IEC5009_Standby_Symbol.svg)
+* [Test card](https://en.m.wikipedia.org/wiki/File:Philips_PM5544.svg)
 
 ## Images
 
@@ -90,8 +93,11 @@ In addition, the following software components were used:
 * [postcss-normalize](https://github.com/csstools/postcss-normalize)
 * [postcss-svgo](https://github.com/cssnano/cssnano)
 * [Sass](https://sass-lang.com/)
+* [Stylelint](https://stylelint.io/)
+* [SVGO](https://github.com/svg/svgo)
 * [Vite](https://vitejs.dev/)
 * [vite-plugin-stylelint](https://github.com/ModyQyW/vite-plugin-stylelint)
+* [vite-plugin-svgo](https://github.com/r3dDoX/vite-plugin-svgo)
 * [Stylelint](https://github.com/stylelint/stylelint)
 
 # About
@@ -263,11 +269,10 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 
 ## Known Issues
 
+* Finish and test detection of ended streams
 * Graphic and Text clash
 * Browser issues
-  * Mobile browsers (portrait mode) not working yet
-* Implement time parsing from URL
-* Border of TV set can be slimmer
+  * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
 * Clock gets out of sync / duplicated. Maybe after following link
 * Detection of suspended audio not working yet
 * Subtitle generation untested
@@ -278,6 +283,7 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 ## Further ideas
 
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) of [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
+* Border of TV set can be slimmer
 * Electron App
 * Data preprocessing
   * Multiple sub pages (manually split)

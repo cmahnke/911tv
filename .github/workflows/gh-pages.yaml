@@ -24,6 +24,9 @@ jobs:
         with:
           submodules: true  # Fetch Hugo themes (true OR recursive)
 
+      - name: Install dependencies
+        run: sudo apt-get install -y mediainfo
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:

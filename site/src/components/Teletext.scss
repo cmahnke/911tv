@@ -249,3 +249,17 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     }
   }
 }
+
+@media (orientation: portrait) {
+  #teletext {
+    font-size: calc( 100vw / $height-divisor);
+
+    #teletext-body {
+      h1, h2 {
+        font-size: calc((100vw / $height-divisor) * 2);
+      }
+
+      /* pre.teletext-graphic { */
+    }
+  }
+}

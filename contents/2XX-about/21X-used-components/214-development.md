@@ -12,9 +12,12 @@ number: 214
 * [postcss-normalize](https://github.com/csstools/postcss-normalize){:target="_blank" rel="noreferrer"}
 * [postcss-svgo](https://github.com/cssnano/cssnano){:target="_blank" rel="noreferrer"}
 * [Sass](https://sass-lang.com/){:target="_blank" rel="noreferrer"}
+* [Stylelint](https://stylelint.io/){:target="_blank" rel="noreferrer"}
+* [SVGO](https://github.com/svg/svgo){:target="_blank" rel="noreferrer"}
 * [Vite](https://vitejs.dev/){:target="_blank" rel="noreferrer"}
-* [vite-plugin-stylelint](https://github.com/ModyQyW/vite-plugin-stylelint)
-* [Stylelint](https://github.com/stylelint/stylelint)
+* [vite-plugin-stylelint](https://github.com/ModyQyW/vite-plugin-stylelint){:target="_blank" rel="noreferrer"}
+* [vite-plugin-svgo](https://github.com/r3dDoX/vite-plugin-svgo){:target="_blank" rel="noreferrer"}
+* [Stylelint](https://github.com/stylelint/stylelint){:target="_blank" rel="noreferrer"}
 
 <!-- -->
 * Back [210](210){:class="nav"}

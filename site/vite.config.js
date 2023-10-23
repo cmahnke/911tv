@@ -4,7 +4,7 @@ import eslint from 'vite-plugin-eslint';
 import stylelint from 'vite-plugin-stylelint';
 import browserslistToEsbuild from 'browserslist-to-esbuild';
 import strip from '@rollup/plugin-strip';
-//import copy from 'rollup-plugin-copy'
+import svg from 'vite-plugin-svgo';
 import lzstring from './src/plugins/rollup-plugin-lz-string.js';
 import jsoncrush from './src/plugins/rollup-plugin-jsoncrush.js';
 import { join } from 'path';
@@ -22,19 +22,25 @@ export default defineConfig({
       apply: 'build'
     },
     stylelint({'build': true, 'dev': false, 'lintOnStart': true}),
+    svg({
+      multipass: true,
+      plugins: [
+        {
+          name: 'preset-default',
+          params: {
+            overrides: {
+              cleanupIds: false,
+            },
+          },
+        },
+      ]
+    })
     /*
     {
       ...lzstring({ include: jsonGlob }),
       enforce: 'pre',
       apply: 'build'
     },
-    */
-    /*
-    copy({
-      targets: [
-        { src: 'public/CNAME', dest: 'dist/public' },
-      ]
-    })
     */
   ],
   build: {

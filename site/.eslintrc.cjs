@@ -20,6 +20,10 @@ module.exports = {
     'no-unused-vars': [
       'warn',
       { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+    ],
+    'no-warning-comments': [
+      'warn',
+      {}
     ]
   },
   'overrides': [

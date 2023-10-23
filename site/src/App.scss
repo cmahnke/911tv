@@ -285,3 +285,19 @@ $tube-width: 100%;
   top: 4.5%;
   position: absolute;
 }
+
+/* @media (not: pointer) and (orientation: landscape) {  } */
+
+@media (orientation: portrait) {
+  #tube {
+    top: calc(25% + 4.5% / 2);
+  }
+
+  #tv-footer {
+    bottom: calc(25% + 5% / 2);
+    height: 3%;
+    #tv-controls {
+
+    }
+  }
+}

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import json, re, sys
+import json
+import re
+import sys
 from pathlib import Path
 import math
 from PIL import Image, ImageOps
@@ -11,9 +13,11 @@ from bs4 import BeautifulSoup
 from termcolor import cprint
 import emoji
 
-content_dir = './contents'
-content_pattern = '**/*.md'
-subpage_seperator = '<!--more-->'
+CONTENT_DIR = './contents'
+CONTENT_PATTERN = '**/*.md'
+SUBPAGE_SEPERATOR = '<!--more-->'
+
+# pylint: disable=invalid-name,undefined-variable
 
 # This is a direct port of https://bitbucket.org/rahardy/image-to-sextants/
 class ImageToSextants:
@@ -23,7 +27,7 @@ class ImageToSextants:
       '🬏', '🬐', '🬑', '🬒', '🬓', '▌', '🬔', '🬕', '🬖', '🬗', '🬘', '🬙', '🬚', '🬛', '🬜', '🬝',
       '🬞', '🬟', '🬠', '🬡', '🬢', '🬣', '🬤', '🬥', '🬦', '🬧', '▐', '🬨', '🬩', '🬪', '🬫', '🬬',
       '🬭', '🬮', '🬯', '🬰', '🬱', '🬲', '🬳', '🬴', '🬵', '🬶', '🬷', '🬸', '🬹', '🬺', '🬻', '█'
-    ];
+    ]
 
     ATTRIBUTES = {
         "black":   "\x10",
@@ -77,7 +81,7 @@ class ImageToSextants:
               (isPixelOn(cells[5]) << 5)
         return val
 
-    def getTeletextG1Char(col, row):
+    def getTeletextG1Char(self, col, row):
         value = getValueFromSextants(col, row)
         if value < 0x20:
             result = chr(value + 0x20)
@@ -150,10 +154,10 @@ def check_images(md_content, file, max_height=23):
             if img.mode == '1':
                 img = img.convert('L')
             img = ImageOps.invert(img)
-            if (img.size[1] > max_height * 3):
+            if img.size[1] > max_height * 3:
                 cprint(f"Resizing image {img_src} height from {img.size[1]} to {max_height * 3}", "yellow", flush=True, file=sys.stderr)
-                img.thumbnail((60, max_height * 3), Image.NEAREST)
-            #img.thumbnail((60,60), Image.NEAREST)
+                img.thumbnail((60, max_height * 3), Image.Resampling.NEAREST)
+            #img.thumbnail((60,60), Image.Resampling.NEAREST)
             img = img.resize((round(img.size[0] * (8/9)), img.size[1]))
             ba = numpy.asarray(img).astype(numpy.uint8).flatten()
             converter = ImageToSextants(ba, img.size[0])
@@ -171,13 +175,13 @@ def check_images(md_content, file, max_height=23):
 def count_headings(md_content):
     html = markdown.markdown(md_content)
     count = len(BeautifulSoup(html, features="lxml").find_all(['h1', 'h2']))
-    if count == None:
+    if count is None:
         return 0
     return count
 
 
 pages = []
-for file in Path(content_dir).glob(content_pattern):
+for file in Path(CONTENT_DIR).glob(CONTENT_PATTERN):
     page = {}
     cprint(f"Loading file {file}", 'green', flush=True, file=sys.stderr)
     post = frontmatter.load(file)
@@ -188,9 +192,9 @@ for file in Path(content_dir).glob(content_pattern):
         height = 23 - count_headings(post.content)
         md_content = check_images(post.content, file, height)
         md_content = emoji.demojize(md_content, delimiters=("", ""))
-        if subpage_seperator in post.content:
+        if SUBPAGE_SEPERATOR in post.content:
             html = []
-            for subpage in md_content.split(subpage_seperator):
+            for subpage in md_content.split(SUBPAGE_SEPERATOR):
                 html.append(markdown.markdown(subpage, extensions=['attr_list']))
 
         else:

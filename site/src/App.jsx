@@ -112,6 +112,7 @@ function App() {
 
     //All times from `urls.json` are UTC
     let times = Object.keys(urls.channels[chan]);
+    times = times.filter(function(e) { return e !== 'end' });
     times.sort((date1, date2) => new Date(date1) - new Date(date2))
 
     for (let i = 0; i < times.length; i++) {
@@ -189,18 +190,38 @@ function App() {
     infoRef.current.classList.toggle('show');
   }
 
+  function checkStreamEnd(channel) {
+    let endTime = timer.endDate;
+    if ('last' in urls.channels[channel] && urls.channels[channel]['end'] !== undefined && urls.channels[channel]['end'] !== null) {
+      endTime = DateTime.fromISO(urls.channels[channel]['end']);
+    }
+    if (timer.appTime > endTime) {
+      return true;
+    }
+
+    return false;
+  }
+
   useEffect(() => {
     if (getCookieConsentValue(consentCookieName)) {
       playVideo();
     }
   }, []);
 
-  var stream = parseProgramms(channel, timer.appTime);
-  var stream_info;
-  if (stream !== undefined && stream['info'] !== undefined) {
-    stream_info = stream['info'];
+  // TODO: Test this
+  if (!checkStreamEnd(channel)) {
+    var stream = parseProgramms(channel, timer.appTime);
+    var stream_info;
+    if (stream['info'] !== undefined) {
+      stream_info = stream['info'];
+    }
+    if (stream === undefined) {
+      stream = {};
+      console.log('Stream is undefined, dispaying static noise')
+    }
   } else {
-    console.log('Stream is undefined, expect crash!')
+    stream = {};
+    console.log('Event time passed, displaying test card.')
   }
 
   // See https://videojs.com/guides/react/

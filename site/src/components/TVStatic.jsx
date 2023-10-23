@@ -6,10 +6,11 @@ import Timer from '../classes/Timer.js';
 import './TVStatic.scss';
 import staticNoiseSound from '../assets/mp3/TVStatic.mp3';
 import closeDownSound from '../assets/mp3/1khz.mp3';
+import closeDownBackground from '../assets/svg/Philips_PM5544.svg';
 
-const sounds = {
-  'static': staticNoiseSound,
-  'closedown': closeDownSound
+const contents = {
+  'static': {'sound': staticNoiseSound, 'interval': 50},
+  'closedown': {'sound': closeDownSound, 'interval': 1000, 'background': closeDownBackground}
 };
 
 export const TVStatic = (props, ref) => {
@@ -17,7 +18,7 @@ export const TVStatic = (props, ref) => {
   const animationLengthMs = 1500;
   var showState = true;
   const canvasRef = useRef(null);
-  var bgNoise = sounds['static'];
+  var bgNoise = contents['static']['sound'];
   var noisePlayer;
 
   function show() {
@@ -37,7 +38,7 @@ export const TVStatic = (props, ref) => {
 
   function checkClosedown() {
     if (timer.appTime > timer.endDate) {
-      bgNoise = sounds['closedown'];
+      bgNoise = contents['closedown']['sound'];
       //TODO: Switch to test card
     }
   }
@@ -55,6 +56,11 @@ export const TVStatic = (props, ref) => {
     hide: () => { hide() },
     toggle: () => { toggle() },
   }));
+
+  function parseSVG(data) {
+    const parser = new DOMParser();
+    return parser.parseFromString(data, 'image/svg+xml').querySelector('svg');
+  }
 
 /*
   useEffect(() => {
@@ -74,6 +80,17 @@ export const TVStatic = (props, ref) => {
       }
       context.putImageData(imgd, 0, 0);
       time = (time + 1) % canvas.height;
+    }
+
+    //TODO: Finish this
+    var makeTestcard = function () {
+      const svg = parseSVG(contents['closedown']['background']);
+      //TODO: Update image here
+      let template = '';
+      svg.getElementById('header-date').textContent = timer.formatDate();
+      svg.getElementById('footer-time').textContent = timer.formatTime();
+      context.drawImage(svg, 0, 0);
+
     }
 
     var time = 0;

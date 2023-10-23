@@ -14,7 +14,7 @@ All images are used as [derivative works](https://en.wikipedia.org/wiki/Derivati
 * [Info icon](https://commons.wikimedia.org/wiki/File:Infobox_info_icon.svg){:target="_blank" rel="noreferrer"}
 * [Teletext icon](https://commons.wikimedia.org/wiki/File:IEC_60417_-_Ref-No_5463.svg){:target="_blank" rel="noreferrer"}
 * [Power icon](https://commons.wikimedia.org/wiki/File:IEC5009_Standby_Symbol.svg){:target="_blank" rel="noreferrer"}
-
+* [Test card](https://en.m.wikipedia.org/wiki/File:Philips_PM5544.svg){:target="_blank" rel="noreferrer"}
 
 <!-- -->
 * Back [210](210){:class="nav"}

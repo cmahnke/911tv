@@ -60,7 +60,11 @@ class Timer {
     return this.appTime.setZone(this.timezone).setLocale('en-us').toFormat('EEE MMM dd hh:mm:ss');
   }
 
-  formatClock() {
+  formatDate() {
+    return this.appTime.setZone(this.timezone).setLocale('en-us').toFormat('EEE MMM dd');
+  }
+
+  formatTime() {
     return this.appTime.setZone(this.timezone).setLocale('en-us').toFormat('hh:mm');
   }
 }
