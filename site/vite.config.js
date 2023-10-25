@@ -15,7 +15,13 @@ const jsonGlob = 'src/assets/json/*.json';
 export default defineConfig({
   base: './',
   plugins: [
-    react(),
+    react(/*{
+      /*
+        parserOpts: {
+          plugins: ['optionalChainingAssign'],
+        },
+      },
+    }*/),
     eslint(),
     {
       ...strip({ include: '**/*.(jsx|js)' }),

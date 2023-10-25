@@ -140,6 +140,16 @@ If your wondering, why Cloverfield is part of this list, it's because I consider
 
 ### Cloverfield
 
+I consider [Cloverfield](https://en.wikipedia.org/wiki/Cloverfield) to be one of the best movies related to the 9/11. Not because it's a realistic or accurate depiction of the attack on New York, but it'a masterpiece in capturing the but because it is a masterpiece to capture the mood and uncertainty subjectively.
+
+The images of the subjective camera seem to be directly inspired by the live coverage of the time.  Interestingly, the film works on two levels: One observes the characters leading relatively normal lives and can thus identify with the protagonists. The film takes enough time to build up a corresponding mood before it get's more intense.
+
+This forms the basis that allows the viewer to empathically experience the situation, which becomes more unclear in the course of the film, and the associated fears of the characters.
+
+At the same time, the [found footage](https://en.wikipedia.org/wiki/Found_footage_(film_technique)) setting ensures that it is explicitly presented as a form of media reception.
+
+All in all, a very impressive form of cinematic adaptation as a horror film (metaphor).
+
 ## Alternative Media
 
 Even though it promotes [conspiracy theories](https://en.wikipedia.org/wiki/9/11_conspiracy_theories), the movie series [Loose Change](https://en.wikipedia.org/wiki/Loose_Change) is noteworthy for illustrating cultural impact.
@@ -277,20 +287,21 @@ yarn run vite
 * Texts and links
   * Content
     * Finish 'Other resources'
-  * More on 'Cloverfield'
+    * More teletext pages from this document
 * Video addressing
-  * Seek
+  * Seek - not tested yet
   * Segmentation
     * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
 * Reduce warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
+* Reduce TODO's from code
 * Check Colors in teletext graphics
 
 ## Known Issues
-* Power button not working properly
-* Finish and test test card
+* Static noise effect not working on channel switch
+* Test card sound not switching
 * Teletext: Graphic and Text clash
 * Browser issues
   * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
@@ -310,5 +321,5 @@ yarn run vite
   * check if generated sub pages are needed
 
 <p align="center">
-  ![Projektemacher Logo](./site/src/assets/svg/cm.svg)
+  <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">
 </p>

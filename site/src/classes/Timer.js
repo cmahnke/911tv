@@ -17,7 +17,7 @@ class Timer {
         Cookies.remove(Timer.timeCodeCookieName);
         this.timeDiff = this.localTime.diff(this.startDate);
       } else {
-        var resetDate = DateTime.fromISO(reset);
+        var resetDate = DateTime.fromISO(reset, {zone: timezone});
         if (resetDate < this.startDate) {
           console.log(`Time ${resetDate} earlier then ${this.startDate} (startTime)`);
         }
@@ -25,7 +25,6 @@ class Timer {
           console.log(`Time ${resetDate} later then ${this.endDate} (endTime)`);
         }
         console.log(`Setting time to ${resetDate}`);
-        //Cookies.set(Timer.timeCodeCookieName, String(resetDate), {expires: Timer.cookieTTL});
         this.timeDiff = this.localTime.diff(resetDate);
         Cookies.set(Timer.timeCodeCookieName, String(this.timeDiff), {expires: Timer.cookieTTL});
       }
@@ -69,6 +68,10 @@ class Timer {
 
   formatTime() {
     return this.appTime.setZone(this.timezone).setLocale('en-us').toFormat('hh:mm');
+  }
+
+  formatTimeWithSecs() {
+    return this.appTime.setZone(this.timezone).setLocale('en-us').toFormat('hh:mm:ss');
   }
 }
 

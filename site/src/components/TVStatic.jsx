@@ -19,21 +19,27 @@ export const TVStatic = (props, ref) => {
   const animationLengthMs = 1500;
   var showState = true;
   const canvasRef = useRef(null);
-  //var mode = 'static';
   var bgNoise ;
   var noisePlayer;
   const [mode, setMode] = useState('static');
+  //const [noisePlayer, setNoisePlayer] = useState(0);
 
-  function show() {
+  function show(className) {
     showState = true;
+    if (className !== undefined) {
+      canvasRef.current.classList.remove(className);
+    }
     checkClosedown();
     canvasRef.current.classList.remove("hide");
     canvasRef.current.classList.add("show");
     noisePlayer.fade(0, 1, animationLengthMs);
   }
 
-  function hide() {
+  function hide(className) {
     showState = false;
+    if (className !== undefined) {
+      canvasRef.current.classList.add(className);
+    }
     canvasRef.current.classList.remove("show");
     canvasRef.current.classList.add("hide");
     noisePlayer.fade(1, 0, animationLengthMs);
@@ -48,8 +54,6 @@ export const TVStatic = (props, ref) => {
 
   function checkClosedown() {
     if (timer.appTime > timer.endDate) {
-      //bgNoise = contents['closedown']['sound'];
-      //TODO: Switch to test card
       changeMode('closedown');
     }
   }
@@ -62,9 +66,13 @@ export const TVStatic = (props, ref) => {
     }
   }
 
-  function mute() {
+  function mute(fade) {
     if (noisePlayer !== undefined) {
-      noisePlayer.stop();
+      if (fade != undefined) {
+        noisePlayer.fade(1, 0, fade);
+      } else {
+        noisePlayer.stop();
+      }
     }
   }
 
@@ -88,6 +96,15 @@ export const TVStatic = (props, ref) => {
     noisePlayer.play();
   });
 */
+
+/*
+  function setCanvasSize() {
+    canvas = canvasRef.current;
+    canvas.setAttribute("height", canvas.height);
+    canvas.setAttribute("width", canvas.width);
+  }
+*/
+
   useEffect(() => {
 
     // See https://stackoverflow.com/a/23572465
@@ -104,33 +121,42 @@ export const TVStatic = (props, ref) => {
       time = (time + 1) % canvas.height;
     }
 
-    //TODO: Finish this, not working yet
     var makeTestcard = function () {
+      //TODO: Decide if test card should be sharper - certainly not
+      // See https://stackoverflow.com/a/41776757
+      /*
+      if(devicePixelRatio >= 2){
+        canvas.width *= 2;
+        canvas.height *= 2;
+      }
+      */
+
       const parser = new DOMParser();
       var svgDoc = parser.parseFromString(contents['closedown']['background'], 'image/svg+xml').querySelector('svg');
-      let template = '';
+      svgDoc.setAttribute('viewBox', `0 0 ${svgDoc.getAttribute('width')} ${svgDoc.getAttribute('height')}`);
       svgDoc.getElementById('header-date').textContent = timer.formatDate();
-      svgDoc.getElementById('header-time').textContent = timer.formatTime();
+      svgDoc.getElementById('header-time').textContent = timer.formatTimeWithSecs();
 
       var svgData = new XMLSerializer().serializeToString(svgDoc);
       var svg = new Blob([svgData], {type:"image/svg+xml;charset=utf-8"})
       var url = URL.createObjectURL(svg);
-      var img = new Image();
-      img.src = URL.createObjectURL(svg);
-      context.drawImage(img, 0, 0);
-      /*
-      img.addEventListener('load', e => {
-        context.drawImage(e.target, 0, 0);
+      var img = new Image(canvas.width, canvas.height);
+      img.src = url
+      img.height = canvas.height;
+      img.width = canvas.width;
+      img.onload = () => {
+        context = canvas.getContext("2d");
+        context.imageSmoothingEnabled = false;
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
         URL.revokeObjectURL(url);
-      });
-      */
+      }
 
       canvasRef.current.classList.add("testcard")
-      //canvas = canvasRef.current.replaceWith(img);
     }
 
     var time = 0;
     var canvas = canvasRef.current;
+
     var context = canvas.getContext("2d");
     bgNoise = contents[mode]['sound'];
 

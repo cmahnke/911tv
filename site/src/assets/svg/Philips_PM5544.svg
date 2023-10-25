@@ -31,9 +31,9 @@
      pagecolor="#ffffff"
      id="base"
      showgrid="false"
-     inkscape:zoom="0.96144923"
-     inkscape:cx="352.07267"
-     inkscape:cy="292.26712"
+     inkscape:zoom="1.1800989"
+     inkscape:cx="308.87242"
+     inkscape:cy="256.75814"
      inkscape:window-x="0"
      inkscape:window-y="38"
      inkscape:current-layer="g9454"
@@ -69,6 +69,18 @@
   </metadata>
   <defs
      id="defs2533">
+    <rect
+       x="298.13672"
+       y="50.991536"
+       width="171.7265"
+       height="44"
+       id="rect8" />
+    <rect
+       x="297.99998"
+       y="50"
+       width="172"
+       height="43"
+       id="rect1" />
     <linearGradient
        id="linearGradient3657">
       <stop
@@ -2259,18 +2271,22 @@
           <text
              xml:space="preserve"
              id="footer-text"
-             style="font-weight:500;font-size:16.5333px;font-family:'Press Start 2P';text-align:center;direction:rtl;white-space:pre;shape-inside:url(#footer);display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.666667;paint-order:markers stroke fill"
-             inkscape:label="footer-text"><tspan
-               x="258.43515"
-               y="633.49449"
-               id="tspan2"><tspan
-                 style="font-weight:normal;-inkscape-font-specification:'Press Start 2P'"
-                 id="tspan1">Transmission </tspan></tspan><tspan
-               x="316.30159"
-               y="654.16112"
-               id="tspan5"><tspan
-                 style="font-weight:normal;-inkscape-font-specification:'Press Start 2P'"
-                 id="tspan4">ended</tspan></tspan></text>
+             style="font-weight:500;font-size:16.5333px;font-family:'Press Start 2P';text-align:center;direction:rtl;text-anchor:middle;white-space:pre;display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.666667;paint-order:markers stroke fill"
+             inkscape:label="footer-text"
+             x="98.699043"
+             y="2.258101"><tspan
+               sodipodi:role="line"
+               id="tspan4"
+               x="357.13419"
+               y="635.75262"><tspan
+                 x="357.13419"
+                 y="635.75262"
+                 id="tspan2"
+                 style="font-weight:normal;-inkscape-font-specification:'Press Start 2P';text-align:center;text-anchor:middle">Transmission</tspan></tspan><tspan
+               sodipodi:role="line"
+               id="tspan5"
+               x="357.13419"
+               y="656.41925">ended</tspan></text>
         </g>
         <g
            id="g10383"
@@ -2312,30 +2328,16 @@
              width="364.57971"
              height="71.389374"
              style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
-          <rect
-             id="header"
-             x="323.02969"
-             y="-17.114494"
-             width="172"
-             height="44"
-             style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-             inkscape:label="header" />
-          <text
-             xml:space="preserve"
-             id="header-text"
-             style="font-weight:500;font-size:16.5465px;font-family:'Press Start 2P';text-align:center;direction:rtl;white-space:pre;shape-inside:url(#header);display:inline;fill:#646464;stroke:#000000;stroke-width:0.666667;paint-order:markers stroke fill"
-             x="0"
-             y="0"><tspan
-               x="326.29696"
-               y="1.4995773"
-               id="tspan7"><tspan
-                 style="font-weight:normal;-inkscape-font-specification:'Press Start 2P';fill:#ffffff"
-                 id="header-date">Thu Sep 13 </tspan></tspan><tspan
-               x="342.84343"
-               y="22.182702"
-               id="tspan9"><tspan
-                 style="font-weight:normal;-inkscape-font-specification:'Press Start 2P';fill:#ffffff"
-                 id="header-time">04:40:29</tspan></tspan></text>
+          <g
+             id="g1">
+            <rect
+               id="header"
+               x="323.02969"
+               y="-17.114494"
+               width="172"
+               height="44"
+               style="opacity:1;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+          </g>
         </g>
         <g
            id="g10301"
@@ -2401,6 +2403,21 @@
              id="path9642"
              style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:4.00033617;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
         </g>
+        <text
+           xml:space="preserve"
+           id="text8"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.5333px;font-family:'Press Start 2P';-inkscape-font-specification:'Press Start 2P';text-align:center;direction:rtl;white-space:pre;display:inline;fill:#ffffff;stroke:#000000;stroke-width:0.666667;paint-order:markers stroke fill"
+           x="-821.5639"
+           y="474.69949"
+           inkscape:label="header"><tspan
+             x="-446.59723"
+             y="544.29169"
+             id="header-date">Thu Sep 13<tspan
+   dx="-132.26614"
+   id="tspan1">&#10;</tspan></tspan><tspan
+             x="-464.06396"
+             y="564.95831"
+             id="header-time">04:40:29</tspan></text>
       </g>
     </g>
   </g>

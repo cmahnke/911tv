@@ -16,6 +16,10 @@
     opacity: 1;
   }
 
+  &.immediately {
+    transition: unset !important;
+  }
+
   &.hide {
     z-index: -11;
     opacity: 0;

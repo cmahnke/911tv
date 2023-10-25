@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate, createHashRouter, RouterProvider } from 'react-router-dom';
+import { createHashRouter, RouterProvider } from 'react-router-dom';
 import { isMobileSafari } from 'react-device-detect';
 import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
 import VideoJS from './components/VideoJS.jsx';
@@ -32,6 +32,11 @@ function parseJson(json) {
 }
 
 function App() {
+  //State without React state
+  var powerOn = true;
+  var muted = false
+  var teletextOn = true;
+
   const audioContext = new AudioContext();
   const playerRef = useRef(null);
   const rootRef = useRef(null);
@@ -42,13 +47,13 @@ function App() {
   const infoContainerRef = useRef(null);
   const audioToggleRef = useRef(null);
 
-  //const navigate = useNavigate();
   const urls = parseJson(urlsImport);
   const pages = parseJson(pagesImport);
 
   const channels = Object.keys(urls.channels)
   var channel = channels[0]
   var reset = false;
+  var currentVideo = {};
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
@@ -86,9 +91,9 @@ function App() {
 
   const videoEventHandler = [
     { name: 'play', handler: () => { console.log('Got play event') } },
-    { name: 'playing', handler: () => { noiseRef.current.hide() } },
-    { name: 'stalled', handler: () => { noiseRef.current.show() } },
-    { name: 'buffering', handler: () => { noiseRef.current.show() } },
+    { name: 'playing', handler: () => { hideNoise() } },
+    { name: 'stalled', handler: () => { showNoise() } },
+    { name: 'buffering', handler: () => { showNoise() } },
     { name: 'loadeddata', handler: () => { playerRef.current.play() } },
     //{ name: '*', handler: (e) => { console.log(e) } },
 
@@ -104,7 +109,11 @@ function App() {
   function playVideo () {
     playerRef.current.play();
     //TODO: Calculate the start time in seconds depending on `appTime` ond `chunkLength`
-    //player.currentTime(666);
+    /*
+    let videoTimestamp = DateTime.fromISO(currentVideo['startTime']);
+    let startTime = timer.appTime.diff(videoTimestamp).as('milliseconds') / 1000;
+    */
+    playerRef.current.currentTime(currentVideo['start']);
   }
 
   // Use `offset` to get the previuos (`-1`) or next (`1`) video
@@ -132,13 +141,14 @@ function App() {
         }
         let entry = urls.channels[chan][times[i + offset]]
 
-        let video = { start: time - DateTime.fromISO(times[i]) }
+        let video = { start: (time - DateTime.fromISO(times[i])) / 1000 }
         if ('video_url' in entry) {
           video['url'] = entry['video_url']
         }
         if ('meta_url' in entry) {
           video['info'] = entry['meta_url']
         }
+        video['startTime'] = times[i + offset];
         console.log('Returning program ' + time, video);
         return video;
       }
@@ -146,6 +156,9 @@ function App() {
   }
 
   function zapChannel(e, direction) {
+    if (!powerOn) {
+      return;
+    }
     var i = channels.indexOf(channel);
     var logPrefix;
     if (direction) {
@@ -164,31 +177,77 @@ function App() {
       logPrefix = 'Previous channel (up), now ';
     }
     teletextRef.current.setChannel(channel);
-    const newProgramme = parseProgramms(channel, timer.appTime)['url'];
-    console.log(`${logPrefix}${channel} (${newProgramme['src']})`);
-    playerRef.current.src(newProgramme);
+    currentVideo = parseProgramms(channel, timer.appTime);
+    console.log(`${logPrefix}${channel} (${currentVideo['src']})`);
+    playerRef.current.src(currentVideo['url']);
+    playerRef.current.currentTime(currentVideo['start']);
   }
 
-  function toggleAudio() {
-    console.log('Toggleing audio');
-    if (!audioStatus()) {
-      audioContext.resume();
-      playerRef.current.volume(1);
-      noiseRef.current.unmute();
-      audioToggleRef.current.classList.remove("disabled");
-      audioToggleRef.current.classList.add("enabled");
-    } else {
-      audioContext.suspend();
-      playerRef.current.volume(0);
-      noiseRef.current.mute();
-      audioToggleRef.current.classList.remove("enabled");
-      audioToggleRef.current.classList.add("disabled");
-      console.log('Audio is suspended');
+  function checkStreamEnd(channel) {
+    let endTime = timer.endDate;
+    if ('last' in urls.channels[channel] && urls.channels[channel]['end'] !== undefined && urls.channels[channel]['end'] !== null) {
+      endTime = DateTime.fromISO(urls.channels[channel]['end']);
+    }
+    if (timer.appTime > endTime) {
+      return true;
+    }
+    return false;
+  }
+
+  function setTitle(e, title) {
+    if (e !== undefined && e.target !== undefined) {
+      e.target.title = title;
     }
   }
 
+  function showNoise() {
+    noiseRef.current.show()
+  }
+
+  function hideNoise() {
+    if (powerOn) {
+      noiseRef.current.hide()
+    }
+  }
+
+  function toggleAudio(e) {
+    if (!powerOn) {
+      return;
+    }
+    console.log('Toggleing audio');
+    if (!audioStatus()) {
+      enableAudio();
+      setTitle(e, 'Audio enabled');
+    } else {
+      disableAudio();
+      setTitle(e, 'Audio disabled');
+    }
+  }
+
+  function enableAudio () {
+    if (!powerOn) {
+      return;
+    }
+    muted = false;
+    audioContext.resume();
+    playerRef.current.volume(1);
+    noiseRef.current.unmute();
+    audioToggleRef.current.classList.remove("disabled");
+    audioToggleRef.current.classList.add("enabled");
+  }
+
+  function disableAudio(fade) {
+    muted = true;
+    audioContext.suspend();
+    playerRef.current.volume(0);
+    noiseRef.current.mute();
+    audioToggleRef.current.classList.remove("enabled");
+    audioToggleRef.current.classList.add("disabled");
+    console.log('Audio is suspended');
+  }
+
   function audioStatus() {
-    if (audioContext.state === "suspended") {
+    if (audioContext.state === "suspended" || muted) {
       return false;
     }
     return true;
@@ -204,13 +263,21 @@ function App() {
     }
   }
 
+  /*
   function toggleInfoContainer() {
     infoContainerRef.current.classList.toggle('hide');
     infoContainerRef.current.classList.toggle('show');
   }
+  */
+
+  function showInfoContainer() {
+    infoContainerRef.current.classList.remove('hide');
+    infoContainerRef.current.classList.add('show');
+  }
 
   function hideInfoContainer() {
     infoContainerRef.current.classList.add('hide');
+    infoContainerRef.current.classList.remove('show');
   }
 
   function toggleInfo() {
@@ -221,24 +288,44 @@ function App() {
     infoRef.current.classList.toggle('show');
   }
 
-  function off() {
-    //TODO: disable sound, maybe hide elements
-    teletextRef.current.toggle();
-    noiseRef.current.toggle();
-    toggleInfoContainer();
-    playerRef.current.volume(0);
+  function on() {
+    powerOn = true;
+    //teletextRef.current.show();
+    noiseRef.current.hide('immediately');
+    showInfoContainer();
+    enableAudio();
+
   }
 
-  function checkStreamEnd(channel) {
-    let endTime = timer.endDate;
-    if ('last' in urls.channels[channel] && urls.channels[channel]['end'] !== undefined && urls.channels[channel]['end'] !== null) {
-      endTime = DateTime.fromISO(urls.channels[channel]['end']);
-    }
-    if (timer.appTime > endTime) {
-      return true;
-    }
+  function off() {
+    teletextRef.current.hide();
+    noiseRef.current.show('immediately');
+    hideInfoContainer();
+    disableAudio();
+    powerOn = false;
+  }
 
-    return false;
+  function togglePower() {
+    if (powerOn) {
+      off();
+    } else {
+      on();
+    }
+  }
+
+  function toggleTeletext(e) {
+    if (!powerOn) {
+      return;
+    }
+    if (teletextOn) {
+      teletextRef.current.hide();
+      teletextOn = false;
+      setTitle(e, 'Teletext disabled');
+    } else {
+      teletextRef.current.show();
+      teletextOn = true;
+      setTitle(e, 'Teletext enabled');
+    }
   }
 
   useEffect(() => {
@@ -257,17 +344,17 @@ function App() {
   }, []);
 
   if (!checkStreamEnd(channel)) {
-    var stream = parseProgramms(channel, timer.appTime);
+    currentVideo = parseProgramms(channel, timer.appTime);
     var stream_info;
-    if (stream['info'] !== undefined) {
-      stream_info = stream['info'];
+    if (currentVideo['info'] !== undefined) {
+      stream_info = currentVideo['info'];
     }
-    if (stream === undefined) {
-      stream = {};
+    if (currentVideo === undefined) {
+      currentVideo = {};
       console.log('Stream is undefined, dispaying static noise')
     }
   } else {
-    stream = {};
+    currentVideo = {};
     console.log('Event time passed, using empty video.')
   }
 
@@ -279,7 +366,7 @@ function App() {
     muted: false,
     preload: 'auto',
     sources: [
-      stream['url']
+      currentVideo['url']
     ],
   };
 
@@ -307,29 +394,30 @@ function App() {
             <div className="tv-footer-spacer"></div>
             <div id="tv-brand"><a target="_blank" rel="noreferrer" className="tv-brand-link" href="https://projektemacher.org/">%nbsp;</a></div>
             <div id="tv-controls">
-              <button ref={audioToggleRef} type="button" className={'button toggle-audio ' + (audioStatus() ? 'enabled' : 'disabled')} onClick={toggleAudio}>
+              <button aria-label="Mute" title={audioStatus() ? 'Audio enabled' : 'Audio disabled'} ref={audioToggleRef} type="button" className={'button toggle-audio ' + (audioStatus() ? 'enabled' : 'disabled')} onClick={(e) => {
+                toggleAudio(e);
+                }}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button toggle-teletext" onClick={() => teletextRef.current.toggle()}>
+              <button aria-label="Teletext" title={teletextOn ? 'Teletext enabled' : 'Teletext disabled'}  type="button" className="button toggle-teletext" onClick={(e) => { toggleTeletext(e) }}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>
+              <button aria-label="Previous channel" title="Previous channel" type="button" className="button zap-channel-up" onClick={(e) => { zapChannel(e, false)}}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
+              <button aria-label="Next channel" title="Next channel" type="button" className="button zap-channel-down" onClick={(e) => { zapChannel(e, true)}}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className={'button toggle-fullscreen ' + (isMobileSafari ? 'hide' : '')} onClick={toggleFullscreen}>
+              <button aria-label="Fullscreen" title="Fullscreen" type="button" className={'button toggle-fullscreen ' + (isMobileSafari ? 'hide' : '')} onClick={toggleFullscreen}>
                 <i className="icon"></i>
               </button>
-              <button type="button" className="button toggle-power" onClick={() => {
-                    //TODO: Add enabling
-                    teletextRef.current.toggle();
-                    noiseRef.current.toggle();
-                    toggleInfoContainer();
-                    playerRef.current.volume(0);
-                  }
-              }>
+              <button aria-label="Power" title={powerOn ? 'Power on' : 'Power off'} type="button" className="button toggle-power" onClick={(e) => {
+                if (powerOn) {
+                  e.target.title = 'Power off';
+                } else {
+                  e.target.title = 'Power on';
+                }
+                togglePower() }}>
                 <i className="icon"></i>
               </button>
             </div>
