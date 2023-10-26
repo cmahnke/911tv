@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 @import "normalize.css";
 
 $tube-width: 100%;
@@ -162,12 +164,26 @@ $tube-width: 100%;
   }
 
   #tv-brand {
+    $bezel-color: #313131;
+
     text-align: center;
     width: 10%;
 
     a {
       content: svg-load("assets/svg/cm.svg", fill=#696969);
-      filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
+      /*
+      filter: drop-shadow(.05rem .05rem .05rem color.adjust(#696969, $lightness: -20%))
+              drop-shadow(.05rem .05rem .05rem color.adjust(#696969, $alpha: .6))
+              drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%))
+              drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%));
+      */
+
+      /*#313131*/
+      filter: drop-shadow(0 0 .05rem color.adjust(#696969, $lightness: -20%))
+              drop-shadow(0 0 .05rem color.adjust(#696969, $alpha: .6))
+              drop-shadow(0 0 .1rem rgb(0 0 0 / 100%))
+              drop-shadow(0 0 .1rem rgb(0 0 0 / 50%))
+              drop-shadow(0 0 .14rem color.adjust($bezel-color, $alpha: .9));
       font-weight: unset;
       color: unset;
       text-decoration: unset;
@@ -177,6 +193,8 @@ $tube-width: 100%;
   }
 
   #tv-controls {
+    $button-color: color.adjust(#313131, $lightness: -5%);
+
     display: inline-flex;
     flex-direction: row;
     justify-content: flex-end;
@@ -189,34 +207,31 @@ $tube-width: 100%;
       height: 80%;
       aspect-ratio: 1/1;
       border-radius: 50%;
-      /* border: 1px solid transparent; */
       font-size: 30%;
       font-family: inherit;
-      background-color: #1a1a1a;
+      background-color: $button-color;
       cursor: pointer;
-      /* transition: border-color 0.25s; */
-      margin: 0 .3em;
-      filter: drop-shadow(3px 5px 2px rgb(0 0 0 / 40%));
-      transition: all;
-      border: 0;
-      /*box-sizing: content-box;*/
+      margin: 0 .4em;
+      transition: all ease 0.2s;
+      border: .1rem solid color.adjust($button-color, $lightness: -1%);
+      filter: drop-shadow(0 0.3em 0.1em #000000)
+              drop-shadow(0 0.3em 0.1em #000000)
+              drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%));
 
       &:active {
-        transform: translateY(.1rem);
-        transition: all
-      }
-
-
-      /*
-      &:hover {
-        border-color: #646cff;
+        transform: translateY(.2rem);
+        transition: all ease 0.2s;
+        border: .1rem solid color.adjust($button-color, $lightness: 5%);
+        background-color: color.adjust($button-color, $lightness: 3%);
+        filter: drop-shadow(0 0.05em 0.1em #000000)
+                drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%));
+                /* drop-shadow(0px 0px 0.2em #313131) */
       }
 
       &:focus,
       &:focus-visible {
-        outline: 4px auto -webkit-focus-ring-color;
+        outline: unset;
       }
-      */
 
       .icon {
         height: 70%;

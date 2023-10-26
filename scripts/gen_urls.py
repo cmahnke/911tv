@@ -39,16 +39,16 @@ else:
     mediainfo_opts = {}
 
 # See https://stackoverflow.com/a/7205107
-def merge(a: dict, b: dict, path=[]):
-    for key in b:
-        if key in a:
-            if isinstance(a[key], dict) and isinstance(b[key], dict):
-                merge(a[key], b[key], path + [str(key)])
-            elif a[key] != b[key]:
+def merge(first: dict, second: dict, path=[]):
+    for key in second:
+        if key in first:
+            if isinstance(first[key], dict) and isinstance(second[key], dict):
+                merge(first[key], second[key], path + [str(key)])
+            elif first[key] != second[key]:
                 raise Exception('Conflict at ' + '.'.join(path + [str(key)]))
         else:
-            a[key] = b[key]
-    return a
+            first[key] = second[key]
+    return first
 
 def gen_timecode(days, minutes=10):
     # Details format: 20010911
@@ -81,10 +81,12 @@ def get_media_type(url):
         if head.status_code == 200:
             return head.headers['Content-Type']
         cprint(f"\nGetting media type: {url} returned {head.status_code}", "red", file=sys.stderr)
+    except requests.exceptions.ConnectionError:
+        requests.status_code = "Connection refused"
     except requests.exceptions.ReadTimeout:
         cprint(f"\nTimeout for {url}", "red", file=sys.stderr)
-    except Exception as e:
-        cprint(f"\nError (${e}) for {url}", "red", file=sys.stderr)
+    except Exception as exc:
+        cprint(f"\nError (${exc}) for {url}", "red", file=sys.stderr)
     return None
 
 def get_video_duration(url):
@@ -111,7 +113,7 @@ def extract_details(days):
             timestamp = timestamp.astimezone(datetime.timezone.utc)
             text = event.find('div', {'class': 'evtext'}).text.strip()
             if len(text) > 2 * 40:
-                cprint(f"Events text for {timestamp} is to long!", "yellow", file=sys.stderr)
+                cprint(f"Events text for {timestamp} is to long! ({len(text)})", "yellow", file=sys.stderr)
             details[timestamp.isoformat()] = text
     return details
 
@@ -129,17 +131,23 @@ def condense(channels):
                 condensed_timecodes[timecode].pop('start_time', None)
                 condensed_timecodes[timecode].pop('channel', None)
                 condensed_timecodes[timecode].pop('timestamp', None)
+            elif urls['video_url'] is None and last_url is not None:
+                condensed_timecodes[timecode] = urls
+                last_url = None
+                condensed_timecodes[timecode].pop('start_time', None)
+                condensed_timecodes[timecode].pop('channel', None)
+                condensed_timecodes[timecode].pop('timestamp', None)
 
         condensed[chan] = condensed_timecodes
     return condensed
 
-# TODO: Generate missing timecodes for faster static noise
 def enrich(args):
+    #TODO: Check 'Max retries exceeded with url', https://stackoverflow.com/questions/23013220/max-retries-exceeded-with-url-in-requests
     (chan, timecode, urls) = args
     entry = {}
     entry[chan] = {}
     if urls['video_url'] is None:
-        cprint(f"Error: Video URL for {chan} at {timecode} is None", "red", file=sys.stderr)
+        cprint(f"\nError: Video URL for {chan} at {timecode} is None", "red", file=sys.stderr)
     elif urls['video_url'] is not None and 'src' in urls['video_url']:
         url = urls['video_url']['src']
         urls['video_url']['type'] = get_media_type(url)
@@ -153,7 +161,7 @@ def enrich(args):
     return entry
 
 def get_video_for_timecode(args):
-    (chan, time, dt) = args
+    (chan, time, time_dt) = args
     entry = {}
     url = eval('f"' + TEMPLATE + '"', {}, {'chan': chan, 'time': time})
     try:
@@ -179,20 +187,22 @@ def get_video_for_timecode(args):
             entry['fragment_url'] = f"{entry['url']}&raw=1"
         video_start = datetime.datetime.strptime(f"{id_match.group('start_date')} {id_match.group('start_time')}", '%Y%m%d %H%M%S')
         video_start = video_start.replace(tzinfo=datetime.timezone.utc)
-        #t = round((dt - video_start).total_seconds())
-        entry['start_time'] = round((dt - video_start).total_seconds())
+        #t = round((time_dt - video_start).total_seconds())
+        entry['start_time'] = round((time_dt - video_start).total_seconds())
 
         # TODO: check end times
     else:
-        entry['id'] = None
+        if EXTENDED:
+            entry['id'] = None
         entry['video_url'] = None
         cprint(f"Adding null for {url}", "red", file=sys.stderr)
     cprint('.', 'green', end="", flush=True, file=sys.stderr)
-    entry['timestamp'] = dt.isoformat()
+    entry['timestamp'] = time_dt.isoformat()
     entry['channel'] = chan
     return entry
 
 def add_end(channels):
+    # TODO: Check if list ends with empty video URLs
     for chan, timecodes in channels.items():
         sorted_timecodes = OrderedDict(sorted(timecodes.items(), key = lambda x: datetime.datetime.fromisoformat(x[0])))
         last = list(sorted_timecodes.keys())[-1]
@@ -217,8 +227,8 @@ if __name__ == '__main__':
         cprint(f"Preprocessing {chan}, {len(times.items())} items", 'green', file=sys.stderr)
         channels[chan] = {}
         entries = []
-        for time, dt in times.items():
-            entries.append((chan, time, dt))
+        for time, time_dt in times.items():
+            entries.append((chan, time, time_dt))
         with multiprocessing.Pool(POOL_SIZE) as P:
             processed_entries = P.map(get_video_for_timecode, entries)
         for entry in processed_entries:

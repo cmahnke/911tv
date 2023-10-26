@@ -95,8 +95,7 @@ function App() {
     { name: 'stalled', handler: () => { showNoise() } },
     { name: 'buffering', handler: () => { showNoise() } },
     { name: 'loadeddata', handler: () => { playerRef.current.play() } },
-    //{ name: '*', handler: (e) => { console.log(e) } },
-
+    { name: 'timeupdate', handler: () => { checkVideoPosition() } }
   ];
 
   const router = createHashRouter([
@@ -107,13 +106,13 @@ function App() {
   ]);
 
   function playVideo () {
+    playerRef.current.currentTime(currentVideo['start']);
     playerRef.current.play();
     //TODO: Calculate the start time in seconds depending on `appTime` ond `chunkLength`
     /*
     let videoTimestamp = DateTime.fromISO(currentVideo['startTime']);
     let startTime = timer.appTime.diff(videoTimestamp).as('milliseconds') / 1000;
     */
-    playerRef.current.currentTime(currentVideo['start']);
   }
 
   // Use `offset` to get the previuos (`-1`) or next (`1`) video
@@ -148,6 +147,10 @@ function App() {
         if ('meta_url' in entry) {
           video['info'] = entry['meta_url']
         }
+        // Fix possible data issues
+        if (video['url']['type'] === undefined || video['url']['type'] == null) {
+          video['url']['type'] = 'video/mp4'
+        }
         video['startTime'] = times[i + offset];
         console.log('Returning program ' + time, video);
         return video;
@@ -162,23 +165,24 @@ function App() {
     var i = channels.indexOf(channel);
     var logPrefix;
     if (direction) {
-      if (i == channels.length - 1) {
-        channel = channels[0];
-      } else {
-        channel = channels[i + 1];
-      }
-      logPrefix = 'Next channel (down), now ';
-    } else {
       if (i == 0) {
         channel = channels[channels.length - 1];
       } else {
         channel = channels[i - 1];
       }
+      logPrefix = 'Next channel (down), now ';
+    } else {
+      if (i == channels.length - 1) {
+        channel = channels[0];
+      } else {
+        channel = channels[i + 1];
+      }
       logPrefix = 'Previous channel (up), now ';
     }
     teletextRef.current.setChannel(channel);
     currentVideo = parseProgramms(channel, timer.appTime);
-    console.log(`${logPrefix}${channel} (${currentVideo['src']})`);
+    console.log(`${logPrefix}${channel} `,currentVideo);
+    showNoise('immediately');
     playerRef.current.src(currentVideo['url']);
     playerRef.current.currentTime(currentVideo['start']);
   }
@@ -194,14 +198,19 @@ function App() {
     return false;
   }
 
+  function checkVideoPosition() {
+    //TODO: Check if we're near the end of this video
+    //console.log(playerRef.current.currentTime());
+  }
+
   function setTitle(e, title) {
     if (e !== undefined && e.target !== undefined) {
       e.target.title = title;
     }
   }
 
-  function showNoise() {
-    noiseRef.current.show()
+  function showNoise(className) {
+    noiseRef.current.show(className)
   }
 
   function hideNoise() {
@@ -299,6 +308,7 @@ function App() {
 
   function off() {
     teletextRef.current.hide();
+    noiseRef.current.changeMode('static');
     noiseRef.current.show('immediately');
     hideInfoContainer();
     disableAudio();

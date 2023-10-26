@@ -280,28 +280,32 @@ cd site
 yarn run vite
 ```
 
+### Testing specific videos
+
+There are several URL params that can be used to test specific videos:
+* `c` - changes channel
+* `r` - resets the time
+* `t` - set a specific time
+
 # TODO:
 
-* CSS
-  * Buttons
 * Texts and links
   * Content
     * Finish 'Other resources'
     * More teletext pages from this document
 * Video addressing
-  * Seek - not tested yet
+  * Seek - not tested yet, might be issues with gaps in coverage
   * Segmentation
     * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
-* Reduce warnings
-  * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
+* Teletext
+  * Check Colors in teletext graphics
+* Testcard for gaps
 * Reduce TODO's from code
-* Check Colors in teletext graphics
 
 ## Known Issues
-* Static noise effect not working on channel switch
-* Test card sound not switching
+* Powering on not working properly with test card
 * Teletext: Graphic and Text clash
 * Browser issues
   * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
@@ -309,12 +313,15 @@ yarn run vite
 * Data preprocessing
   * GLVSN does't seem to be working
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
+* Warnings
+  * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 
 ## Further ideas
 
 * Remove `r` and `t` from url after use - without triggering a rerender
-* Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) of [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
-* Border of TV set can be slimmer
+* CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc)
+* Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
+* Bezel of TV set can be slimmer
 * Electron App
 * Data preprocessing
   * Multiple sub pages (manually split)

@@ -46,8 +46,9 @@ export const TVStatic = (props, ref) => {
   }
 
   function changeMode(newMode) {
-    if (newMode in contents) {
+    if (newMode in contents && mode !== newMode) {
       console.log(`Setting mode to ${newMode}`);
+      noisePlayer.stop();
       setMode(newMode);
     }
   }
@@ -83,19 +84,13 @@ export const TVStatic = (props, ref) => {
   }
 
   useImperativeHandle(ref, () => ({
-    show: () => { show() },
+    show: (fade) => { show(fade) },
     hide: () => { hide() },
     toggle: () => { toggle() },
     changeMode: (mode) => { changeMode(mode) },
     mute: () => { mute() },
     unmute: () => { unmute() },
   }));
-
-/*
-  useEffect(() => {
-    noisePlayer.play();
-  });
-*/
 
 /*
   function setCanvasSize() {
@@ -170,6 +165,13 @@ export const TVStatic = (props, ref) => {
       })
     }
     // The HTML element would be noisePlayer._sounds[0]._node
+
+    // This is only needed to have the initial frame
+    if (mode === 'static') {
+      makeNoise();
+    } else if (mode === 'closedown') {
+      makeTestcard();
+    }
 
     const interval = setInterval(() => {
       if (mode === 'static') {
