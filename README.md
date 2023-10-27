@@ -318,8 +318,9 @@ There are several URL params that can be used to test specific videos:
 
 ## Further ideas
 
+* Migrate to TypeScript
 * Remove `r` and `t` from url after use - without triggering a rerender
-* CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc)
+* CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
 * Bezel of TV set can be slimmer
 * Electron App

@@ -214,8 +214,8 @@ $tube-width: 100%;
       margin: 0 .4em;
       transition: all ease 0.2s;
       border: .1rem solid color.adjust($button-color, $lightness: -1%);
-      filter: drop-shadow(0 0.3em 0.1em #000000)
-              drop-shadow(0 0.3em 0.1em #000000)
+      filter: drop-shadow(0 0.3em 0.1em #000)
+              drop-shadow(0 0.3em 0.1em #000)
               drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%));
 
       &:active {
@@ -223,7 +223,7 @@ $tube-width: 100%;
         transition: all ease 0.2s;
         border: .1rem solid color.adjust($button-color, $lightness: 5%);
         background-color: color.adjust($button-color, $lightness: 3%);
-        filter: drop-shadow(0 0.05em 0.1em #000000)
+        filter: drop-shadow(0 0.05em 0.1em #000)
                 drop-shadow(.05rem .05rem .1rem rgb(0 0 0 / 80%));
                 /* drop-shadow(0px 0px 0.2em #313131) */
       }
