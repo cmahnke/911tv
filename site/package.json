@@ -37,7 +37,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
-    "html-react-parser": "^4.2.2",
+    "html-react-parser": "^5.0.1",
     "postcss": "^8.4.31",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-inline-svg": "^6.0.0",
