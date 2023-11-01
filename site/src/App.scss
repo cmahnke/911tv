@@ -234,15 +234,6 @@ $tube-width: 100%;
         outline: unset;
       }
 
-      &.toggle-power {
-        height: 100%;
-
-        .icon {
-          height: 70%;
-          width: 70%;
-        }
-      }
-
       .icon {
         height: 90%;
         width: 90%;
@@ -284,8 +275,12 @@ $tube-width: 100%;
       }
 
       &.toggle-power {
+        height: 100%;
+
         .icon {
           content: svg-load("assets/svg/IEC5009_Standby_Symbol.svg", stroke=#696969);
+          height: 70%;
+          width: 70%;
         }
       }
 
