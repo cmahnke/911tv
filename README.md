@@ -305,6 +305,7 @@ There are several URL params that can be used to test specific videos:
 * Reduce TODO's from code
 
 ## Known Issues
+* Button's not scaling very well
 * Powering on not working properly with test card
 * Teletext: Graphic and Text clash
 * Browser issues
@@ -318,7 +319,7 @@ There are several URL params that can be used to test specific videos:
 
 ## Further ideas
 
-* Migrate to TypeScript
+* Migrate to [TypeScript](https://www.typescriptlang.org/)
 * Remove `r` and `t` from url after use - without triggering a rerender
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)

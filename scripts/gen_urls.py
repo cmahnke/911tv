@@ -82,7 +82,8 @@ def get_media_type(url):
             return head.headers['Content-Type']
         cprint(f"\nGetting media type: {url} returned {head.status_code}", "red", file=sys.stderr)
     except requests.exceptions.ConnectionError:
-        requests.status_code = "Connection refused"
+        #requests.status_code = "Connection refused"
+        cprint(f"\nConnection refused for {url}", "red", file=sys.stderr)
     except requests.exceptions.ReadTimeout:
         cprint(f"\nTimeout for {url}", "red", file=sys.stderr)
     except Exception as exc:
@@ -150,8 +151,9 @@ def enrich(args):
         cprint(f"\nError: Video URL for {chan} at {timecode} is None", "red", file=sys.stderr)
     elif urls['video_url'] is not None and 'src' in urls['video_url']:
         url = urls['video_url']['src']
-        urls['video_url']['type'] = get_media_type(url)
-        if DURATION:
+        if urls['video_url']['type'] is None:
+            urls['video_url']['type'] = get_media_type(url)
+        if DURATION and urls['duration'] is None:
             urls['duration'] = get_video_duration(url)
     else:
         cprint(f"Error: Video URL {urls['video_url']} set but no 'src', this shouldn't happen", "red", file=sys.stderr)
@@ -175,11 +177,11 @@ def get_video_for_timecode(args):
 
         video_url = {}
         video_url['src'] = f"https://archive.org/download/{url_match.group('id')}/{url_match.group('id')}.mp4"
-        #video_url['type'] = get_media_type(video_url['src'])
+        video_url['type'] = None
 
         entry['video_url'] = video_url
         entry['meta_url'] = f"https://archive.org/details/{url_match.group('id')}"
-        #entry['duration'] = get_video_duration(video_url['src'])
+        entry['duration'] = None
         if EXTENDED:
             entry['id'] = url_match.group('id')
             entry['redirect'] = redirect
@@ -187,9 +189,7 @@ def get_video_for_timecode(args):
             entry['fragment_url'] = f"{entry['url']}&raw=1"
         video_start = datetime.datetime.strptime(f"{id_match.group('start_date')} {id_match.group('start_time')}", '%Y%m%d %H%M%S')
         video_start = video_start.replace(tzinfo=datetime.timezone.utc)
-        #t = round((time_dt - video_start).total_seconds())
         entry['start_time'] = round((time_dt - video_start).total_seconds())
-
         # TODO: check end times
     else:
         if EXTENDED:
@@ -247,7 +247,13 @@ if __name__ == '__main__':
         processed_entries = P.map(enrich, entries)
     cprint('', 'green', flush=True, file=sys.stderr)
 
+    #Basic sanity check
+    #incomplete = list(filter(lambda x: (x[next(iter(x.items()))]['duration'] is None or (x[next(iter(x.items()))]['duration']['video_url'] is not None and x[next(iter(x.items()))]['duration']['video_url']['type']) is None)), processed_entries)
+    #cprint(f"{len(incomplete)} entries are incomplete!", 'red', flush=True, file=sys.stderr)
+
     channels = reduce(merge, processed_entries)
+
+
     urls['channels'] = add_end(channels)
 
     dump = json.dumps(urls, indent=4, default=str)

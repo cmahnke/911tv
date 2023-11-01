@@ -356,12 +356,12 @@ function App() {
   if (!checkStreamEnd(channel)) {
     currentVideo = parseProgramms(channel, timer.appTime);
     var stream_info;
-    if (currentVideo['info'] !== undefined) {
-      stream_info = currentVideo['info'];
-    }
     if (currentVideo === undefined) {
       currentVideo = {};
       console.log('Stream is undefined, dispaying static noise')
+    } else if ('info' in currentVideo && currentVideo['info'] !== undefined) {
+      stream_info = currentVideo['info'];
+
     }
   } else {
     currentVideo = {};

@@ -196,6 +196,7 @@ $tube-width: 100%;
     $button-color: color.adjust(#313131, $lightness: -5%);
 
     display: inline-flex;
+    align-items: center;
     flex-direction: row;
     justify-content: flex-end;
     margin-left: auto;
@@ -204,14 +205,14 @@ $tube-width: 100%;
     margin-bottom: .3%;
 
     .button {
-      height: 80%;
+      height: 70%;
       aspect-ratio: 1/1;
       border-radius: 50%;
       font-size: 30%;
       font-family: inherit;
       background-color: $button-color;
       cursor: pointer;
-      margin: 0 .4em;
+      margin: 0 .8em;
       transition: all ease 0.2s;
       border: .1rem solid color.adjust($button-color, $lightness: -1%);
       filter: drop-shadow(0 0.3em 0.1em #000)
@@ -233,9 +234,18 @@ $tube-width: 100%;
         outline: unset;
       }
 
+      &.toggle-power {
+        height: 100%;
+
+        .icon {
+          height: 70%;
+          width: 70%;
+        }
+      }
+
       .icon {
-        height: 70%;
-        width: 70%;
+        height: 90%;
+        width: 90%;
         object-fit: contain;
         vertical-align: middle;
         display: inline-block;
