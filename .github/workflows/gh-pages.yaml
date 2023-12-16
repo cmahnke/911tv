@@ -38,7 +38,7 @@ jobs:
           ./scripts/setup.sh
 
       - name: Provide url artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: urls.json
           path: site/src/assets/json/urls.json
