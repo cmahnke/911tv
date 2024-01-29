@@ -31,7 +31,7 @@
     "@types/react-dom": "^18.2.7",
     "@vitejs/plugin-react": "^4.0.3",
     "browserslist-to-esbuild": "^2.1.0",
-    "esbuild-wasm": "^0.19.3",
+    "esbuild-wasm": "^0.20.0",
     "eslint": "^8.45.0",
     "eslint-plugin-json-es": "^1.5.7",
     "eslint-plugin-react": "^7.32.2",
