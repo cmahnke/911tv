@@ -5,10 +5,18 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      github-actions:
+        patterns:
+        - '*'
   - package-ecosystem: "npm"
     directory: "/site/"
     schedule:
       interval: "daily"
+    groups:
+      npm:
+        patterns:
+        - '*'
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
