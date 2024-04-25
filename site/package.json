@@ -42,7 +42,7 @@
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-inline-svg": "^6.0.0",
     "postcss-normalize": "^10.0.1",
-    "postcss-svgo": "^6.0.0",
+    "postcss-svgo": "^7.0.0",
     "sass": "^1.68.0",
     "stylelint": "^16",
     "stylelint-config-standard-scss": "^13.0.0",
