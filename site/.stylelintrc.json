@@ -9,6 +9,7 @@
     "comment-whitespace-inside": null,
     "property-no-unknown": [true, {
       "ignoreProperties": "font-smooth"}],
-    "property-no-vendor-prefix": null
+    "property-no-vendor-prefix": null,
+    "no-descending-specificity": [true, {"severity": "warning"}]
   }
 }
