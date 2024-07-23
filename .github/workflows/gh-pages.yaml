@@ -60,12 +60,12 @@ jobs:
         env:
           ESLINT_USE_FLAT_CONFIG: false
         run: |
-          npm run eslint
+          npm run lint
 
       - name: Build site
         working-directory: ./site
         run: |
-          npm run vite build
+          npx run vite build
 
       - name: Deploy site
         uses: peaceiris/actions-gh-pages@v4.0.0

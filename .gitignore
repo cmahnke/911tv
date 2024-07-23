@@ -4,3 +4,4 @@ site/yarn.lock
 *.json
 **/.DS_Store
 test.*
+node_modules
