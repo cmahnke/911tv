@@ -1,11 +1,11 @@
-import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
-import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
-import parse, { domToReact } from 'html-react-parser';
-import PropTypes from 'prop-types';
+import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
+import { useLocation, useParams, useNavigate, Link } from "react-router-dom";
+import parse, { domToReact } from "html-react-parser";
+import PropTypes from "prop-types";
 import { DateTime } from "luxon";
-import Timer from '../classes/Timer.js';
+import Timer from "../classes/Timer.js";
 
-import './Teletext.scss';
+import "./Teletext.scss";
 
 export const subTitlesPageNr = 300;
 
@@ -17,7 +17,7 @@ export const Teletext = (props, ref) => {
   var teletextSelectorBuffer = [];
   var showState = true;
   var cleanup = [];
-  const {page = 100} = useParams();
+  const { page = 100 } = useParams();
 
   var curPage = getPage(page);
   var title = curPage.title;
@@ -34,21 +34,20 @@ export const Teletext = (props, ref) => {
     teletextSelectorBuffer.push(e.key);
     console.log(e.key, teletextSelectorBuffer);
     if (teletextSelectorBuffer.length == 3) {
-
-      let page = teletextSelectorBuffer.join('')
+      let page = teletextSelectorBuffer.join("");
       if (!checkPage(page)) {
         page = 404;
       }
       if (page != curPage.number) {
         dialPage(page, true);
       }
-      teletextSelectorBuffer = []
+      teletextSelectorBuffer = [];
     }
   }
 
   function dialPage(nr, count) {
     function sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
+      return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
     function updateTeletextNumber(from, to, duration) {
@@ -57,14 +56,19 @@ export const Teletext = (props, ref) => {
       }
       let promises = [];
       for (let i = from; i < to; i++) {
-        promises.push(sleep((i - from) * duration).then(() => {
-          teletextPageNrRef.current.innerHTML = i;
-        }));
+        promises.push(
+          sleep((i - from) * duration).then(() => {
+            teletextPageNrRef.current.innerHTML = i;
+          }),
+        );
       }
       return promises;
     }
 
-    if ((typeof nr === 'string' || nr instanceof String) && nr.startsWith('/')) {
+    if (
+      (typeof nr === "string" || nr instanceof String) &&
+      nr.startsWith("/")
+    ) {
       nr = nr.substring(1);
     }
     if (count) {
@@ -86,7 +90,11 @@ export const Teletext = (props, ref) => {
   }
 
   function checkPage(number) {
-    if (pages.filter(obj => { return obj.number == number })[0] !== undefined) {
+    if (
+      pages.filter((obj) => {
+        return obj.number == number;
+      })[0] !== undefined
+    ) {
       return true;
     }
     return false;
@@ -94,7 +102,7 @@ export const Teletext = (props, ref) => {
 
   function getPage(number) {
     function formatClock(tsDt) {
-      return tsDt.setZone(timer.timezone).setLocale('en-us').toFormat('hh:mm')
+      return tsDt.setZone(timer.timezone).setLocale("en-us").toFormat("hh:mm");
     }
 
     if (!checkPage(number)) {
@@ -106,30 +114,43 @@ export const Teletext = (props, ref) => {
     }
     const options = {
       replace: ({ name, attribs, children }) => {
-        if (name === 'a' && attribs.href && !attribs.href.startsWith('http')) {
-          let className = 'page';
+        if (name === "a" && attribs.href && !attribs.href.startsWith("http")) {
+          let className = "page";
           if (attribs.class) {
             className += ` ${attribs.class}`;
           }
-          return <Link onClick={() => dialPage(attribs.href, true)} className={className}>{domToReact(children)}</Link>;
+          return (
+            <Link
+              onClick={() => dialPage(attribs.href, true)}
+              className={className}
+            >
+              {domToReact(children)}
+            </Link>
+          );
         }
-      }
+      },
     };
-    let parsedPage = pages.filter(obj => {
-      return obj.number == number
+    let parsedPage = pages.filter((obj) => {
+      return obj.number == number;
     })[0];
     if (parsedPage === undefined) {
       return undefined;
     }
 
-    if (!Array.isArray(parsedPage.html) && typeof parsedPage.markdown !== 'object') {
-      parsedPage['react'] = parse(`<div class="md-content">${parsedPage.html}</div>`, options);
-    } else if (typeof parsedPage.markdown === 'object') {
+    if (
+      !Array.isArray(parsedPage.html) &&
+      typeof parsedPage.markdown !== "object"
+    ) {
+      parsedPage["react"] = parse(
+        `<div class="md-content">${parsedPage.html}</div>`,
+        options,
+      );
+    } else if (typeof parsedPage.markdown === "object") {
       let latest = Object.keys(parsedPage.markdown)[0];
       for (const ts in parsedPage.markdown) {
         let tsDt = DateTime.fromISO(ts);
         if (tsDt > timer.appTime) {
-          const eventDiff = tsDt.diff(timer.appTime).as('milliseconds');
+          const eventDiff = tsDt.diff(timer.appTime).as("milliseconds");
           const subtitleTimer = setTimeout(() => {
             console.log(`Updating subtitle at ${formatClock(tsDt)}`);
             teletextBodyRef.current.innerHTML = `<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(tsDt)} ${parsedPage.markdown[ts]}</div>`;
@@ -139,7 +160,10 @@ export const Teletext = (props, ref) => {
           latest = ts;
         }
       }
-      parsedPage['react'] = parse(`<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(DateTime.fromISO(latest))} ${parsedPage.markdown[latest]}</div>`, options);
+      parsedPage["react"] = parse(
+        `<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(DateTime.fromISO(latest))} ${parsedPage.markdown[latest]}</div>`,
+        options,
+      );
     } else {
       // TODO: Handle multiple HTML elements here
     }
@@ -171,14 +195,22 @@ export const Teletext = (props, ref) => {
   }
 
   useImperativeHandle(ref, () => ({
-    show: () => { show() },
-    hide: () => { hide() },
-    toggle: () => { toggle() },
-    setChannel: (channel) => { setChannel(channel) }
+    show: () => {
+      show();
+    },
+    hide: () => {
+      hide();
+    },
+    toggle: () => {
+      toggle();
+    },
+    setChannel: (channel) => {
+      setChannel(channel);
+    },
   }));
 
   useEffect(() => {
-    document.title = '9/11 TV: ' + title;
+    document.title = "9/11 TV: " + title;
     if (!checkPage(page)) {
       const curLoc = window.location.href;
       window.location.href = curLoc.replace(/(.*?#)\/\d*/g, "$1/404");
@@ -186,8 +218,8 @@ export const Teletext = (props, ref) => {
     if (page !== 300) {
       while (cleanup.length) cleanup.pop()();
     }
-    window.removeEventListener('keyup', teletextSelector);
-    window.addEventListener('keyup', teletextSelector);
+    window.removeEventListener("keyup", teletextSelector);
+    window.addEventListener("keyup", teletextSelector);
     const interval = setInterval(() => {
       teletextTimeRef.current.innerHTML = timer.formatTimecode();
     }, 1000);
@@ -202,19 +234,27 @@ export const Teletext = (props, ref) => {
         and call divRef.current.focus(); in useEffect to use react events.
       */}
       <div id="teletext-header">
-        <div ref={teletextPageNrRef} id="teletext-page-nr">{curPage.number}</div>
-        <div ref={teletextTimeRef} id="teletext-time">{timer.formatTimecode()}</div>
+        <div ref={teletextPageNrRef} id="teletext-page-nr">
+          {curPage.number}
+        </div>
+        <div ref={teletextTimeRef} id="teletext-time">
+          {timer.formatTimecode()}
+        </div>
       </div>
-      <div ref={teletextBodyRef} id="teletext-body">{ curPage.react }</div>
-      <div ref={teletextFooterRef} id="teletext-footer">{ channel }</div>
+      <div ref={teletextBodyRef} id="teletext-body">
+        {curPage.react}
+      </div>
+      <div ref={teletextFooterRef} id="teletext-footer">
+        {channel}
+      </div>
     </div>
-  )
-}
+  );
+};
 
 Teletext.propTypes = {
   timer: PropTypes.instanceOf(Timer),
   pages: PropTypes.arrayOf(PropTypes.object),
-  channel: PropTypes.string
+  channel: PropTypes.string,
 };
 
 export default forwardRef(Teletext);

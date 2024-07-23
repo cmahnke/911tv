@@ -1,8 +1,8 @@
-import React, { forwardRef } from 'react';
-import PropTypes from 'prop-types';
-import videojs from 'video.js';
-import 'video.js/dist/video-js.css';
-import './VideoJS.scss';
+import React, { forwardRef } from "react";
+import PropTypes from "prop-types";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import "./VideoJS.scss";
 
 export const VideoJS = (props, playerRef) => {
   const placeholderRef = React.useRef(null);
@@ -13,7 +13,7 @@ export const VideoJS = (props, playerRef) => {
     if (!playerRef.current) {
       const placeholderEl = placeholderRef.current;
       const videoElement = placeholderEl.appendChild(
-        document.createElement("video-js")
+        document.createElement("video-js"),
       );
 
       const player = (playerRef.current = videojs(videoElement, options, () => {
@@ -47,7 +47,7 @@ export const VideoJS = (props, playerRef) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerRef]);
-  return <div ref={placeholderRef} className="video-container" ></div>
+  return <div ref={placeholderRef} className="video-container"></div>;
 };
 
 VideoJS.propTypes = {
@@ -56,9 +56,9 @@ VideoJS.propTypes = {
   eventHandlers: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
-      handler: PropTypes.func
-    })
-  )
+      handler: PropTypes.func,
+    }),
+  ),
 };
 
 export default forwardRef(VideoJS);

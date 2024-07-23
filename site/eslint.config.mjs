@@ -1,13 +1,13 @@
 import globals from "globals";
 import pluginJs from "@eslint/js";
 import react from "eslint-plugin-react";
-import eslintPluginReactHooks from 'eslint-plugin-react-hooks';
+import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
   pluginJs.configs.recommended,
   {
-    files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
+    files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
@@ -19,27 +19,24 @@ export default [
       },
     },
     plugins: {
-      'react-hooks': eslintPluginReactHooks,
+      "react-hooks": eslintPluginReactHooks,
       "react-refresh": reactRefresh,
-      react
+      react,
     },
     rules: {
-      'no-unused-vars': [
-        'warn',
-        { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }
+      "no-unused-vars": [
+        "warn",
+        { vars: "all", args: "after-used", ignoreRestSiblings: false },
       ],
-      'no-warning-comments': [
-        'warn',
-        {}
-      ],
-      'react/prop-types': [1],
-      'react-refresh/only-export-components': [
-        'warn',
+      "no-warning-comments": ["warn", {}],
+      "react/prop-types": [1],
+      "react-refresh/only-export-components": [
+        "warn",
         { allowConstantExport: true },
       ],
-    }
+    },
   },
   {
     ignores: ["dist/", "vite.config.js", "postcss.config.js"],
-  }
-]
+  },
+];

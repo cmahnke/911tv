@@ -1,6 +1,6 @@
 #tv-static {
   aspect-ratio: inherit;
-  position:  absolute;
+  position: absolute;
   height: 85%;
   width: 85%;
   display: flex;
@@ -23,7 +23,9 @@
   &.hide {
     z-index: -11;
     opacity: 0;
-    transition: opacity 1.5s ease-in-out, z-index .5s linear 1.5s;
+    transition:
+      opacity 1.5s ease-in-out,
+      z-index 0.5s linear 1.5s;
   }
 
   /*
@@ -31,5 +33,4 @@
     content: svg-load("assets/svg/Philips_PM5544.svg");
   }
   */
-
 }

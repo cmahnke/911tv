@@ -3,28 +3,37 @@
 /* Optimized height is 34 */
 $height-divisor: 43;
 $aspect-ratio: 1.2;
-$text-size: calc( 100vh / $height-divisor);
+$text-size: calc(100vh / $height-divisor);
 $text-width: calc($text-size / $aspect-ratio);
 
 /* Teletext colors */
-$colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #ff0, "blue": #0ff, "white": #fff, "black": #000);
+$colors: (
+  "magenta": #f0f,
+  "cyan": #0ff,
+  "red": #f00,
+  "green": #0f0,
+  "yellow": #ff0,
+  "blue": #0ff,
+  "white": #fff,
+  "black": #000,
+);
 
 /* Font with graphic symbols */
-@use '../assets/scss/unscii-16';
+@use "../assets/scss/unscii-16";
 
 #teletext {
   aspect-ratio: inherit;
-  position:  absolute;
+  position: absolute;
   height: 85%;
   width: 85%;
   z-index: -1;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  font-family: 'Press Start 2P', monospace;
+  font-family: "Press Start 2P", monospace;
   pointer-events: none;
   font-size: $text-size;
-  color: map.get($colors, 'white');
+  color: map.get($colors, "white");
 
   &.show {
     /* display: 1; */
@@ -43,15 +52,13 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     pointer-events: inherit;
     justify-content: space-between;
     background-color: black;
-    color: map.get($colors, 'white');
+    color: map.get($colors, "white");
   }
 
   #teletext-page-nr {
-
   }
 
   #teletext-time {
-
   }
 
   #teletext-body {
@@ -79,7 +86,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      margin-bottom: calc( 100vh / $height-divisor);
+      margin-bottom: calc(100vh / $height-divisor);
       background-color: black;
       width: 100%;
       text-align: center;
@@ -89,11 +96,11 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
 
     p {
       margin-block-start: unset;
-      margin-block-end: calc( 100vh / $height-divisor);
+      margin-block-end: calc(100vh / $height-divisor);
     }
 
     h1 {
-      text-align:center;
+      text-align: center;
       background-color: #00f;
       color: #ff0;
       font-size: calc($text-size * 2);
@@ -104,7 +111,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     h2 {
       font-size: calc($text-size * 2);
       color: #fff;
-      text-align:center;
+      text-align: center;
       margin-block-start: unset;
       margin-block-end: unset;
     }
@@ -116,14 +123,14 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     }
 
     ul {
-      margin-block: calc( 100vh / $height-divisor);
+      margin-block: calc(100vh / $height-divisor);
       margin-inline-start: unset;
       margin-inline-end: unset;
       padding-inline-start: calc($text-width * 3);
 
       li {
         &::marker {
-          content: '* ';
+          content: "* ";
         }
       }
     }
@@ -138,7 +145,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
 
         &::marker,
         &::-webkit-details-marker {
-          content: '';
+          content: "";
           display: none;
         }
 
@@ -156,7 +163,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
       bottom: 0;
       color: #f00;
       width: 100%;
-      background-color:#00f;
+      background-color: #00f;
       padding: 0;
 
       li {
@@ -178,15 +185,15 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
       color: #00f;
       background-color: #00f;
       border: 1px solid #00f;
-      margin-top: calc( (100vh / $height-divisor - 8px) / 2);
-      margin-bottom: calc( (100vh / $height-divisor - 8px) / 2);
+      margin-top: calc((100vh / $height-divisor - 8px) / 2);
+      margin-bottom: calc((100vh / $height-divisor - 8px) / 2);
 
       &.empty-line {
         background-color: unset;
         color: unset;
         border: none;
         margin: unset;
-        height: calc( 100vh / $height-divisor);
+        height: calc(100vh / $height-divisor);
       }
     }
 
@@ -196,13 +203,17 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     }
 
     pre.teletext-graphic {
-      font-family: 'UNSCII 2.0', monospace;
+      font-family: "UNSCII 2.0", monospace;
       line-height: 1;
-      text-shadow: 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white), 0 0 1px map.get($colors, white);
+      text-shadow:
+        0 0 1px map.get($colors, white),
+        0 0 1px map.get($colors, white),
+        0 0 1px map.get($colors, white),
+        0 0 1px map.get($colors, white);
       width: max-content;
       position: relative;
       margin: unset;
-      color: map.get($colors, 'white');
+      color: map.get($colors, "white");
 
       &.right {
         float: right;
@@ -240,23 +251,28 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     width: 100%;
     text-align: center;
     justify-content: center;
-    color: map.get($colors, 'white');
+    color: map.get($colors, "white");
   }
 
   @each $name, $cc in $colors {
     .#{$name} {
       color: $cc !important;
-      text-shadow: 0 0 1px $cc, 0 0 1px $cc, 0 0 1px $cc, 0 0 1px $cc !important;
+      text-shadow:
+        0 0 1px $cc,
+        0 0 1px $cc,
+        0 0 1px $cc,
+        0 0 1px $cc !important;
     }
   }
 }
 
 @media (orientation: portrait) {
   #teletext {
-    font-size: calc( 100vw / $height-divisor);
+    font-size: calc(100vw / $height-divisor);
 
     #teletext-body {
-      h1, h2 {
+      h1,
+      h2 {
         font-size: calc((100vw / $height-divisor) * 2);
       }
 

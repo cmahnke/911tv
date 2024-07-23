@@ -1,12 +1,13 @@
 @font-face {
-    font-family: 'UNSCII 2.0';
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-    src: url('~@techandsoftware/teletext-fonts/unscii-16.otf') format('opentype'),
-         url('~@techandsoftware/teletext-fonts/unscii-16.ttf') format('ttf'),
-         url('~@techandsoftware/teletext-fonts/unscii-16.woff') format('woff');
-    unicode-range: U+1FB00-FB3B, U+20, U+258C, U+2590, U+2588;
-    font-smooth: never;
-    -webkit-font-smoothing: none
+  font-family: "UNSCII 2.0";
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  src:
+    url("~@techandsoftware/teletext-fonts/unscii-16.otf") format("opentype"),
+    url("~@techandsoftware/teletext-fonts/unscii-16.ttf") format("ttf"),
+    url("~@techandsoftware/teletext-fonts/unscii-16.woff") format("woff");
+  unicode-range: U+1FB00-FB3B, U+20, U+258C, U+2590, U+2588;
+  font-smooth: never;
+  -webkit-font-smoothing: none;
 }
