@@ -10,7 +10,7 @@ $text-width: calc($text-size / $aspect-ratio);
 $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #ff0, "blue": #0ff, "white": #fff, "black": #000);
 
 /* Font with graphic symbols */
-@use '../assets/scss/unscii-16.scss';
+@use '../assets/scss/unscii-16';
 
 #teletext {
   aspect-ratio: inherit;
@@ -116,7 +116,7 @@ $colors: ("magenta": #f0f, "cyan": #0ff, "red": #f00, "green": #0f0, "yellow": #
     }
 
     ul {
-      margin-block: calc( 100vh / $height-divisor) calc( 100vh / $height-divisor);
+      margin-block: calc( 100vh / $height-divisor);
       margin-inline-start: unset;
       margin-inline-end: unset;
       padding-inline-start: calc($text-width * 3);
