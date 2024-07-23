@@ -65,7 +65,7 @@ jobs:
       - name: Build site
         working-directory: ./site
         run: |
-          npx run vite build
+          npx vite build
 
       - name: Deploy site
         uses: peaceiris/actions-gh-pages@v4.0.0
