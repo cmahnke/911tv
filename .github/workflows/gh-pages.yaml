@@ -53,7 +53,7 @@ jobs:
       - name: Install Node dependencies
         working-directory: ./site
         run: |
-          npm i --force
+          npm ci
 
       - name: Lint and Validate JSON
         working-directory: ./site
