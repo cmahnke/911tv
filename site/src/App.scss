@@ -63,88 +63,6 @@ $tube-width: 100%;
   }
 }
 
-#info-container {
-  pointer-events: none;
-  aspect-ratio: inherit;
-  height: 90%;
-  width: 90%;
-  z-index: 15;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  position: absolute;
-
-  &.hide {
-    display: none;
-  }
-
-  #info {
-    position: absolute;
-    right: 5%;
-    bottom: 5%;
-    transition: width;
-    z-index: inherit;
-    background-color: rgb(88 88 88 / 80%);
-    display: flex;
-    flex-direction: row-reverse;
-    height: 1.6rem;
-    vertical-align: middle;
-    border-radius: 1rem;
-
-    .button {
-      height: 100%;
-      aspect-ratio: 1 / 1;
-      padding-block: 0;
-      padding-inline: 0;
-      border-width: 0;
-      pointer-events: all;
-      z-index: 20;
-      border-radius: 1rem;
-
-      .info-icon {
-        content: svg-load("assets/svg/info.svg");
-        height: 100%;
-        width: 100%;
-      }
-    }
-
-    .info-text {
-      max-width: 10em;
-      display: flex;
-      padding-left: unset;
-      padding-right: unset;
-      white-space: nowrap;
-      transition: all 0.5s;
-      overflow: hidden;
-      border-top-left-radius: 1rem;
-      border-bottom-left-radius: 1rem;
-
-      a.tv-brand-link {
-        text-decoration: none;
-        color: black;
-
-        &:hover,
-        &:focus,
-        &:focus-visible {
-        }
-      }
-    }
-
-    &.show > .info-text {
-      width: fit-content;
-      max-width: 10em;
-      pointer-events: auto;
-      padding-left: 0.4rem;
-      padding-right: 0.4rem;
-    }
-
-    &.hide > .info-text {
-      width: 0;
-      max-width: 0;
-    }
-  }
-}
-
 #tv-footer {
   position: absolute;
   bottom: 5%;
@@ -299,6 +217,89 @@ $tube-width: 100%;
           filter: drop-shadow(0 0 3px rgb(0 255 0 / 40%));
         }
       }
+    }
+  }
+}
+
+
+#info-container {
+  pointer-events: none;
+  aspect-ratio: inherit;
+  height: 90%;
+  width: 90%;
+  z-index: 15;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: absolute;
+
+  &.hide {
+    display: none;
+  }
+
+  #info {
+    position: absolute;
+    right: 5%;
+    bottom: 5%;
+    transition: width;
+    z-index: inherit;
+    background-color: rgb(88 88 88 / 80%);
+    display: flex;
+    flex-direction: row-reverse;
+    height: 1.6rem;
+    vertical-align: middle;
+    border-radius: 1rem;
+
+    .button {
+      height: 100%;
+      aspect-ratio: 1 / 1;
+      padding-block: 0;
+      padding-inline: 0;
+      border-width: 0;
+      pointer-events: all;
+      z-index: 20;
+      border-radius: 1rem;
+
+      .info-icon {
+        content: svg-load("assets/svg/info.svg");
+        height: 100%;
+        width: 100%;
+      }
+    }
+
+    .info-text {
+      max-width: 10em;
+      display: flex;
+      padding-left: unset;
+      padding-right: unset;
+      white-space: nowrap;
+      transition: all 0.5s;
+      overflow: hidden;
+      border-top-left-radius: 1rem;
+      border-bottom-left-radius: 1rem;
+
+      a.tv-brand-link {
+        text-decoration: none;
+        color: black;
+
+        &:hover,
+        &:focus,
+        &:focus-visible {
+        }
+      }
+    }
+
+    &.show > .info-text {
+      width: fit-content;
+      max-width: 10em;
+      pointer-events: auto;
+      padding-left: 0.4rem;
+      padding-right: 0.4rem;
+    }
+
+    &.hide > .info-text {
+      width: 0;
+      max-width: 0;
     }
   }
 }

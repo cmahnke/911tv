@@ -9,7 +9,7 @@ export default function json(options = {}) {
   return {
     name: 'jsoncrush',
 
-    // eslint-disable-next-line no-shadow
+     
     transform(code, id) {
       if (id.slice(-5) !== '.json' || !filter(id)) return null;
 
