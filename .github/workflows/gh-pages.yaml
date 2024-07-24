@@ -57,8 +57,6 @@ jobs:
 
       - name: Lint and Validate JSON
         working-directory: ./site
-        env:
-          ESLINT_USE_FLAT_CONFIG: false
         run: |
           npx eslint
 
