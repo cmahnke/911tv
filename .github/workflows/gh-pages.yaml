@@ -60,7 +60,7 @@ jobs:
         env:
           ESLINT_USE_FLAT_CONFIG: false
         run: |
-          npm run lint
+          npx eslint
 
       - name: Build site
         working-directory: ./site
