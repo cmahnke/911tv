@@ -24,13 +24,13 @@
     "video.js": "^8.17.3"
   },
   "devDependencies": {
-    "@fontsource/press-start-2p": "^5.0.20",
+    "@fontsource/press-start-2p": "^5.0.21",
     "@rollup/plugin-strip": "^3.0.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "browserslist-to-esbuild": "^2.1.1",
-    "esbuild-wasm": "^0.23.0",
+    "esbuild-wasm": "^0.23.1",
     "eslint": "^9.7.0",
     "eslint-plugin-json-es": "^1.6.0",
     "eslint-plugin-react": "^7.35.0",
