@@ -33,7 +33,7 @@
     "esbuild-wasm": "^0.23.1",
     "eslint": "^9.7.0",
     "eslint-plugin-json-es": "^1.6.0",
-    "eslint-plugin-react": "^7.36.0",
+    "eslint-plugin-react": "^7.36.1",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
@@ -48,7 +48,7 @@
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "svgo": "^3.3.2",
-    "vite": "^5.4.4",
+    "vite": "^5.4.5",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-stylelint": "^5.3.1",
     "vite-plugin-svgo": "1.4.0"
