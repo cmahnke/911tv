@@ -41,7 +41,7 @@
     "postcss": "^8.4.47",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-inline-svg": "^6.0.0",
-    "postcss-normalize": "^13.0.0",
+    "postcss-normalize": "^13.0.1",
     "postcss-svgo": "^7.0.1",
     "prettier": "^3.3.3",
     "sass": "^1.79.3",
@@ -51,7 +51,7 @@
     "vite": "^5.4.8",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-stylelint": "^5.3.1",
-    "vite-plugin-svgo": "1.4.0"
+    "vite-plugin-svgo": "1.6.2"
   },
   "overrides": {
     "eslint-plugin-react-hooks": {
