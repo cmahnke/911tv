@@ -4,7 +4,7 @@ requests
 python-frontmatter
 markdown
 termcolor
-numpy<2
+numpy<3
 pillow
 emoji
 pymediainfo
