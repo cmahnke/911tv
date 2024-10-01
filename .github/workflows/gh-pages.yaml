@@ -65,6 +65,11 @@ jobs:
         run: |
           npx vite build
 
+      - name: Copy generated files
+        run: |
+          cp ./site/src/assets/json/urls.json ./site/dist
+          cp ./site/src/assets/json/pages.json ./site/dist
+
       - name: Deploy site
         uses: peaceiris/actions-gh-pages@v4.0.0
         with:

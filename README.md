@@ -335,3 +335,18 @@ There are several URL params that can be used to test specific videos:
 <p align="center">
   <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">
 </p>
+
+# Maintanace
+
+## Python
+
+```
+pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+## JavaScript
+
+```
+cd site
+npm update --save
+```

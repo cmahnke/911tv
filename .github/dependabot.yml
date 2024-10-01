@@ -17,9 +17,6 @@ updates:
       npm:
         patterns:
         - '*'
-    ignore:
-      - dependency-name: "eslint"
-        versions: '>8'
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
