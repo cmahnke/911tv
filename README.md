@@ -156,6 +156,14 @@ All in all, a very impressive form of cinematic adaptation as a horror film (met
 
 Even though it promotes [conspiracy theories](https://en.wikipedia.org/wiki/9/11_conspiracy_theories), the movie series [Loose Change](https://en.wikipedia.org/wiki/Loose_Change) is noteworthy for illustrating cultural impact.
 
+### Loose Change
+* [Loose Change 1st Edition](https://archive.org/details/loose-change-1st-edition)
+* [Loose Change 2nd Edition](https://archive.org/details/loose-change-2nd-edition)
+
+## Similar Projects / Resources
+
+* [9/11 attacks in realtime (dashboard) 7:46am-12:00pm by Christian Koller](https://www.youtube.com/watch?v=zx8_Pumdkpg)
+
 # Frequently asked questions (FAQ)
 
 ## Why is the sometimes static noise?
@@ -199,6 +207,8 @@ There are several other interesting Teletext related sites, that might be intere
 * [The Teletext Archive](http://www.teletextarchive.com/)
 
 ## Static Noise
+
+As usual the Wikipedia has all you need to know on [static noise](https://en.wikipedia.org/wiki/Noise_(video)).
 
 ### Generating a static noise sound
 
@@ -289,23 +299,30 @@ There are several URL params that can be used to test specific videos:
 * `r` - resets the time
 * `t` - set a specific time
 
+### Maintanace
+
+#### Python
+
+```
+pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+#### JavaScript
+
+```
+cd site
+npm update --save
+```
+
 # TODO:
 
-* Texts and links
-  * Content
-    * Finish 'Other resources'
-    * More teletext pages from this document
 * Video addressing
   * Seek - not tested yet, might be issues with gaps in coverage
   * Segmentation
     * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
-* Teletext
-  * Check Colors in teletext graphics
 * Testcard for gaps
-* Reduce TODO's from code
-* Include https://www.youtube.com/watch?v=zx8_Pumdkpg
 
 ## Known Issues
 * Button's not scaling very well
@@ -322,6 +339,12 @@ There are several URL params that can be used to test specific videos:
 
 ## Further ideas
 
+### Short term
+* Reduce TODO's from code
+* Teletext
+  * Check Colors in teletext graphics
+
+### Long term
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
 * Remove `r` and `t` from url after use - without triggering a rerender
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
@@ -331,22 +354,9 @@ There are several URL params that can be used to test specific videos:
 * Data preprocessing
   * Multiple sub pages (manually split)
   * check if generated sub pages are needed
+* Add more videos
+  * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions
 
 <p align="center">
   <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">
 </p>
-
-# Maintanace
-
-## Python
-
-```
-pip install --upgrade --force-reinstall -r requirements.txt
-```
-
-## JavaScript
-
-```
-cd site
-npm update --save
-```

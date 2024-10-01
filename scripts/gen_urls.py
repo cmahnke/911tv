@@ -260,7 +260,7 @@ def enrich_worker(q, r, download_counter):
             cprint('x', 'yellow', end='', flush=True, file=sys.stderr)
 
         if download_counter.value() % 1000 == 0:
-            cprint(f"\n{download_counter.value()}", 'green', flush=True)
+            cprint(f"\n{download_counter.value()}", 'green', flush=True, file=sys.stderr)
 
 # Main program
 if __name__ == '__main__':

@@ -8,6 +8,7 @@ This page includes some links to other resources
 
 * More Media [510](510)
 * Technical resources [520](520)
-* Cultural impact of 9/11 [530](530)
+* Cultural impact [530](530)
+* Similar projects [540](540)
 <!-- -->
 * Back [100](100){:class="nav"}
