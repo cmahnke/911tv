@@ -59,12 +59,18 @@ function App() {
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
     channel = urlParams.get("c");
+    urlParams.delete('c')
+    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   if (urlParams.get("r") !== null && urlParams.get("r") !== undefined) {
     reset = true;
+    urlParams.delete('r')
+    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   if (urlParams.get("t") !== null && urlParams.get("t") !== undefined) {
     reset = urlParams.get("t");
+    urlParams.delete('t')
+    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   //TODO: This is a dirty hack and doesn't work, since it probably triggers a rerender
   //if (urlParams.get('r') !== null || urlParams.get('t') !== null) {

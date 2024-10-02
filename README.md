@@ -331,6 +331,7 @@ npm update --save
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 * Warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
+* Channel switch via URL not working
 
 ## Further ideas
 
@@ -343,7 +344,6 @@ npm update --save
 * Data preprocessing
   * GLVSN does't seem to be working
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
-* Remove `r` and `t` from url after use - without triggering a rerender
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
 * Bezel of TV set can be slimmer
