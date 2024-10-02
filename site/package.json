@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . -c eslint.config.mjs --max-warnings 0",
-    "stylelint": "stylelint 'assets/scss/*.scss'",
-    "preview": "vite preview"
+    "stylelint": "stylelint 'src/**.scss'",
+    "preview": "vite preview",
+    "format": "prettier . --check"
   },
   "dependencies": {
     "@techandsoftware/teletext-fonts": "^1.0.0",

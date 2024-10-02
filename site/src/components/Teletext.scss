@@ -45,24 +45,14 @@ $colors: (
 
   @keyframes vtflicker {
     from {
-      text-shadow: 1px 0 0 #ea36af, -2px 0 0 #75fa69;
+      text-shadow:
+        1px 0 0 #ea36af,
+        -2px 0 0 #75fa69;
     }
     to {
-      text-shadow: 2px 0.5px 2px #ea36af, -1px -0.5px 2px #75fa69;
-    }
-  }
-
-  &.flicker {
-    #teletext-header,
-    #teletext-body h1,
-    #teletext-body h2,
-    #teletext-body h3,
-    /* #teletext-body .teletext-graphic, */
-    #teletext-footer {
-      animation-duration: 0.01s;
-      animation-name: vtflicker;
-      animation-iteration-count: infinite;
-      animation-direction: alternate;
+      text-shadow:
+        2px 0.5px 2px #ea36af,
+        -1px -0.5px 2px #75fa69;
     }
   }
 
@@ -286,6 +276,20 @@ $colors: (
         0 0 1px $cc,
         0 0 1px $cc,
         0 0 1px $cc !important;
+    }
+  }
+
+  &.flicker {
+    #teletext-header,
+    #teletext-body h1,
+    #teletext-body h2,
+    #teletext-body h3,
+    /* #teletext-body .teletext-graphic, */
+    #teletext-footer {
+      animation-duration: 0.01s;
+      animation-name: vtflicker;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
     }
   }
 }
