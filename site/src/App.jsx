@@ -15,7 +15,7 @@ import urlsImport from "./assets/json/urls.json";
 import pagesImport from "./assets/json/pages.json";
 
 const consentCookieName = "iaConsent";
-// Length of video chnks to request, longer times take longer to load
+// Length of video chunks to request, longer times take longer to load
 const chunkLength = 90;
 
 function parseJson(json) {

@@ -26,3 +26,6 @@ dist-ssr
 yarn.lock
 bak
 .stylelintcache
+
+public/images/favicon*.png
+public/images/favicon.ico
