@@ -37,16 +37,6 @@ jobs:
       - name: Install Python dependencies
         run: pip install -r requirements.txt
 
-      - name: Generate required dependencies
-        run: |
-          ./scripts/setup.sh
-
-      - name: Provide url artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: urls.json
-          path: site/src/assets/json/urls.json
-
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
         with:
@@ -56,6 +46,16 @@ jobs:
         working-directory: ./site
         run: |
           npm i
+
+      - name: Generate required dependencies
+        run: |
+          ./scripts/setup.sh
+
+      - name: Provide url artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: urls.json
+          path: site/src/assets/json/urls.json
 
       - name: Lint and Validate JSON
         working-directory: ./site
@@ -69,7 +69,7 @@ jobs:
 
       - name: Copy generated files
         run: |
-          cp ./site/src/assets/json/urls.json ./site/dist
+          cp ./site/src/assets/json/urls*.json ./site/dist
           cp ./site/src/assets/json/pages.json ./site/dist
 
       - name: Deploy site
