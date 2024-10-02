@@ -28,7 +28,7 @@
   "devDependencies": {
     "@fontsource/press-start-2p": "^5.1.0",
     "@rollup/plugin-strip": "^3.0.4",
-    "@types/react": "^18.3.10",
+    "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
     "browserslist-to-esbuild": "^2.1.1",

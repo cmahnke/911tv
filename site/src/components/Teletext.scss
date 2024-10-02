@@ -43,6 +43,29 @@ $colors: (
     display: none;
   }
 
+  @keyframes vtflicker {
+    from {
+      text-shadow: 1px 0 0 #ea36af, -2px 0 0 #75fa69;
+    }
+    to {
+      text-shadow: 2px 0.5px 2px #ea36af, -1px -0.5px 2px #75fa69;
+    }
+  }
+
+  &.flicker {
+    #teletext-header,
+    #teletext-body h1,
+    #teletext-body h2,
+    #teletext-body h3,
+    /* #teletext-body .teletext-graphic, */
+    #teletext-footer {
+      animation-duration: 0.01s;
+      animation-name: vtflicker;
+      animation-iteration-count: infinite;
+      animation-direction: alternate;
+    }
+  }
+
   #teletext-header {
     display: flex;
     flex-direction: row;
@@ -205,6 +228,7 @@ $colors: (
     pre.teletext-graphic {
       font-family: "UNSCII 2.0", monospace;
       line-height: 1;
+      z-index: -2;
       text-shadow:
         0 0 1px map.get($colors, white),
         0 0 1px map.get($colors, white),

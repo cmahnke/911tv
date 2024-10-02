@@ -325,11 +325,7 @@ npm update --save
 * Testcard for gaps
 
 ## Known Issues
-* Button's not scaling very well
 * Powering on not working properly with test card
-* Teletext: Graphic and Text clash
-* Browser issues
-  * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
 * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
 * Data preprocessing
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used

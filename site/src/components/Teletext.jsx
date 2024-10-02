@@ -227,7 +227,7 @@ export const Teletext = (props, ref) => {
   }, [location, curPage]);
 
   return (
-    <div id="teletext" ref={divRef} className="show">
+    <div id="teletext" ref={divRef} className="show flicker">
       {/* Keyboard events are poorly handled by react.
         Add this to the ref <div> element:
         tabIndex={-1} onKeyUp={teletextSelector}
