@@ -6,34 +6,39 @@ import re
 import sys
 import os
 import logging
+import argparse
 from zoneinfo import ZoneInfo
 from collections import OrderedDict
 from time import sleep
-#import multiprocessing
 from multiprocessing import Manager, Pool, Lock, Value, cpu_count
 from queue import Empty
 from functools import reduce
-import requests
+import httpx
 from termcolor import cprint
 from bs4 import BeautifulSoup
 from pymediainfo import MediaInfo
-from urllib3.exceptions import MaxRetryError, ReadTimeoutError, ConnectionError
-from requests.exceptions import ConnectionError, ReadTimeout, ConnectTimeout
+from httpx import ConnectTimeout, ConnectError, ReadTimeout, HTTPStatusError, RemoteProtocolError
+from httpcore import ReadTimeout as HttpcoreReadTimeout
 
 # See https://archive.org/details/911
 TEMPLATE = 'https://archive.org/details/911?time={time}&chan={chan}'
-chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'GLVSN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
+# Currently excluded: 'GLVSN',
+chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
 timespan = ((11, 12), (18, 0))
 METADATA = {'year':  2001, 'month': 9, 'timezone': 'America/New_York'}
 EXTENDED = False
 DURATION = True
+HTTP2 = True
 POOL_SIZE = max(cpu_count() * 2, 10)
 DETAILS_PREFIX = 'https://archive.org/details/911/day/'
 tz = ZoneInfo('America/New_York')
 WAIT = 0
 LOG_FILE = "./urls.log"
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename=LOG_FILE, format='%(levelname)s %(asctime)s %(process)s %(message)s', level=logging.DEBUG)
+logging.basicConfig(filename=LOG_FILE, format='%(levelname)s %(asctime)s %(process)s %(message)s', level=logging.INFO)
+logger.setLevel(logging.DEBUG)
+client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=90)
+pool_close_wait = 90
 
 class RequeueError(Exception):
     def __init__(self, message, count=0):
@@ -95,23 +100,28 @@ def gen_timecode(days, minutes=10):
 
 def get_redirect_url(url):
     try:
-        req = requests.get(url, allow_redirects=False, timeout=60)
+        req = httpx.get(url, timeout=90)
         if req.status_code in (302, 301):
             return req.headers['Location']
         cprint(f"\nResolving Redirect: {url} returned {req.status_code}", "red", file=sys.stderr)
-    except requests.exceptions.ReadTimeout:
+    except ConnectTimeout:
         cprint(f"\nTimeout for {url}", "red", file=sys.stderr)
-        req = requests.get(url, allow_redirects=False, timeout=180)
     return None
 
-def get_media_type(url):
-    head = requests.head(url, allow_redirects=True, timeout=90)
+def get_media_type(url, verbose=False):
+    if verbose:
+        with Lock():
+            logger.debug(f"Getting media type for {url}")
+    head = client.head(url, timeout=90)
     if head.status_code == 200:
         return head.headers['Content-Type']
     logger.error(f"Getting media type: {url} returned {head.status_code}")
     return None
 
-def get_video_duration(url):
+def get_video_duration(url, verbose=False):
+    if verbose:
+        with Lock():
+            logger.debug(f"Getting video duration for {url}")
     media_info = MediaInfo.parse(url, **mediainfo_opts)
     duration = media_info.video_tracks[0].duration
     # Value is in ms
@@ -121,8 +131,8 @@ def extract_details(days):
     details = {}
     for day in gen_timecode(days, 60*24):
         day = day[0:8]
-        cprint(f"Extracting events from {day}", "red", file=sys.stderr)
-        details_html = requests.get(DETAILS_PREFIX + day, timeout=60).content
+        cprint(f"Extracting events from {day}", "green", file=sys.stderr)
+        details_html = httpx.get(DETAILS_PREFIX + day, timeout=90).content
         soup = BeautifulSoup(details_html, 'html.parser')
         for event in soup.css.select('#events .evmark'):
             time = event.find('div', {'class': 'evtime'}).text.strip()
@@ -165,9 +175,11 @@ def get_video_for_timecode(args):
     url = eval('f"' + TEMPLATE + '"', {}, {'chan': chan, 'time': time})
     try:
         redirect = get_redirect_url(url)
-    except requests.exceptions.ConnectionError:
+    except ConnectTimeout:
         cprint(f"\nFailed to get {url}", "red", file=sys.stderr)
         redirect =  None
+    except Exception as e:
+        raise e
     if redirect is not None:
         url_match = re.search(r'/details/911/day/(?P<day>\d{8})#id/(?P<id>.*)/start/(?P<time>\d{2}:\d{2}:\d{2}UTC/chan/(?P<chan>.*))', redirect)
         id_match = re.search(r'(.*)_(?P<start_date>200109\d{2})_(?P<start_time>\d{6})_(.*)', url_match.group('id'))
@@ -215,21 +227,25 @@ def enrich_worker(q, r, download_counter):
             break
         if item is None:
             break
-        (chan, timecode, urls) = item
+        (chan, timecode, urls, retry_count) = item
         if urls['video_url'] is None:
-            logger.error(f"Error: Video URL for {chan} at {timecode} is None")
-            return
+            cprint("O", "yellow", end='', flush=True, file=sys.stderr)
+            with Lock():
+                logger.error(f"Error: Video URL for {chan} at {timecode} is None")
+            continue
         entry = {}
         entry[chan] = {}
         identifier = urls['video_url']['src']
+        verbose = False
+        if retry_count > 0:
+            verbose = True
         try:
-
             if urls['video_url'] is not None and 'src' in urls['video_url']:
                 url = urls['video_url']['src']
                 if urls['video_url']['type'] is None:
-                    urls['video_url']['type'] = get_media_type(url)
+                    urls['video_url']['type'] = get_media_type(url, verbose)
                 if DURATION and urls['duration'] is None:
-                    urls['duration'] = get_video_duration(url)
+                    urls['duration'] = get_video_duration(url, verbose)
                 else:
                     cprint(f"Error: Video URL {urls['video_url']} set but no 'src', this shouldn't happen", "red", file=sys.stderr)
                     raise
@@ -241,22 +257,32 @@ def enrich_worker(q, r, download_counter):
             if WAIT > 0:
                 sleep(WAIT / 1000)
             download_counter.increment()
-        except (ReadTimeout, ConnectTimeout, ReadTimeoutError, ConnectionError, TimeoutError, RuntimeError) as e:
+        except (ConnectTimeout, ConnectError, ReadTimeout, HttpcoreReadTimeout, RemoteProtocolError, RuntimeError) as e:
             if (isinstance(e, RuntimeError)):
                 with Lock():
                     logger.error(f"Getting duration for {identifier} failed ({repr(e)})")
-            elif isinstance(e, ConnectionError):
+            elif isinstance(e, ConnectError):
                 with Lock():
                     logger.error(f"Connection refused for {identifier} ({repr(e)})")
             elif isinstance(e, ConnectTimeout):
                 with Lock():
                     logger.error(f"Connect timeout for {identifier} ({repr(e)})")
-            elif isinstance(e, ReadTimeout) or isinstance(e, TimeoutError) or isinstance(e, ReadTimeout):
+            elif isinstance(e, ReadTimeout) or isinstance(e, HttpcoreReadTimeout):
                 with Lock():
                     logger.error(f"Timeout for {identifier} ({repr(e)})")
+            elif isinstance(e, RemoteProtocolError):
+                with Lock():
+                    logger.error(f"Remote closed the connection {identifier} ({repr(e)})")
             else:
                 with Lock():
-                    logger.error(f"Exception for {identifier} ({repr(e)})")
+                    logger.error(f"! Unhandled Exception ! for {identifier} ({repr(e)})")
+
+            if retry_count > 0:
+                with Lock():
+                    logger.warning(f"Retries for {identifier}: {retry_count}")
+
+            retry_count += 1
+            item = (chan, timecode, urls, retry_count)
 
             q.put(item, block=True)
             with Lock():
@@ -267,12 +293,24 @@ def enrich_worker(q, r, download_counter):
             with Lock():
                 logger.error(f"{type(e).__name__} getting {identifier}, requeueing")
             cprint('x', 'yellow', end='', flush=True, file=sys.stderr)
+        except KeyboardInterrupt as e:
+            pool.terminate()
+            pool.join()
+            logging.critical(f"Interuped by user ({type(e).__name__})")
+            return
+
+#        except Exception as e:
+#            raise e
 
         if download_counter.value() % 1000 == 0:
             cprint(f"\n{download_counter.value()}", 'green', flush=True, file=sys.stderr)
 
 # Main program
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='gen_urls.py')
+    parser.add_argument('--output', '-o', help='Output file')
+    args = parser.parse_args()
+
     cprint(f"Using {POOL_SIZE} processes, using { mediainfo_opts['library_file'] if 'library_file' in mediainfo_opts else 'buildin' } as mediainfo dependency", "yellow", file=sys.stderr)
     times = gen_timecode(timespan)
 
@@ -309,18 +347,21 @@ if __name__ == '__main__':
     for chan, timecodes in condense(channels).items():
         for timecode, urls_dict in timecodes.items():
             #logger.debug(f"Adding {chan}, {timecode}, {urls_dict} to queue")
-            q.put((chan, timecode, urls_dict))
+            q.put((chan, timecode, urls_dict, 0))
     cprint(f"Enriching {len(processed_entries)} items using a queue of {q.qsize()}", 'green', file=sys.stderr)
     pool = Pool(POOL_SIZE, enrich_worker, (q, r, download_counter))
+    logger.debug(f"=== Filled pool === \nEnriching {len(processed_entries)} items using a queue of {q.qsize()}")
     cprint('Filled pool', 'green', flush=True, file=sys.stderr)
 
     while not q.empty():
-        with Lock():
-            logger.debug(f"Queue size is {q.qsize()},up to {POOL_SIZE} running, already finished {download_counter.value()}")
+        logger.debug(f"Queue size is {q.qsize()}, up to {POOL_SIZE} running, already finished {download_counter.value()}")
         sleep(10)
+    cprint(f"\nClosing worker pool in {pool_close_wait}", 'green', flush=True, file=sys.stderr)
+    logger.debug(f"Queue is empty, closing in {pool_close_wait}")
+    sleep(pool_close_wait)
     pool.close()
     pool.join()
-    cprint('', 'green', flush=True, file=sys.stderr)
+
     cprint(f"Fetch metadata {download_counter.value()} of entries", "green", flush=True, file=sys.stderr)
 
     enriched_entries = []
@@ -334,4 +375,8 @@ if __name__ == '__main__':
     urls['channels'] = add_end(channels)
 
     urls_json = json.dumps(urls, indent=4, default=str)
-    print(urls_json)
+    if args.output and not args.output == '-':
+        with open(args.output, 'w') as file:
+            file.write(urls_json)
+    else:
+        print(urls_json)
