@@ -332,7 +332,6 @@ npm update --save
   * Mobile browsers (portrait mode) not completely working yet, find a way to calculate aspect ratio.
 * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
 * Data preprocessing
-  * GLVSN does't seem to be working
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 * Warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
@@ -345,6 +344,8 @@ npm update --save
   * Check Colors in teletext graphics
 
 ### Long term
+* Data preprocessing
+  * GLVSN does't seem to be working
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
 * Remove `r` and `t` from url after use - without triggering a rerender
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)

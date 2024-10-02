@@ -105,7 +105,7 @@ def get_redirect_url(url):
     return None
 
 def get_media_type(url):
-    head = requests.head(url, allow_redirects=True, timeout=60)
+    head = requests.head(url, allow_redirects=True, timeout=90)
     if head.status_code == 200:
         return head.headers['Content-Type']
     logger.error(f"Getting media type: {url} returned {head.status_code}")
@@ -217,7 +217,7 @@ def enrich_worker(q, r, download_counter):
             break
         (chan, timecode, urls) = item
         if urls['video_url'] is None:
-            logger.error(f"\nError: Video URL for {chan} at {timecode} is None")
+            logger.error(f"Error: Video URL for {chan} at {timecode} is None")
             return
         entry = {}
         entry[chan] = {}
@@ -243,11 +243,20 @@ def enrich_worker(q, r, download_counter):
             download_counter.increment()
         except (ReadTimeout, ConnectTimeout, ReadTimeoutError, ConnectionError, TimeoutError, RuntimeError) as e:
             if (isinstance(e, RuntimeError)):
-                logger.error(f"Getting duration for {identifier} failed ({repr(e)})")
+                with Lock():
+                    logger.error(f"Getting duration for {identifier} failed ({repr(e)})")
             elif isinstance(e, ConnectionError):
-                logger.error(f"Connection refused for {identifier}")
-            elif isinstance(e, ReadTimeout):
-                logger.error(f"Timeout for {identifier}")
+                with Lock():
+                    logger.error(f"Connection refused for {identifier} ({repr(e)})")
+            elif isinstance(e, ConnectTimeout):
+                with Lock():
+                    logger.error(f"Connect timeout for {identifier} ({repr(e)})")
+            elif isinstance(e, ReadTimeout) or isinstance(e, TimeoutError) or isinstance(e, ReadTimeout):
+                with Lock():
+                    logger.error(f"Timeout for {identifier} ({repr(e)})")
+            else:
+                with Lock():
+                    logger.error(f"Exception for {identifier} ({repr(e)})")
 
             q.put(item, block=True)
             with Lock():
@@ -306,8 +315,9 @@ if __name__ == '__main__':
     cprint('Filled pool', 'green', flush=True, file=sys.stderr)
 
     while not q.empty():
-        logger.debug(f"Queue size is {q.qsize()},up to {POOL_SIZE} running, already finished {download_counter.value()}")
-        sleep(1)
+        with Lock():
+            logger.debug(f"Queue size is {q.qsize()},up to {POOL_SIZE} running, already finished {download_counter.value()}")
+        sleep(10)
     pool.close()
     pool.join()
     cprint('', 'green', flush=True, file=sys.stderr)
