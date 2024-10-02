@@ -356,8 +356,8 @@ if __name__ == '__main__':
     while not q.empty():
         logger.debug(f"Queue size is {q.qsize()}, up to {POOL_SIZE} running, already finished {download_counter.value()}")
         sleep(10)
-    cprint(f"\nClosing worker pool in {pool_close_wait}", 'green', flush=True, file=sys.stderr)
-    logger.debug(f"Queue is empty, closing in {pool_close_wait}")
+    cprint(f"\nClosing worker pool in {pool_close_wait}s", 'green', flush=True, file=sys.stderr)
+    logger.debug(f"Queue is empty, closing in {pool_close_wait}s")
     sleep(pool_close_wait)
     pool.close()
     pool.join()
