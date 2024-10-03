@@ -21,7 +21,7 @@ mac:
         - arm64
 dmg:
   artifactName: ${name}-${arch}.${ext}
-
+#  title: ${productName}
 win:
   executableName: 911tv
   target:

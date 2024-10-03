@@ -7,6 +7,7 @@ There are several URL params that can be used to test specific videos:
 * `r` - resets the time
 * `t` - set a specific time
 * `c` - changes channel
+* `a` - set the accept cookie
 
 ## Change time
 
@@ -28,6 +29,7 @@ http://localhost:5173/?c=CNN
 
 * Better branding: https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
 * Disable cookie notice on Electron
+  * Enabled Cookies on bundle electron app
 * Add downloads to GitHub
 
 # Maintanace

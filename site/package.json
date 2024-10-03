@@ -14,6 +14,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "clean": "rimraf dist/* out/*",
     "lint": "eslint . -c eslint.config.mjs --max-warnings 0",
     "stylelint": "stylelint 'src/**.scss'",
     "preview": "vite preview",
@@ -67,6 +68,7 @@
     "postcss-normalize": "^13.0.1",
     "postcss-svgo": "^7.0.1",
     "prettier": "^3.3.3",
+    "rimraf": "^6.0.1",
     "sass": "^1.79.4",
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",

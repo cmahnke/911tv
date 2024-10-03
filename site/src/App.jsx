@@ -13,6 +13,7 @@ import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls.json";
 import pagesImport from "./assets/json/pages.json";
+import Cookies from "js-cookie";
 
 const consentCookieName = "iaConsent";
 // Length of video chunks to request, longer times take longer to load
@@ -71,6 +72,14 @@ function App() {
     reset = urlParams.get("t");
     urlParams.delete('t')
     history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+  }
+  // Accept cookie notice - used for electron app
+  if (urlParams.get("a") !== null && urlParams.get("a") !== undefined) {
+    reset = urlParams.get("a");
+    urlParams.delete('a')
+    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+    Cookies.set(consentCookieName, true, { expires: 999 });
+    console.log(`Set ${consentCookieName} to ${Cookies.get(consentCookieName)}`);
   }
   //TODO: This is a dirty hack and doesn't work, since it probably triggers a rerender
   //if (urlParams.get('r') !== null || urlParams.get('t') !== null) {

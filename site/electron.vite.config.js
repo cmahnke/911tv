@@ -12,6 +12,7 @@ export default {
     plugins: [externalizeDepsPlugin()],
   },
   preload: {
+    publicDir: 'public',
     build: {
       lib: {
         entry: './electron/preload/index.js'
@@ -29,6 +30,13 @@ export default {
         },
       },
     },
-    plugins: [react()]
+    plugins: [react()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler",
+        },
+      },
+    },
   }
 };

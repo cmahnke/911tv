@@ -7,6 +7,8 @@ const appId = 'org.projektemacher.911tv';
 const appName = '911TV';
 const appVersion = '2024.10';
 
+const consentCookieName = "iaConsent";
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -18,8 +20,8 @@ function createWindow() {
     title: appName,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
-      sandbox: true
+      preload: join(__dirname, '../preload/index.mjs'),
+      sandbox: false
     }
   })
 
@@ -46,12 +48,14 @@ function createWindow() {
     return { action: 'deny' }
   })
 
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    //, {query: {"a": true}}
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'), {query: {"a": true}});
   }
 }
 
