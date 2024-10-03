@@ -12,5 +12,39 @@ files:
   - '!electron/*'
   - '!dist/*'
   - '!out/renderer/CNAME'
+mac:
+  identity: null
+  target:
+    - target: dmg
+      arch: universal
+dmg:
+  artifactName: ${name}-${arch}.${ext}
+
 win:
   executableName: 911tv
+  target:
+    - target: nsis
+      arch:
+        - x64
+        - arm64
+
+nsis:
+  artifactName: ${name}-${arch}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: false
+
+linux:
+  target:
+    - target: deb
+      arch:
+        - x64
+        - arm64
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
+  maintainer: Christian Mahnke
+  category: Education
+appImage:
+  artifactName: ${name}-${arch}.${ext}

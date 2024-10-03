@@ -4,6 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "main": "./out/main/index.js",
+  "author": "Christian Mahnke",
+  "person": {
+    "name": "Christian Mahnke",
+    "email": "911tv@projektemacher.org",
+    "url": "https://christianmahnke.de/"
+  },
+  "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -17,7 +24,7 @@
     "app:win": "npm run app && electron-builder --win",
     "app:mac": "npm run app && electron-builder --mac",
     "app:linux": "npm run app && electron-builder --linux",
-    "app:dist": "npm run app:win && npm run app:mac && npm run app:linux"
+    "app:all": "electron-builder -mwl"
   },
   "dependencies": {
     "@techandsoftware/teletext-fonts": "^1.0.0",

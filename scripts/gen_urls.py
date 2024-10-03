@@ -37,8 +37,9 @@ LOG_FILE = "./urls.log"
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename=LOG_FILE, format='%(levelname)s %(asctime)s %(process)s %(message)s', level=logging.INFO)
 logger.setLevel(logging.DEBUG)
-client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=90)
-pool_close_wait = 90
+timeout = 90
+client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=timeout)
+pool_close_wait = timeout * 2
 
 class RequeueError(Exception):
     def __init__(self, message, count=0):
@@ -100,7 +101,7 @@ def gen_timecode(days, minutes=10):
 
 def get_redirect_url(url):
     try:
-        req = httpx.get(url, timeout=90)
+        req = httpx.get(url, timeout=timeout)
         if req.status_code in (302, 301):
             return req.headers['Location']
         cprint(f"\nResolving Redirect: {url} returned {req.status_code}", "red", file=sys.stderr)
@@ -112,7 +113,7 @@ def get_media_type(url, verbose=False):
     if verbose:
         with Lock():
             logger.debug(f"Getting media type for {url}")
-    head = client.head(url, timeout=90)
+    head = client.head(url, timeout=timeout)
     if head.status_code == 200:
         return head.headers['Content-Type']
     logger.error(f"Getting media type: {url} returned {head.status_code}")
@@ -132,7 +133,7 @@ def extract_details(days):
     for day in gen_timecode(days, 60*24):
         day = day[0:8]
         cprint(f"Extracting events from {day}", "green", file=sys.stderr)
-        details_html = httpx.get(DETAILS_PREFIX + day, timeout=90).content
+        details_html = httpx.get(DETAILS_PREFIX + day, timeout=timeout).content
         soup = BeautifulSoup(details_html, 'html.parser')
         for event in soup.css.select('#events .evmark'):
             time = event.find('div', {'class': 'evtime'}).text.strip()

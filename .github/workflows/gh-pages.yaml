@@ -18,16 +18,103 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  generate-json:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y mediainfo icnsutils
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Node dependencies
+        working-directory: ./site
+        run: |
+          npm i
+
+      - name: Generate required dependencies
+        run: |
+          ./scripts/setup.sh
+
+      - name: Compress JSON
+        run: |
+          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
+          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
+
+      - name: Provide url artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-json
+          path: |
+            site/src/assets/json/
+
+      - name: Lint and Validate JSON
+        working-directory: ./site
+        run: |
+          npx eslint
+
+  dist:
+    runs-on: ubuntu-latest
+    needs: generate-json
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: sudo apt-get install -y mediainfo icnsutils
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.2'
+
+      - name: Install dependencies
+        run: |
+          go install github.com/jackmordaunt/icns/cmd/icnsify@latest
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.0.4
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Node dependencies
+        working-directory: ./site
+        run: |
+          npm i
+
+      - name: Generate required images
+        run: |
+          ./scripts/image-assets.sh
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: generated-json
+          path: site/src/assets/json/
+
+      - name: Build apps
+        working-directory: ./site
+        run: |
+          npm run app:all
+
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
 
       - uses: actions/checkout@v4
-        with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
 
       - name: Install dependencies
-        run: sudo apt-get install -y mediainfo
+        run: sudo apt-get install -y mediainfo icnsutils
 
       - name: Set up Python
         uses: actions/setup-python@v5

@@ -26,7 +26,7 @@ http://localhost:5173/?c=CNN
 
 ## TODO
 
-* Build for AMD64 windows and other
+* Add downloads to GitHub
 
 # Maintanace
 
