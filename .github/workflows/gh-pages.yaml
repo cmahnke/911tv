@@ -53,7 +53,7 @@ jobs:
 
       - name: Compress JSON
         run: |
-          #node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
+          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
           node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
 
       - name: Provide url artifact

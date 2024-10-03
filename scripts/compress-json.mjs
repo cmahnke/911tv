@@ -52,7 +52,7 @@ if (input !== undefined) {
   const out = {'type': method, 'content': compressed}
   if (output !== undefined) {
     console.error(`Writing file ${output}`);
-    fs.writeFileSync(output, out);
+    fs.writeFileSync(output, JSON.stringify(out));
   } else {
     console.log(out)
   }

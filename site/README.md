@@ -23,6 +23,13 @@ http://localhost:5173/?t=2001-09-11T12:00:00
 
 http://localhost:5173/?c=CNN
 
+## Debugging addresses
+
+
+# End of stream
+
+http://localhost:5173/?t=2001-09-17T20:59:00
+
 # Electron
 
 ## TODO
