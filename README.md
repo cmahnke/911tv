@@ -309,7 +309,6 @@ yarn run vite
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
 * Channel switch via URL not working
-* Setting time not working reliably
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
   * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related

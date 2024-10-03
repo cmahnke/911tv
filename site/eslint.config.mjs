@@ -19,6 +19,8 @@ export default [
       },
       globals: {
         ...globals.browser,
+        "process": true,
+        "__dirname": true
       },
     },
     plugins: {
@@ -40,6 +42,6 @@ export default [
     },
   },
   {
-    ignores: ["dist/", "vite.config.js", "postcss.config.js"],
+    ignores: ["dist/", "vite.config.js", "postcss.config.js", "out/"],
   },
 ];

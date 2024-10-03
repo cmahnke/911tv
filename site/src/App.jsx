@@ -75,19 +75,11 @@ function App() {
   }
   // Accept cookie notice - used for electron app
   if (urlParams.get("a") !== null && urlParams.get("a") !== undefined) {
-    reset = urlParams.get("a");
     urlParams.delete('a')
     history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
     Cookies.set(consentCookieName, true, { expires: 999 });
     console.log(`Set ${consentCookieName} to ${Cookies.get(consentCookieName)}`);
   }
-  //TODO: This is a dirty hack and doesn't work, since it probably triggers a rerender
-  //if (urlParams.get('r') !== null || urlParams.get('t') !== null) {
-  //  if (window.location.href.includes('?')) {
-  //    const curLoc = window.location.href;
-  //    window.location.href = curLoc.replace(/(.*?)\?(t|r).*/g, "$1");
-  //  }
-  //}
 
   /*
    * Dates and times of video URLs are in UTC,
@@ -218,7 +210,7 @@ function App() {
           video["url"]["type"] = "video/mp4";
         }
         video["startTime"] = times[i + offset];
-        console.log("Returning program " + time, video);
+        console.log(`Returning program on ${chan} at ${time}`, video);
         return video;
       }
     }
@@ -420,6 +412,35 @@ function App() {
       noiseRef.current.changeMode("closedown");
     }
   });
+
+
+  /*
+  useEffect(() => {
+    const timerDebugInterval = setInterval(() => {
+      if (window.app.timer == true) {
+        console.log(timer, timer.formatTimecode(), timer.formatURLTimecode())
+      }
+    }, 1000)
+
+  }, []);
+  */
+
+  /*
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (audioContext.state != "suspended") {
+        audioToggleRef.current.classList.remove("disabled");
+        audioToggleRef.current.classList.add("enabled");
+      } else {
+        console.log(audioContext.state, audioStatus())
+      }
+    }, 250)
+    return () => clearInterval(intervalId)
+    //audioContext.onstatechange = () => {
+    //  console.log(audioContext.state);
+    //};
+  }, []);
+  */
 
   useEffect(() => {
     if (getCookieConsentValue(consentCookieName)) {

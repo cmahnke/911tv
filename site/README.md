@@ -17,7 +17,13 @@ http://localhost:5173/?r
 
 ### Specific time
 
-http://localhost:5173/?t=2001-09-11T12:00:00
+#### Example
+
+http://localhost:5173/?t=2001-09-11T19:00:00
+
+#### With timezone
+
+http://localhost:5173/?t=2001-09-11T12:15:30-04:00
 
 ## Change channel
 
