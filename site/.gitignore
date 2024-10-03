@@ -30,3 +30,4 @@ bak
 public/images/favicon*.png
 public/images/favicon.ico
 out
+build

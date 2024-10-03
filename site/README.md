@@ -1,17 +1,24 @@
 Debugging examples
 ==================
 
-# Change time
+# Testing specific videos
 
-## Specific time
+There are several URL params that can be used to test specific videos:
+* `r` - resets the time
+* `t` - set a specific time
+* `c` - changes channel
 
-http://localhost:5173/?t=2001-09-11T12:00:00
+## Change time
 
-## Reset
+### Reset
 
 http://localhost:5173/?r
 
-# Change channel
+### Specific time
+
+http://localhost:5173/?t=2001-09-11T12:00:00
+
+## Change channel
 
 http://localhost:5173/?c=CNN
 
@@ -20,3 +27,18 @@ http://localhost:5173/?c=CNN
 ## TODO
 
 * Build for AMD64 windows and other
+
+# Maintanace
+
+## Python
+
+```
+cd ..
+pip install --upgrade --force-reinstall -r requirements.txt
+```
+
+## JavaScript
+
+```
+npm update --save
+```

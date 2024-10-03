@@ -271,6 +271,8 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 
 ## Development
 
+See also [development documentation](./site/README.md)
+
 ### Generate required data
 
 ```
@@ -292,27 +294,6 @@ cd site
 yarn run vite
 ```
 
-### Testing specific videos
-
-There are several URL params that can be used to test specific videos:
-* `c` - changes channel
-* `r` - resets the time
-* `t` - set a specific time
-
-### Maintanace
-
-#### Python
-
-```
-pip install --upgrade --force-reinstall -r requirements.txt
-```
-
-#### JavaScript
-
-```
-cd site
-npm update --save
-```
 
 # TODO:
 
@@ -335,6 +316,8 @@ npm update --save
 
 ### Short term
 * Reduce TODO's from code
+* Electron App
+  * Build and deploy using GitHub Actions
 * Teletext
   * Check Colors in teletext graphics
 * Data preprocessing
@@ -343,13 +326,10 @@ npm update --save
   * GLVSN does't seem to be working
 
 ### Long term
-* Data preprocessing
-  * GLVSN does't seem to be working
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
 * Bezel of TV set can be slimmer
-* Electron App
 * Data preprocessing
   * Multiple sub pages (manually split)
   * check if generated sub pages are needed
