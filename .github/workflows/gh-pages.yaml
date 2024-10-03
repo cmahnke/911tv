@@ -51,11 +51,16 @@ jobs:
         run: |
           ./scripts/setup.sh
 
+      - name: Compress JSON
+        run: |
+          node scripts/compress-json.mjs site/src/assets/json/urls.json site/src/assets/json/urls-compressed.json
+
       - name: Provide url artifact
         uses: actions/upload-artifact@v4
         with:
-          name: urls.json
-          path: site/src/assets/json/urls.json
+          name: generated-json
+          path: |
+            site/src/assets/json/
 
       - name: Lint and Validate JSON
         working-directory: ./site

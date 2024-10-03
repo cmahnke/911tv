@@ -327,8 +327,6 @@ npm update --save
 ## Known Issues
 * Powering on not working properly with test card
 * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
-* Data preprocessing
-  * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 * Warnings
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 * Channel switch via URL not working
@@ -339,6 +337,8 @@ npm update --save
 * Reduce TODO's from code
 * Teletext
   * Check Colors in teletext graphics
+* Data preprocessing
+  * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 
 ### Long term
 * Data preprocessing
