@@ -28,7 +28,7 @@ class Timer {
         }
         console.log(`Setting time to ${resetDate}`);
         this.timeDiff = this.localTime.diff(resetDate);
-        Cookies.set(Timer.timeCodeCookieName, String(this.timeDiff), {
+        Cookies.set(Timer.timeDiffCookieName, String(this.timeDiff), {
           expires: Timer.cookieTTL,
         });
       }
@@ -53,7 +53,7 @@ class Timer {
     this.setTimes();
 
     console.log(
-      `Starting time is ${this.startDate} (UTC), time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time (as '${this.timezone}' used for display) is ${this.displayTime}`,
+      `Starting time is ${this.startDate} (UTC), time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time / app time (as '${this.timezone}' used for display) is ${this.displayTime}`,
     );
 
     this.interval = setInterval(() => {
@@ -89,6 +89,13 @@ class Timer {
       .setZone(this.timezone)
       .setLocale("en-us")
       .toFormat("hh:mm");
+  }
+
+  formatURLTimecode() {
+    return this.appTime
+      .setZone(this.timezone)
+      .setLocale("en-us")
+      .toFormat("yyyy-LL-dd'T'HH:mm:ssZZ");
   }
 
   formatTimeWithSecs() {
