@@ -22,8 +22,8 @@ from httpcore import ReadTimeout as HttpcoreReadTimeout
 
 # See https://archive.org/details/911
 TEMPLATE = 'https://archive.org/details/911?time={time}&chan={chan}'
-# Currently excluded: 'GLVSN',
-chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
+# Might not work: 'GLVSN',
+chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'GLVSN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
 timespan = ((11, 12), (18, 0))
 METADATA = {'year':  2001, 'month': 9, 'timezone': 'America/New_York'}
 EXTENDED = False

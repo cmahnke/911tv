@@ -317,13 +317,15 @@ yarn run vite
 ### Short term
 * Reduce TODO's from code
 * Electron App
-  * Build and deploy using GitHub Actions
+  * Deploy using GitHub Actions
 * Teletext
   * Check Colors in teletext graphics
 * Data preprocessing
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
 * Data preprocessing
   * GLVSN does't seem to be working
+* Add more videos
+  * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions
 
 ### Long term
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
@@ -333,8 +335,7 @@ yarn run vite
 * Data preprocessing
   * Multiple sub pages (manually split)
   * check if generated sub pages are needed
-* Add more videos
-  * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions
+
 
 <p align="center">
   <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">

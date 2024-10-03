@@ -26,6 +26,8 @@ http://localhost:5173/?c=CNN
 
 ## TODO
 
+* Better branding: https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
+* Disable cookie notice on Electron
 * Add downloads to GitHub
 
 # Maintanace

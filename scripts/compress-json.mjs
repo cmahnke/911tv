@@ -51,7 +51,7 @@ if (input !== undefined) {
   }
   const out = {'type': method, 'content': compressed}
   if (output !== undefined) {
-    console.error(`Writing file ${oufile}`);
+    console.error(`Writing file ${output}`);
     fs.writeFile(output, out, 'utf8');
   } else {
     console.log(out)

@@ -16,7 +16,9 @@ mac:
   identity: null
   target:
     - target: dmg
-      arch: universal
+      arch:
+        - universal
+        - arm64
 dmg:
   artifactName: ${name}-${arch}.${ext}
 
@@ -36,10 +38,10 @@ nsis:
 
 linux:
   target:
-    - target: deb
-      arch:
-        - x64
-        - arm64
+#    - target: deb
+#      arch:
+#        - x64
+#        - arm64
     - target: AppImage
       arch:
         - x64

@@ -1,7 +1,7 @@
 {
   "name": "911tv",
   "private": true,
-  "version": "0.0.0",
+  "version": "2024.10.3",
   "type": "module",
   "main": "./out/main/index.js",
   "author": "Christian Mahnke",
@@ -18,13 +18,13 @@
     "stylelint": "stylelint 'src/**.scss'",
     "preview": "vite preview",
     "format": "prettier . --check",
-    "app-start": "electron-vite preview",
-    "app-dev": "electron-vite dev",
+    "app:start": "electron-vite preview",
+    "app:dev": "electron-vite dev",
     "app": "electron-vite build",
     "app:win": "npm run app && electron-builder --win",
     "app:mac": "npm run app && electron-builder --mac",
     "app:linux": "npm run app && electron-builder --linux",
-    "app:all": "electron-builder -mwl"
+    "app:all": "npm run app && electron-builder -mwl"
   },
   "dependencies": {
     "@techandsoftware/teletext-fonts": "^1.0.0",

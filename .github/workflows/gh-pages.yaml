@@ -17,6 +17,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  VERSION: 2024.10.3
+
 jobs:
   generate-json:
     runs-on: ubuntu-latest
@@ -24,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get install -y mediainfo icnsutils
+        run: sudo apt-get install -y mediainfo
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -72,7 +75,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: sudo apt-get install -y mediainfo icnsutils
+        run: sudo apt-get install -y mediainfo
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -107,22 +110,100 @@ jobs:
         run: |
           npm run app:all
 
+      - name: Package archives
+        working-directory: ./site/dist
+        run: |
+          mv linux-arm64-unpacked 911tv
+          tar czf 911tv-linux-arm64.tgz 911tv
+          rm 911tv
+          mv linux-unpacked 911tv
+          tar czf 911tv-linux-amd64.tgz 911tv
+          rm 911tv
+          mv win-unpacked 911tv
+          zip -r 911tv-win-x64 911tv
+          rm 911tv
+          mv win-arm64-unpacked 911tv
+          zip -r 911tv-win-arm64 911tv
+          rm 911tv
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          makeLatest: true
+          token: ${{ github.token }}
+          prerelease: true
+          allowUpdates: true
+          artifactErrorsFailBuild: true
+          tag: ${{ env.VERSION }}
+          artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,./site/dist/911tv-universal.dmg,./site/dist/911tv-amd64.dmg,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
+
+#      - name: Upload artifact archived Linux ARM64
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-linux-arm64
+#          path: ./site/dist/911tv-linux-arm64.tgz
+#
+#      - name: Upload artifact archived Linux AMD64 (x64)
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-linux-amd64
+#          path: ./site/dist/911tv-linux-amd64.tgz
+#
+#      - name: Upload artifact archived Windows ARM64
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-win-arm64
+#          path: ./site/dist/911tv-win-arm64.zip
+#
+#      - name: Upload artifact archived Windows AMD64 (x64)
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-win-x64
+#          path: ./site/dist/911tv-win-x64.zip
+#
+#      - name: Upload artifact archived MAC Universal DMG
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-universal
+#          path: ./site/dist/911tv-universal.dmg
+#
+#      - name: Upload artifact archived MAC AMD64 DMG
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-universal
+#          path: ./site/dist/911tv-amd64.dmg
+#
+#      - name: Upload artifact Windows ARM64 installer
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-arm64-setup
+#          path: ./site/dist/911tv-arm64-setup.exe
+#
+#      - name: Upload artifact Windows AMD64 (x64) installer
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-x64-setup
+#          path: ./site/dist/911tv-x64-setup.exe
+#
+#      - name: Upload artifact Linux ARM64 AppImage
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-arm64.AppImage
+#          path: ./site/dist/911tv-arm64.AppImage
+#
+#      - name: Upload artifact Linux AMD64 (x64) AppImage
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: 911tv-x86_64.AppImage
+#          path: ./site/dist/911tv-x86_64.AppImage
+
   deploy:
     runs-on: ubuntu-latest
+    needs: generate-json
     steps:
 
       - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: sudo apt-get install -y mediainfo icnsutils
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install Python dependencies
-        run: pip install -r requirements.txt
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
@@ -134,21 +215,14 @@ jobs:
         run: |
           npm i
 
-      - name: Generate required dependencies
+      - name: Generate required images
         run: |
-          ./scripts/setup.sh
+          ./scripts/image-assets.sh
 
-      - name: Compress JSON
-        run: |
-          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
-          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
-
-      - name: Provide url artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/download-artifact@v4
         with:
           name: generated-json
-          path: |
-            site/src/assets/json/
+          path: site/src/assets/json/
 
       - name: Lint and Validate JSON
         working-directory: ./site
