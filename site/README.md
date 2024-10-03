@@ -19,4 +19,4 @@ http://localhost:5173/?c=CNN
 
 ## TODO
 
-* Check if this is required `npm i electron-builder -D`
+* Build for AMD64 windows and other

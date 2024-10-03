@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "./out/main/index.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,10 +11,13 @@
     "stylelint": "stylelint 'src/**.scss'",
     "preview": "vite preview",
     "format": "prettier . --check",
+    "app-start": "electron-vite preview",
+    "app-dev": "electron-vite dev",
     "app": "electron-vite build",
     "app:win": "npm run app && electron-builder --win",
     "app:mac": "npm run app && electron-builder --mac",
-    "app:linux": "npm run app && electron-builder --linux"
+    "app:linux": "npm run app && electron-builder --linux",
+    "app:dist": "npm run app:win && npm run app:mac && npm run app:linux"
   },
   "dependencies": {
     "@techandsoftware/teletext-fonts": "^1.0.0",
@@ -31,6 +35,8 @@
     "video.js": "^8.17.4"
   },
   "devDependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
     "@fontsource/press-start-2p": "^5.1.0",
     "@rollup/plugin-strip": "^3.0.4",
     "@types/react": "^18.3.11",
@@ -38,6 +44,7 @@
     "@vitejs/plugin-react": "^4.3.2",
     "browserslist-to-esbuild": "^2.1.1",
     "electron": "^32.1.2",
+    "electron-builder": "^25.0.5",
     "electron-vite": "^2.3.0",
     "esbuild-wasm": "^0.24.0",
     "eslint": "^9.11.1",
