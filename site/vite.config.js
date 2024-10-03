@@ -52,6 +52,9 @@ export default defineConfig({
   build: {
     target: browserslistToEsbuild(),
     rollupOptions: {
+      input: {
+        '911tv': 'src/main.jsx'
+      },
       output: {
         assetFileNames: `assets/[name].[ext]`,
       },

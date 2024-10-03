@@ -223,7 +223,6 @@ export const Teletext = (props, ref) => {
     const interval = setInterval(() => {
       teletextTimeRef.current.innerHTML = timer.formatTimecode();
     }, 1000);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location, curPage]);
 
   return (

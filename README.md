@@ -339,6 +339,8 @@ npm update --save
   * Check Colors in teletext graphics
 * Data preprocessing
   * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
+* Data preprocessing
+  * GLVSN does't seem to be working
 
 ### Long term
 * Data preprocessing

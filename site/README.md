@@ -14,3 +14,9 @@ http://localhost:5173/?r
 # Change channel
 
 http://localhost:5173/?c=CNN
+
+# Electron
+
+## TODO
+
+* Check if this is required `npm i electron-builder -D`

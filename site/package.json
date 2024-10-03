@@ -9,7 +9,11 @@
     "lint": "eslint . -c eslint.config.mjs --max-warnings 0",
     "stylelint": "stylelint 'src/**.scss'",
     "preview": "vite preview",
-    "format": "prettier . --check"
+    "format": "prettier . --check",
+    "app": "electron-vite build",
+    "app:win": "npm run app && electron-builder --win",
+    "app:mac": "npm run app && electron-builder --mac",
+    "app:linux": "npm run app && electron-builder --linux"
   },
   "dependencies": {
     "@techandsoftware/teletext-fonts": "^1.0.0",
@@ -33,6 +37,8 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",
     "browserslist-to-esbuild": "^2.1.1",
+    "electron": "^32.1.2",
+    "electron-vite": "^2.3.0",
     "esbuild-wasm": "^0.24.0",
     "eslint": "^9.11.1",
     "eslint-plugin-json-es": "^1.6.0",

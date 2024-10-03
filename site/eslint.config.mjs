@@ -6,9 +6,12 @@ import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
   pluginJs.configs.recommended,
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
   {
     files: ["**/*.{js,jsx,mjs,cjs,ts,tsx}"],
     languageOptions: {
+      ...react.configs.flat.recommended.languageOptions,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
