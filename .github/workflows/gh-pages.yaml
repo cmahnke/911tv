@@ -82,9 +82,10 @@ jobs:
       - name: Install dependencies
         env:
           DEBIAN_FRONTEND: noninteractive
+        # See https://gitlab.winehq.org/wine/wine/-/wikis/Debian-Ubuntu
         run: |
           go install github.com/jackmordaunt/icns/cmd/icnsify@latest
-          sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib wine64 dirmngr ca-certificates gnupg sudo wget
+          sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib dirmngr ca-certificates gnupg sudo wget imagemagick
           sudo mkdir -pm755 /etc/apt/keyrings
           sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
           sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
