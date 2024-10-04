@@ -20,7 +20,8 @@ export default [
       globals: {
         ...globals.browser,
         "process": true,
-        "__dirname": true
+        "__dirname": true,
+        "projektemacher": true
       },
     },
     plugins: {

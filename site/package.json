@@ -28,6 +28,7 @@
     "app:all": "npm run app && electron-builder -mwl"
   },
   "dependencies": {
+    "@exponent/electron-cookies": "^2.0.0",
     "@techandsoftware/teletext-fonts": "^1.0.0",
     "howler": "^2.2.4",
     "js-cookie": "^3.0.5",
