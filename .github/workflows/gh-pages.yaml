@@ -53,7 +53,6 @@ jobs:
 
       - name: Compress JSON
         run: |
-          #node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
           node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
           node scripts/compress-json.mjs -i site/src/assets/json/pages.json -o site/src/assets/json/pages-lz-string-compressed.json -t lz-string
 
@@ -113,7 +112,8 @@ jobs:
       - name: Build apps
         working-directory: ./site
         run: |
-          npm run app:all
+          npm run app:linux
+          npm run app:win
 
       - name: Package archives
         working-directory: ./site/dist
@@ -130,12 +130,12 @@ jobs:
           mv win-arm64-unpacked 911tv
           zip -r 911tv-win-arm64 911tv
           rm 911tv
-          mv mac-arm64 911tv
-          zip -r 911tv-mac-arm64 911tv
-          rm 911tv
-          mv mac-universal 911tv
-          zip -r 911tv-mac-universal 911tv
-          rm 911tv
+#          mv mac-arm64 911tv
+#          zip -r 911tv-mac-arm64 911tv
+#          rm 911tv
+#          mv mac-universal 911tv
+#          zip -r 911tv-mac-universal 911tv
+#          rm 911tv
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -147,7 +147,8 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           tag: ${{ env.VERSION }}
-          artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
+          # ./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip
+          artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
 
 #      - name: Upload artifact archived Linux ARM64
 #        uses: actions/upload-artifact@v4
@@ -236,10 +237,8 @@ jobs:
           path: ./site/src/assets/json
 
       - name: Unpack artifacts
-#        working-directory: ./site/src/assets/json/
         run: |
           ls -r ./site/src/assets/json
-          #unzip -j generated-json.zip
 
       - name: Lint and Validate JSON
         working-directory: ./site
@@ -253,8 +252,7 @@ jobs:
 
       - name: Copy generated files
         run: |
-          cp ./site/src/assets/json/urls*.json ./site/dist
-          cp ./site/src/assets/json/pages.json ./site/dist
+          cp ./site/src/assets/json/*.json ./site/dist
 
       - name: Deploy site
         uses: peaceiris/actions-gh-pages@v4.0.0

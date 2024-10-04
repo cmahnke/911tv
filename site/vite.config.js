@@ -53,6 +53,7 @@ export default defineConfig({
     target: browserslistToEsbuild(),
     rollupOptions: {
       input: {
+        'index': './index.html',
         '911tv': 'src/main.jsx'
       },
       output: {
