@@ -19,8 +19,9 @@ mac:
       arch:
         - universal
         - arm64
-dmg:
-  artifactName: ${name}-${arch}.${ext}
+# Won't work on linux
+#dmg:
+#  artifactName: ${name}-${arch}.${ext}
 #  title: ${productName}
 win:
   executableName: 911tv

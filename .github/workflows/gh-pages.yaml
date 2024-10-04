@@ -125,6 +125,12 @@ jobs:
           mv win-arm64-unpacked 911tv
           zip -r 911tv-win-arm64 911tv
           rm 911tv
+          mv mac-arm64 911tv
+          zip -r 911tv-mac-arm64 911tv
+          rm 911tv
+          mv mac-universal 911tv
+          zip -r 911tv-mac-universal 911tv
+          rm 911tv
 
       - name: Release
         uses: softprops/action-gh-release@v2
@@ -136,7 +142,7 @@ jobs:
           allowUpdates: true
           artifactErrorsFailBuild: true
           tag: ${{ env.VERSION }}
-          artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,./site/dist/911tv-universal.dmg,./site/dist/911tv-amd64.dmg,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
+          artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
 
 #      - name: Upload artifact archived Linux ARM64
 #        uses: actions/upload-artifact@v4
