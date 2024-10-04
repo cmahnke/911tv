@@ -69,7 +69,7 @@ jobs:
           npx eslint
 
   dist:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: generate-json
     steps:
       - uses: actions/checkout@v4
@@ -80,9 +80,18 @@ jobs:
           go-version: '1.23.2'
 
       - name: Install dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
           go install github.com/jackmordaunt/icns/cmd/icnsify@latest
-          sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib wine64 dirmngr ca-certificates gnupg
+          sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib wine64 dirmngr ca-certificates gnupg sudo wget
+          sudo mkdir -pm755 /etc/apt/keyrings
+          sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
+          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
+          sudo dpkg --add-architecture i386
+          sudo apt-get update
+          sudo apt install -y --install-recommends wine-stable
+          wine uninstaller --list
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
