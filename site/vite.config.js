@@ -6,7 +6,7 @@ import browserslistToEsbuild from "browserslist-to-esbuild";
 import strip from "@rollup/plugin-strip";
 import svg from "vite-plugin-svgo";
 import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
-import jsoncrush from "./src/plugins/rollup-plugin-jsoncrush.js";
+//import jsoncrush from "./src/plugins/rollup-plugin-jsoncrush.js";
 import { join } from "path";
 
 const jsonGlob = "src/assets/json/*.json";
