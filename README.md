@@ -273,30 +273,7 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 
 See also [development documentation](./site/README.md)
 
-### Generate required data
-
-```
-pip install -r requirements.txt
-./scripts/setup.sh
-```
-
-### Installing dependencies
-
-```
-cd site
-yarn install
-```
-
-### Starting the web server
-
-```
-cd site
-yarn run vite
-```
-
-
 # TODO:
-
 * Video addressing
   * Seek - not tested yet, might be issues with gaps in coverage
   * Segmentation
@@ -304,10 +281,13 @@ yarn run vite
   * Channel switching without loading
   * Handle (buffering) events
 * Testcard for gaps
+* Debugging
+  * Force test card
 
 ## Known Issues
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
+ * Maybe provide an overlay to trigger user interaction
 * Channel switch via URL not shown in Teletext
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
@@ -319,8 +299,7 @@ yarn run vite
 * Reduce TODO's from code
 * Electron App
   * Deploy using GitHub Actions
-* Teletext
-  * Check Colors in teletext graphics
+
 * Data preprocessing
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
@@ -328,8 +307,10 @@ yarn run vite
 
 ### Long term
 * Migrate to [TypeScript](https://www.typescriptlang.org/)
+* Teletext
+  * Check Colors in teletext graphics
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)
-* Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture)
+* Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture) - a shader could do the rest
 * Bezel of TV set can be slimmer
 * Data preprocessing
   * Multiple sub pages (manually split)

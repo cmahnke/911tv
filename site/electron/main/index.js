@@ -7,8 +7,6 @@ const appId = "org.projektemacher.911tv";
 const appName = "911TV";
 const appVersion = "2024.10";
 
-const consentCookieName = "iaConsent";
-
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({

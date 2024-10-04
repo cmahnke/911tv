@@ -1,4 +1,4 @@
-import { defineViteConfig, externalizeDepsPlugin } from "electron-vite";
+import { externalizeDepsPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react";
 
 export default {

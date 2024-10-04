@@ -41,11 +41,6 @@ timeout = 90
 client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=timeout)
 pool_close_wait = timeout * 2
 
-class RequeueError(Exception):
-    def __init__(self, message, count=0):
-        super().__init__(message)
-        self.count = count
-
 class Counter(object):
     def __init__(self, initval=0):
         self.val = Value('i', initval)

@@ -6,6 +6,8 @@ import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
+  react.configs.flat.recommended,
+  react.configs.flat['jsx-runtime'],
   ...[eslint.configs.recommended, ...tseslint.configs.recommended].map(
     (conf) => ({
       ...conf,
@@ -63,8 +65,6 @@ export default [
   },
   {
     files: ["src/**/*.{js,jsx,mjs,cjs}"],
-    ...react.configs.flat.recommended,
-    ...react.configs.flat["jsx-runtime"],
     ...eslint.configs.recommended,
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,

@@ -2,7 +2,6 @@ import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { useLocation, useParams, useNavigate, Link } from "react-router-dom";
 import parse, { domToReact } from "html-react-parser";
 import PropTypes from "prop-types";
-import { DateTime } from "luxon";
 import Timer from "../classes/Timer.js";
 
 import "./Teletext.scss";
@@ -194,6 +193,12 @@ export const Teletext = (props, ref) => {
     teletextFooterRef.current.innerHTML = channel;
   }
 
+  function getChannel() {
+    if (teletextFooterRef !== null) {
+      return teletextFooterRef.current.innerHTML;
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     show: () => {
       show();
@@ -220,6 +225,7 @@ export const Teletext = (props, ref) => {
     }
     window.removeEventListener("keyup", teletextSelector);
     window.addEventListener("keyup", teletextSelector);
+    // eslint-disable-next-line no-unused-vars
     const interval = setInterval(() => {
       teletextTimeRef.current.innerHTML = timer.formatTimecode();
     }, 1000);

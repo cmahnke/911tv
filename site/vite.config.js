@@ -9,7 +9,6 @@ import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
 //import jsoncrush from "./src/plugins/rollup-plugin-jsoncrush.js";
 import { join } from "path";
 
-const jsonGlob = "src/assets/json/*.json";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -43,7 +42,7 @@ export default defineConfig({
     }),
     /*
     {
-      ...lzstring({ include: jsonGlob }),
+      ...lzstring({ include: "src/assets/json/*.json" }),
       enforce: 'pre',
       apply: 'build'
     },

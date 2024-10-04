@@ -1,5 +1,41 @@
-Debugging examples
-==================
+Development / Debugging examples
+================================
+
+# Quick start
+## Generate required data
+
+```
+pip install -r requirements.txt
+./scripts/setup.sh
+```
+
+## Installing dependencies
+
+```
+cd site
+npm i
+```
+
+## Starting the web server
+
+```
+cd site
+npm run dev
+```
+
+## Generate static web site
+
+```
+cd site
+npm run build
+```
+
+## Run the app for the current platform
+
+```
+cd site
+npm run app:start
+```
 
 # Testing specific videos
 

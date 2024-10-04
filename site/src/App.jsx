@@ -42,7 +42,6 @@ function App() {
   var powerOn = true;
   var muted = false;
   var teletextOn = true;
-  var cookieWarning = true;
 
   const playerRef = useRef(null);
   const rootRef = useRef(null);
