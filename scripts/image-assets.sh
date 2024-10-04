@@ -2,7 +2,7 @@
 
 mkdir -p site/build
 
-convert site/public/images/screenshot.jpg -fuzz 5% -fill none -draw 'alpha 1,1 floodfill' -trim +repage site/public/images/favicon.png
+convert site/public/images/screenshot.jpg -fuzz 5% -fill none -draw 'color 1,1 floodfill' -trim +repage site/public/images/favicon.png
 
 #-transparent white
 convert site/public/images/favicon.png -resize 512x512  site/public/images/favicon-512.png
