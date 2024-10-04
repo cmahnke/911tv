@@ -82,7 +82,7 @@ jobs:
       - name: Install dependencies
         run: |
           go install github.com/jackmordaunt/icns/cmd/icnsify@latest
-          sudo apt-get install -y mediainfo libopenjp2-tools rpm bsdtar gcc-multilib g++-multilib wine64 dirmngr ca-certificates gnupg
+          sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib wine64 dirmngr ca-certificates gnupg
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
