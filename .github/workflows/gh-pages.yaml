@@ -75,9 +75,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: sudo apt-get install -y mediainfo
-
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
@@ -86,6 +83,7 @@ jobs:
       - name: Install dependencies
         run: |
           go install github.com/jackmordaunt/icns/cmd/icnsify@latest
+          sudo apt-get install -y mediainfo
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.0.4
@@ -107,7 +105,7 @@ jobs:
           path: ./site/src/assets/json
 
       - name: Unpack artifacts
-        working-directory: ./site/src/assets/json/
+#        working-directory: ./site/src/assets/json/
         run: |
           ls -r ./site/src/assets/json
           #unzip -j generated-json.zip
@@ -238,7 +236,7 @@ jobs:
           path: ./site/src/assets/json
 
       - name: Unpack artifacts
-        working-directory: ./site/src/assets/json/
+#        working-directory: ./site/src/assets/json/
         run: |
           ls -r ./site/src/assets/json
           #unzip -j generated-json.zip
