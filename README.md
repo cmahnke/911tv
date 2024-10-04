@@ -322,8 +322,6 @@ yarn run vite
 * Teletext
   * Check Colors in teletext graphics
 * Data preprocessing
-  * Result of compressing `assets/json/*.json` using [JSONCrush](https://github.com/KilledByAPixel/JSONCrush) isn't used
-* Data preprocessing
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
   * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions

@@ -113,12 +113,6 @@ jobs:
           name: generated-json
           path: ./site/src/assets/json
 
-      - name: Unpack artifacts
-#        working-directory: ./site/src/assets/json/
-        run: |
-          ls -r ./site/src/assets/json
-          #unzip -j generated-json.zip
-
       - name: Build apps
         working-directory: ./site
         run: |
@@ -160,65 +154,6 @@ jobs:
           # ./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip
           artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
 
-#      - name: Upload artifact archived Linux ARM64
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-linux-arm64
-#          path: ./site/dist/911tv-linux-arm64.tgz
-#
-#      - name: Upload artifact archived Linux AMD64 (x64)
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-linux-amd64
-#          path: ./site/dist/911tv-linux-amd64.tgz
-#
-#      - name: Upload artifact archived Windows ARM64
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-win-arm64
-#          path: ./site/dist/911tv-win-arm64.zip
-#
-#      - name: Upload artifact archived Windows AMD64 (x64)
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-win-x64
-#          path: ./site/dist/911tv-win-x64.zip
-#
-#      - name: Upload artifact archived MAC Universal DMG
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-universal
-#          path: ./site/dist/911tv-universal.dmg
-#
-#      - name: Upload artifact archived MAC AMD64 DMG
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-universal
-#          path: ./site/dist/911tv-amd64.dmg
-#
-#      - name: Upload artifact Windows ARM64 installer
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-arm64-setup
-#          path: ./site/dist/911tv-arm64-setup.exe
-#
-#      - name: Upload artifact Windows AMD64 (x64) installer
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-x64-setup
-#          path: ./site/dist/911tv-x64-setup.exe
-#
-#      - name: Upload artifact Linux ARM64 AppImage
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-arm64.AppImage
-#          path: ./site/dist/911tv-arm64.AppImage
-#
-#      - name: Upload artifact Linux AMD64 (x64) AppImage
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: 911tv-x86_64.AppImage
-#          path: ./site/dist/911tv-x86_64.AppImage
 
   deploy:
     runs-on: ubuntu-latest
@@ -245,10 +180,6 @@ jobs:
         with:
           name: generated-json
           path: ./site/src/assets/json
-
-      - name: Unpack artifacts
-        run: |
-          ls -r ./site/src/assets/json
 
       - name: Lint and Validate JSON
         working-directory: ./site

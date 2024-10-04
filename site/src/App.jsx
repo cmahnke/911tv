@@ -1,34 +1,39 @@
 import { useEffect, useRef } from "react";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { isMobileSafari } from "react-device-detect";
-import CookieConsent, { getCookieConsentValue } from "react-cookie-consent";
+import CookieConsent, {
+  Cookies,
+  getCookieConsentValue,
+} from "react-cookie-consent";
 import VideoJS from "./components/VideoJS.jsx";
 import TVStatic from "./components/TVStatic.jsx";
 import Teletext, { subTitlesPageNr } from "./components/Teletext.jsx";
 import { DateTime } from "luxon";
-//import JSONCrush from 'jsoncrush';
-//import LZString from 'lz-string';
+import LZString from "lz-string";
 import Timer from "./classes/Timer.js";
+import Util from "./classes/Util.ts";
 import "@fontsource/press-start-2p";
 import "./App.scss";
-import urlsImport from "./assets/json/urls.json";
-import pagesImport from "./assets/json/pages.json";
-import Cookies from "js-cookie";
+import urlsImport from "./assets/json/urls-lz-string-compressed.json";
+import pagesImport from "./assets/json/pages-lz-string-compressed.json";
+//import urlsImport from "./assets/json/urls.json";
+//import pagesImport from "./assets/json/pages.json";
 
 const consentCookieName = "iaConsent";
 // Length of video chunks to request, longer times take longer to load
 const chunkLength = 90;
 
 function parseJson(json) {
-  /*
   if (typeof json == "object" && Object.keys(json).length == 2) {
-    if ('type' in json && json.type === 'lzstring') {
-      return JSON.parse(JSONCrush.uncrush(json['content']));
-    } else if ('type' in json && json.type === 'jsoncrush') {
-      return JSON.parse(LZString.decompress(json['content']));
+    if ("type" in json && json.type === "lz-string") {
+      return JSON.parse(LZString.decompressFromBase64(json["content"]));
+    } else if ("type" in json && json.type === "jsoncrush") {
+      console.log("'jsoncrush' isn't supported anymore!");
+      return import("jsoncrush").then((JSONCrush) => {
+        return JSON.parse(JSONCrush.uncrush(json["content"]));
+      });
     }
   }
-  */
   return json;
 }
 
@@ -37,8 +42,8 @@ function App() {
   var powerOn = true;
   var muted = false;
   var teletextOn = true;
+  var cookieWarning = true;
 
-  const audioContext = new AudioContext();
   const playerRef = useRef(null);
   const rootRef = useRef(null);
   const tvFrameRef = useRef(null);
@@ -48,37 +53,76 @@ function App() {
   const infoContainerRef = useRef(null);
   const audioToggleRef = useRef(null);
 
-  const urls = parseJson(urlsImport);
-  const pages = parseJson(pagesImport);
+  // Electron
+  if (Util.isElectron()) {
+    if (projektemacher.settings.cookies !== undefined) {
+      for (const [c, v] of Object.entries(projektemacher.settings.cookie)) {
+        Cookies.set(c, v, {
+          expires: 999,
+          domain: projektemacher.settings.cookieDomain,
+        });
+      }
+    }
+  }
 
-  const channels = Object.keys(urls.channels);
-  var channel = channels[0];
-  var reset = false;
-  var currentVideo = {};
+  let audioContext;
+  try {
+    audioContext = new AudioContext();
+  } catch (e) {
+    console.log("AudioContext failed", e);
+  }
+
+  // App internal
+  let urls, pages, channels, channel;
+  urls = parseJson(urlsImport);
+  pages = parseJson(pagesImport);
+  channels = Object.keys(urls.channels);
+  channel = channels[0];
+
+  let reset = false;
+  let currentVideo = {};
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
     channel = urlParams.get("c");
-    urlParams.delete('c')
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+    urlParams.delete("c");
+    history.replaceState(
+      {},
+      "",
+      window.location.origin + window.location.pathname + urlParams.toString(),
+    );
   }
   if (urlParams.get("r") !== null && urlParams.get("r") !== undefined) {
     reset = true;
-    urlParams.delete('r')
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+    urlParams.delete("r");
+    history.replaceState(
+      {},
+      "",
+      window.location.origin + window.location.pathname + urlParams.toString(),
+    );
   }
   if (urlParams.get("t") !== null && urlParams.get("t") !== undefined) {
     reset = urlParams.get("t");
-    urlParams.delete('t')
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+    urlParams.delete("t");
+    history.replaceState(
+      {},
+      "",
+      window.location.origin + window.location.pathname + urlParams.toString(),
+    );
   }
   // Accept cookie notice - used for electron app
   if (urlParams.get("a") !== null && urlParams.get("a") !== undefined) {
-    urlParams.delete('a')
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+    urlParams.delete("a");
+    history.replaceState(
+      {},
+      "",
+      window.location.origin + window.location.pathname + urlParams.toString(),
+    );
     Cookies.set(consentCookieName, true, { expires: 999 });
-    console.log(`Set ${consentCookieName} to ${Cookies.get(consentCookieName)}`);
+    console.log(
+      `Set ${consentCookieName} to ${Cookies.get(consentCookieName)}`,
+    );
   }
 
   /*
@@ -136,6 +180,22 @@ function App() {
       },
     },
   ];
+
+  const cookieConsent = (
+    <CookieConsent
+      cookieName={consentCookieName}
+      cookieValue={true}
+      onAccept={playVideo}
+      expires={999}
+      overlay="true"
+      overlayClasses="consent-overlay"
+      location="bottom"
+    >
+      This website uses external video services from the{" "}
+      <a href="hteletextps://archive.org/">Internet Archive</a> which sets
+      cookies.
+    </CookieConsent>
+  );
 
   const router = createHashRouter([
     {
@@ -413,6 +473,10 @@ function App() {
     }
   });
 
+  //TODO: This isn't working yet
+  useEffect(() => {
+    teletextRef.current.setChannel(channel);
+  }, [teletextRef]);
 
   /*
   useEffect(() => {
@@ -599,19 +663,11 @@ function App() {
             </div>
           </div>
         </div>
-        <CookieConsent
-          cookieName={consentCookieName}
-          cookieValue={true}
-          onAccept={playVideo}
-          expires={999}
-          overlay="true"
-          overlayClasses="consent-overlay"
-          location="bottom"
-        >
-          This website uses external video services from the{" "}
-          <a href="hteletextps://archive.org/">Internet Archive</a> which sets
-          cookies.
-        </CookieConsent>
+        {(() => {
+          if (!Util.isElectron()) {
+            return cookieConsent;
+          }
+        })()}
       </div>
     </>
   );

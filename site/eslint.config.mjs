@@ -6,22 +6,21 @@ import eslintPluginReactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
-  ...[
-    eslint.configs.recommended,
-    ...tseslint.configs.recommended,
-  ].map(conf => ({
-    ...conf,
-    files: ['src/**/*.ts'],
-  })),
+  ...[eslint.configs.recommended, ...tseslint.configs.recommended].map(
+    (conf) => ({
+      ...conf,
+      files: ["src/**/*.ts"],
+    }),
+  ),
   {
     files: ["src/**/*.{ts,tsx}"],
     languageOptions: {
-			parserOptions: {
-				projectService: true,
-				tsconfigRootDir: import.meta.dirname,
-			},
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
       globals: {
-        ...globals.browser
+        ...globals.browser,
       },
     },
     rules: {
@@ -49,10 +48,10 @@ export default [
       },
       globals: {
         ...globals.browser,
-        "electron": true,
-        "process": true,
-        "__dirname": true,
-        "projektemacher": true
+        electron: true,
+        process: true,
+        __dirname: true,
+        projektemacher: true,
       },
     },
     rules: {
@@ -65,7 +64,7 @@ export default [
   {
     files: ["src/**/*.{js,jsx,mjs,cjs}"],
     ...react.configs.flat.recommended,
-    ...react.configs.flat['jsx-runtime'],
+    ...react.configs.flat["jsx-runtime"],
     ...eslint.configs.recommended,
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,
@@ -76,8 +75,8 @@ export default [
       },
       globals: {
         ...globals.browser,
-        "electron": true,
-        "projektemacher": true
+        electron: true,
+        projektemacher: true,
       },
     },
     plugins: {

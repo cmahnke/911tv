@@ -1,30 +1,30 @@
-import { defineViteConfig, externalizeDepsPlugin } from 'electron-vite'
-import react from '@vitejs/plugin-react'
+import { defineViteConfig, externalizeDepsPlugin } from "electron-vite";
+import react from "@vitejs/plugin-react";
 
 export default {
   main: {
-    publicDir: 'public',
+    publicDir: "public",
     build: {
       lib: {
-        entry: './electron/main/index.js'
-      }
+        entry: "./electron/main/index.js",
+      },
     },
     plugins: [externalizeDepsPlugin()],
   },
   preload: {
-    publicDir: 'public',
+    publicDir: "public",
     build: {
       lib: {
-        entry: './electron/preload/index.js'
-      }
+        entry: "./electron/preload/index.js",
+      },
     },
     plugins: [externalizeDepsPlugin()],
   },
   renderer: {
-    root: '.',
+    root: ".",
     build: {
       rollupOptions: {
-        input: './index.html',
+        input: "./index.html",
         output: {
           assetFileNames: `assets/[name].[ext]`,
         },
@@ -38,5 +38,5 @@ export default {
         },
       },
     },
-  }
+  },
 };

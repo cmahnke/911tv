@@ -3,15 +3,15 @@ productName: 911TV
 directories:
   buildResources: build
 files:
-  - '!**/.vscode/*'
-  - '!src/*'
-  - '!electron.vite.config.{js,ts,mjs,cjs},vite.config.{js,ts,mjs,cjs}'
-  - '!{.gitignore,.postcssrc.cjs,.eslintignore,.prettierrc,eslint.config.mjs,README.md}'
-  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
-  - '!public/*'
-  - '!electron/*'
-  - '!dist/*'
-  - '!out/renderer/CNAME'
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!electron.vite.config.{js,ts,mjs,cjs},vite.config.{js,ts,mjs,cjs}"
+  - "!{.gitignore,.postcssrc.cjs,.eslintignore,.prettierrc,eslint.config.mjs,README.md}"
+  - "!{.env,.env.*,.npmrc,pnpm-lock.yaml}"
+  - "!public/*"
+  - "!electron/*"
+  - "!dist/*"
+  - "!out/renderer/CNAME"
 mac:
   identity: null
   target:
@@ -39,10 +39,10 @@ nsis:
 
 linux:
   target:
-#    - target: deb
-#      arch:
-#        - x64
-#        - arm64
+    #    - target: deb
+    #      arch:
+    #        - x64
+    #        - arm64
     - target: AppImage
       arch:
         - x64

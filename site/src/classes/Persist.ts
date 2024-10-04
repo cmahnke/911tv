@@ -7,7 +7,9 @@ class Persist {
       if (settings !== undefined) {
         delete settings.expires;
         if (Object.keys(settings).length > 0) {
-          throw new Error(`Handling settings on local storage isn't implemented for ${JSON.stringify(settings)}`);
+          throw new Error(
+            `Handling settings on local storage isn't implemented for ${JSON.stringify(settings)}`,
+          );
         }
       }
       localStorage.setItem(name, value);
@@ -22,7 +24,7 @@ class Persist {
       if (item === null) {
         return undefined;
       }
-      return item
+      return item;
     } else {
       return Cookies.get(name);
     }
@@ -35,7 +37,6 @@ class Persist {
       return Cookies.remove(name);
     }
   }
-
 }
 
 export default Persist;

@@ -53,8 +53,8 @@ export default defineConfig({
     target: browserslistToEsbuild(),
     rollupOptions: {
       input: {
-        'index': './index.html',
-        '911tv': 'src/main.jsx'
+        index: "./index.html",
+        "911tv": "src/main.jsx",
       },
       output: {
         assetFileNames: `assets/[name].[ext]`,
