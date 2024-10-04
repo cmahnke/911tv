@@ -55,6 +55,7 @@ jobs:
         run: |
           #node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-jsoncrush-compressed.json -t jsoncrush
           node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
+          node scripts/compress-json.mjs -i site/src/assets/json/pages.json -o site/src/assets/json/pages-lz-string-compressed.json -t lz-string
 
       - name: Provide url artifact
         uses: actions/upload-artifact@v4
@@ -103,12 +104,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: generated-json
-          path: site/src/assets/json/
+          path: ./site/src/assets/json
 
       - name: Unpack artifacts
         working-directory: ./site/src/assets/json/
         run: |
-          unzip -j generated-json.zip
+          ls -r ./site/src/assets/json
+          #unzip -j generated-json.zip
 
       - name: Build apps
         working-directory: ./site
@@ -233,12 +235,13 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: generated-json
-          path: site/src/assets/json/
+          path: ./site/src/assets/json
 
       - name: Unpack artifacts
         working-directory: ./site/src/assets/json/
         run: |
-          unzip -j generated-json.zip
+          ls -r ./site/src/assets/json
+          #unzip -j generated-json.zip
 
       - name: Lint and Validate JSON
         working-directory: ./site
