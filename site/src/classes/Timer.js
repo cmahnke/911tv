@@ -1,5 +1,6 @@
 import { DateTime, Duration } from "luxon";
-import Cookies from "js-cookie";
+//import Cookies from "js-cookie";
+import {default as Cookies} from "./Persist.ts";
 
 class Timer {
   static timeDiffCookieName = "timediff";

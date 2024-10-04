@@ -1,13 +1,7 @@
 import { contextBridge } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
-import ElectronCookies from '@exponent/electron-cookies';
 
-const appCookieDomain = "https://911tv.projektemacher.org/";
-
-// See https://www.npmjs.com/package/@exponent/electron-cookies
-ElectronCookies.enable({
-  origin: appCookieDomain,
-});
+const appCookieDomain = "https://911tv.projektemacher.org";
 
 // Custom APIs for renderer
 const api = {}
@@ -19,7 +13,7 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', electronAPI);
     contextBridge.exposeInMainWorld('api', api);
-    contextBridge.exposeInMainWorld('projektemacher', {settings: {cookieDomain: new URL(appCookieDomain).hostname, cookie: {iaConsent: true}}});
+    contextBridge.exposeInMainWorld('projektemacher', {settings: {cookieDomain: appCookieDomain, cookie: {iaConsent: true}}});
   } catch (error) {
     console.error(error)
   }

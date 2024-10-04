@@ -41,8 +41,6 @@ http://localhost:5173/?t=2001-09-17T20:59:00
 ## TODO
 
 * Better branding: https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
-* Disable cookie notice on Electron
-  * Enabled Cookies on bundle electron app
 * Add downloads to GitHub
 
 # Maintanace
