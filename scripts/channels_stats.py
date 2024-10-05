@@ -4,11 +4,12 @@ import datetime
 import json
 import argparse
 import sys
-#import logging
 import re
-#from collections import OrderedDict
 from termcolor import cprint
+from zoneinfo import ZoneInfo
 from dateutil.parser import parse, ParserError
+
+tz = ZoneInfo('America/New_York')
 
 class ChannelDecoder(json.JSONDecoder):
     def __init__(self, *args, **kwargs):
@@ -29,8 +30,8 @@ class ChannelDecoder(json.JSONDecoder):
                 ret[k] = v
         return ret
 
-def until(start, lengthMs):
-    return start + datetime.timedelta(0, lengthMs / 1000)
+def until(start, length_ms):
+    return start + datetime.timedelta(0, length_ms / 1000)
 
 
 def get_channels(json):
@@ -40,7 +41,7 @@ def channel_durations(epg, c=None):
     def single(epg, c):
         for time, video in epg["channels"][c].items():
             if isinstance(time, datetime.datetime):
-                print(f"{c}: {time} + {video["duration"]}ms = {until(time, video["duration"])}")
+                print(f"{c}: {show_time(time)} + {video["duration"]}ms = {show_time(until(time, video["duration"]))}")
 
     if c is None:
         for c in get_channels(epg):
@@ -58,7 +59,17 @@ def chunks(epg, c=None):
     else:
         single(epg, c)
 
-def gaps(epg, c=None):
+def ends(epg, c=None):
+    def single(epg, c):
+        print(f"{c} {show_time(parse(epg["channels"][c]["end"]))}")
+
+    if c is None:
+        for c in get_channels(epg):
+            single(epg, c)
+    else:
+        single(epg, c)
+
+def gaps(epg, c=None, echo=True):
     def single(epg, c):
         def previuos_end(j):
             p = epg["channels"][c][dates[j-1]]
@@ -74,7 +85,8 @@ def gaps(epg, c=None):
                 if pe < k:
                     m = {"channel": c, "previuos_end": pe, "next_start": k, "missing": k - pe}
                     missing_footage.append(m)
-                    print(f"{c}: Gap found between {m['previuos_end']} and {m['next_start']}: {m['missing']}")
+                    if echo:
+                        print(f"{c}: Gap found between {show_time(m['previuos_end'])} and {show_time(m['next_start'])}: {m['missing']}")
 
 
     if c is None:
@@ -83,17 +95,26 @@ def gaps(epg, c=None):
     else:
         single(epg, c)
 
+def show_time(time):
+    global show_local
+    if not show_local:
+        return time.isoformat()
+    return time.astimezone(tz).isoformat()
+
 commands = {
     "durations": channel_durations,
     "chunks": chunks,
-    "gaps": gaps
+    "gaps": gaps,
+    "ends": ends
 }
+show_local = False
 
 # Main program
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='channel_stats.py')
     parser.add_argument('--input', '-i', required=True, help='Input file')
     parser.add_argument('--channel', '-c', required=False, help='Channel to display')
+    parser.add_argument('--timezone', '-t', action='store_true', required=False, help='Display dates in ')
     parser.add_argument("stat", type=str, choices=list(commands.keys()), help='Stat to print')
     args = parser.parse_args()
 
@@ -109,6 +130,9 @@ if __name__ == '__main__':
             sys.exit(1)
     else:
         channel = None
+
+    if args.timezone:
+        show_local = True
 
     if args.stat:
         commands[args.stat](json, channel)

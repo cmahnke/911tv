@@ -72,6 +72,27 @@ http://localhost:5173/?c=CNN
 
 http://localhost:5173/?t=2001-09-17T20:59:00
 
+# Finding timecodes to test
+
+Use `scripts/channels_stats.py` to get channel statistics, those provide points to test.
+
+## Gaps
+
+Use these to test switch over to the following video
+
+```
+python scripts/channels_stats.py -t -i site/src/assets/json/urls.json gaps
+```
+
+## Ends
+
+Use these to test the test card
+
+
+```
+python scripts/channels_stats.py -t -i site/src/assets/json/urls.json ends
+```
+
 # Electron
 
 ## TODO
