@@ -9,3 +9,4 @@ pillow
 emoji
 pymediainfo
 httpx[http2]
+python-dateutil

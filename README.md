@@ -285,6 +285,7 @@ See also [development documentation](./site/README.md)
   * Force test card
 
 ## Known Issues
+* Check order of url list
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
  * Maybe provide an overlay to trigger user interaction

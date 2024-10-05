@@ -24,6 +24,7 @@ from httpcore import ReadTimeout as HttpcoreReadTimeout
 TEMPLATE = 'https://archive.org/details/911?time={time}&chan={chan}'
 # Might not work: 'GLVSN',
 chans = ['AZT', 'BBC', 'BET', 'CCTV3', 'CNN', 'GLVSN', 'IRAQ', 'MCM', 'NEWSW', 'NHK', 'NTV', 'TCN', 'WETA', 'WJLA', 'WORLDNET', 'WRC', 'WSBK', 'WTTG', 'WUSA']
+#chans = ['AZT']
 timespan = ((11, 12), (18, 0))
 METADATA = {'year':  2001, 'month': 9, 'timezone': 'America/New_York'}
 EXTENDED = False
@@ -366,6 +367,8 @@ if __name__ == '__main__':
         result = r.get(timeout=1)
         #logger.debug(f"Extracting result {result}")
         enriched_entries.append(result)
+
+    enriched_entries = sorted(enriched_entries, key=lambda x: (next(iter(x)), next(iter(next(iter(x.values()))))))
 
     channels = reduce(merge, enriched_entries)
     urls['channels'] = add_end(channels)
