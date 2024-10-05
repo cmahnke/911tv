@@ -71,8 +71,10 @@ class ImageToSextants:
         return [p if p is not None else 0 for p in result]
 
     def getValueFromSextants(self, col, row):
+        def isPixelOn(v):
+            return 1 if v > 127 else 0
         cells = self.getSextants(col, row)
-        isPixelOn = lambda v: 1 if v > 127 else 0
+        #isPixelOn = lambda v: 1 if v > 127 else 0
         val = isPixelOn(cells[0]) + \
               (isPixelOn(cells[1]) << 1) + \
               (isPixelOn(cells[2]) << 2) + \
@@ -140,8 +142,9 @@ def check_page_size(md):
         cprint(f"Text from {file} has to many lines: {len(text_lines)}", "red", file=sys.stderr)
     max_length = 0
     for line in text_lines:
-        if len(line) > max_length:
-            max_length = len(line)
+        max_length = max(max_length, len(line))
+        #if len(line) > max_length:
+        #    max_length = len(line)
     if max_length > 40:
         cprint(f"Text from {file} has to long line: {max_length}", "red", file=sys.stderr)
 

@@ -17,7 +17,7 @@ import httpx
 from termcolor import cprint
 from bs4 import BeautifulSoup
 from pymediainfo import MediaInfo
-from httpx import ConnectTimeout, ConnectError, ReadTimeout, HTTPStatusError, RemoteProtocolError
+from httpx import ConnectTimeout, ConnectError, ReadTimeout, RemoteProtocolError
 from httpcore import ReadTimeout as HttpcoreReadTimeout
 
 # See https://archive.org/details/911
@@ -38,11 +38,11 @@ LOG_FILE = "./urls.log"
 logger = logging.getLogger(__name__)
 logging.basicConfig(filename=LOG_FILE, format='%(levelname)s %(asctime)s %(process)s %(message)s', level=logging.INFO)
 logger.setLevel(logging.DEBUG)
-timeout = 90
-client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=timeout)
-pool_close_wait = timeout * 2
+TIMEOUT = 90
+client = httpx.Client(http2=HTTP2, follow_redirects=True, timeout=TIMEOUT)
+POOL_CLOSE_WAIT = TIMEOUT * 2
 
-class Counter(object):
+class Counter:
     def __init__(self, initval=0):
         self.val = Value('i', initval)
         self.lock = Lock()
@@ -97,7 +97,7 @@ def gen_timecode(days, minutes=10):
 
 def get_redirect_url(url):
     try:
-        req = httpx.get(url, timeout=timeout)
+        req = httpx.get(url, timeout=TIMEOUT)
         if req.status_code in (302, 301):
             return req.headers['Location']
         cprint(f"\nResolving Redirect: {url} returned {req.status_code}", "red", file=sys.stderr)
@@ -109,7 +109,7 @@ def get_media_type(url, verbose=False):
     if verbose:
         with Lock():
             logger.debug(f"Getting media type for {url}")
-    head = client.head(url, timeout=timeout)
+    head = client.head(url, timeout=TIMEOUT)
     if head.status_code == 200:
         return head.headers['Content-Type']
     logger.error(f"Getting media type: {url} returned {head.status_code}")
@@ -129,7 +129,7 @@ def extract_details(days):
     for day in gen_timecode(days, 60*24):
         day = day[0:8]
         cprint(f"Extracting events from {day}", "green", file=sys.stderr)
-        details_html = httpx.get(DETAILS_PREFIX + day, timeout=timeout).content
+        details_html = httpx.get(DETAILS_PREFIX + day, timeout=TIMEOUT).content
         soup = BeautifulSoup(details_html, 'html.parser')
         for event in soup.css.select('#events .evmark'):
             time = event.find('div', {'class': 'evtime'}).text.strip()
@@ -255,7 +255,7 @@ def enrich_worker(q, r, download_counter):
                 sleep(WAIT / 1000)
             download_counter.increment()
         except (ConnectTimeout, ConnectError, ReadTimeout, HttpcoreReadTimeout, RemoteProtocolError, RuntimeError) as e:
-            if (isinstance(e, RuntimeError)):
+            if isinstance(e, RuntimeError):
                 with Lock():
                     logger.error(f"Getting duration for {identifier} failed ({repr(e)})")
             elif isinstance(e, ConnectError):
@@ -264,7 +264,7 @@ def enrich_worker(q, r, download_counter):
             elif isinstance(e, ConnectTimeout):
                 with Lock():
                     logger.error(f"Connect timeout for {identifier} ({repr(e)})")
-            elif isinstance(e, ReadTimeout) or isinstance(e, HttpcoreReadTimeout):
+            elif isinstance(e, (ReadTimeout, HttpcoreReadTimeout)):
                 with Lock():
                     logger.error(f"Timeout for {identifier} ({repr(e)})")
             elif isinstance(e, RemoteProtocolError):
@@ -336,7 +336,7 @@ if __name__ == '__main__':
 
         print('', flush=True, file=sys.stderr)
 
-    cprint(f"Preprocessed channels...", 'green', file=sys.stderr)
+    cprint("Preprocessed channels...", 'green', file=sys.stderr)
     download_counter = Counter(0)
     m = Manager()
     q = m.Queue()
@@ -353,9 +353,9 @@ if __name__ == '__main__':
     while not q.empty():
         logger.debug(f"Queue size is {q.qsize()}, up to {POOL_SIZE} running, already finished {download_counter.value()}")
         sleep(10)
-    cprint(f"\nClosing worker pool in {pool_close_wait}s", 'green', flush=True, file=sys.stderr)
-    logger.debug(f"Queue is empty, closing in {pool_close_wait}s")
-    sleep(pool_close_wait)
+    cprint(f"\nClosing worker pool in {POOL_CLOSE_WAIT}s", 'green', flush=True, file=sys.stderr)
+    logger.debug(f"Queue is empty, closing in {POOL_CLOSE_WAIT}s")
+    sleep(POOL_CLOSE_WAIT)
     pool.close()
     pool.join()
 
@@ -375,7 +375,7 @@ if __name__ == '__main__':
 
     urls_json = json.dumps(urls, indent=4, default=str)
     if args.output and not args.output == '-':
-        with open(args.output, 'w') as file:
+        with open(args.output, 'w', encoding='utf-8') as file:
             file.write(urls_json)
     else:
         print(urls_json)
