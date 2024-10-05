@@ -31,8 +31,7 @@ class ChannelDecoder(json.JSONDecoder):
         return ret
 
 def until(start, length_ms):
-    return start + datetime.timedelta(0, length_ms / 1000)
-
+    return start + datetime.timedelta(milliseconds=length_ms)
 
 def get_channels(json):
     return list(json["channels"].keys())

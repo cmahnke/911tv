@@ -70,7 +70,8 @@ http://localhost:5173/?c=CNN
 
 # End of stream
 
-http://localhost:5173/?t=2001-09-17T20:59:00
+Example URL for channel ATZ:
+http://localhost:5173/?t=2001-09-17T19:07:56.110000-04:00
 
 # Finding timecodes to test
 
@@ -86,11 +87,16 @@ python scripts/channels_stats.py -t -i site/src/assets/json/urls.json gaps
 
 ## Ends
 
-Use these to test the test card
-
+Use these to test the end test card
 
 ```
 python scripts/channels_stats.py -t -i site/src/assets/json/urls.json ends
+```
+
+Get the end for AZT:
+
+```
+ python scripts/channels_stats.py -t -c AZT -i site/src/assets/json/urls.json ends
 ```
 
 # Electron
@@ -113,4 +119,17 @@ pip install --upgrade --force-reinstall -r requirements.txt
 
 ```
 npm update --save
+```
+
+# Other
+
+## Python `strptime` example
+
+```
+import datetime
+
+time = "2001-09-17 23:07:56.110000+00:00"
+
+dt = datetime.datetime.strptime(time, "%Y-%m-%d %H:%M:%S.%f%z")
+print(dt.isoformat())
 ```

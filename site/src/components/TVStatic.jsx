@@ -137,8 +137,8 @@ export const TVStatic = (props, ref) => {
       time = (time + 1) % canvas.height;
     };
 
-    var makeTestcard = function () {
-      //TODO: Decide if test card should be sharper - certainly not
+    var makeTestcard = function (status) {
+      // Make test card sharper, disabled since it doesn't fit look
       // See https://stackoverflow.com/a/41776757
       /*
       if(devicePixelRatio >= 2){
@@ -146,6 +146,9 @@ export const TVStatic = (props, ref) => {
         canvas.height *= 2;
       }
       */
+      if (status === undefined) {
+        status = "ended";
+      }
 
       const parser = new DOMParser();
       var svgDoc = parser
@@ -158,6 +161,7 @@ export const TVStatic = (props, ref) => {
       svgDoc.getElementById("header-date").textContent = timer.formatDate();
       svgDoc.getElementById("header-time").textContent =
         timer.formatTimeWithSecs();
+      svgDoc.getElementById("footer-text-transmission-status").textContent = status;
 
       var svgData = new XMLSerializer().serializeToString(svgDoc);
       var svg = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
@@ -198,6 +202,8 @@ export const TVStatic = (props, ref) => {
     // This is only needed to have the initial frame
     if (mode === "static") {
       makeNoise();
+    } else if (mode === "gap") {
+      makeTestcard("interrupted");
     } else if (mode === "closedown") {
       makeTestcard();
     }
@@ -205,6 +211,8 @@ export const TVStatic = (props, ref) => {
     const interval = setInterval(() => {
       if (mode === "static") {
         makeNoise();
+      } else if (mode === "gap") {
+        makeTestcard("interrupted");
       } else if (mode === "closedown") {
         makeTestcard();
       }

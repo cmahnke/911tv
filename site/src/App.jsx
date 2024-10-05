@@ -307,12 +307,15 @@ function App() {
   function checkStreamEnd(channel) {
     let endTime = timer.endDate;
     if (
-      "last" in urls.channels[channel] &&
+      "end" in urls.channels[channel] &&
       urls.channels[channel]["end"] !== undefined &&
       urls.channels[channel]["end"] !== null
     ) {
-      endTime = DateTime.fromISO(urls.channels[channel]["end"]);
+      if (DateTime.fromISO(urls.channels[channel]["end"]).isValid) {
+        endTime = DateTime.fromISO(urls.channels[channel]["end"]);
+      }
     }
+    //console.log(`Current time ${timer.appTime.toUTC()}, end time ${endTime.toUTC()}`)
     if (timer.appTime > endTime) {
       return true;
     }
@@ -517,6 +520,7 @@ function App() {
     if (currentVideo === undefined) {
       currentVideo = {};
       console.log("Stream is undefined, dispaying static noise");
+      //TODO: This currently won't work when end is passed via t
     } else if ("info" in currentVideo && currentVideo["info"] !== undefined) {
       stream_info = currentVideo["info"];
     }

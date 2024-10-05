@@ -213,7 +213,8 @@ def add_end(channels):
         sorted_timecodes = OrderedDict(sorted(timecodes.items(), key = lambda x: datetime.datetime.fromisoformat(x[0])))
         last = list(sorted_timecodes.keys())[-1]
         if 'duration' in channels[chan][last]:
-            channels[chan]['end'] = datetime.datetime.fromisoformat(last) + datetime.timedelta(milliseconds=channels[chan][last]['duration'])
+            end = datetime.datetime.fromisoformat(last) + datetime.timedelta(milliseconds=channels[chan][last]['duration'])
+            channels[chan]['end'] = end.isoformat()
     return channels
 
 def enrich_worker(q, r, download_counter):
