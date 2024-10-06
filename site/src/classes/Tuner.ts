@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 import Channel from "./Channel";
 import type { Videos, InternalVideo } from "./911TV.types";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Tuner {
   private _channelList: string[] = [];
   public channels: { [key: string]: Channel } = {};
@@ -21,7 +20,7 @@ class Tuner {
   }
 
   set channel(channel: string) {
-    if (channel in Object.keys(this.channels)) {
+    if (channel in this.channels) {
       this._currentChannel = channel;
     } else {
       throw new Error("Not a valid channel!");

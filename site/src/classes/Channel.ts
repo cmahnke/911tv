@@ -1,23 +1,22 @@
 import { DateTime, Interval, Duration } from "luxon";
 
-import type { Videos, InternalVideo, JSONRecording, JSONRecordingVideoURL } from "./911TV.types";
-import { Recording, Gap } from "./Slot";
+import type { Videos, InternalVideo, JSONRecording } from "./911TV.types";
+import { Recording, Gap, Slot } from "./Slot";
 
 type TimeIndexEntry = {
   interval: Interval;
   entry: Recording | Gap;
+  next?: Interval;
+  excess?: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class Channel {
   protected name: string;
-  protected videos;
   protected _index: TimeIndexEntry[] = [];
   private _interval: Interval;
 
   constructor(name: string, videos: Videos) {
     this.name = name;
-    this.videos = videos;
     const start = DateTime.fromISO(Object.keys(videos)[0]);
     const end = this.getStreamEnd(videos);
     this._interval = Interval.fromDateTimes(start, end as DateTime);
@@ -68,6 +67,7 @@ class Channel {
             this._index[i - 1].interval.start!,
             this._index[i - 1].interval.end!.minus(length).minus(d)
           );
+          this._index[i - 1].excess = length.minus(d).toMillis();
         } else if (!this._index[i].interval.abutsEnd(this._index[i - 1].interval)) {
           const gap: Gap = new Gap(pe.plus(d), cs.minus(d));
           gaps.push({ interval: gap.interval, entry: gap });
@@ -75,16 +75,20 @@ class Channel {
       }
     }
     this._index.push(...gaps);
-    // This is just for easier debugging
-    this._index = this._index.sort((entry1: TimeIndexEntry, entry2: TimeIndexEntry) => {
-      if (+entry1.interval.start! > +entry2.interval.start!) {
-        return 1;
-      }
-      if (+entry1.interval.start! < +entry2.interval.start!) {
-        return -1;
-      }
-      return 0;
-    });
+    this._index = this._index.sort(Channel.indexSorter);
+    for (let i = 0; i < this._index.length - 1; i++) {
+      this._index[i].next = this._index[i + 1].interval;
+    }
+  }
+
+  private static indexSorter(entry1: TimeIndexEntry, entry2: TimeIndexEntry): number {
+    if (+entry1.interval.start! > +entry2.interval.start!) {
+      return 1;
+    }
+    if (+entry1.interval.start! < +entry2.interval.start!) {
+      return -1;
+    }
+    return 0;
   }
 
   public findVideo(time: DateTime): Recording | Gap | undefined {
@@ -95,6 +99,12 @@ class Channel {
       }
     }
     return video?.entry;
+  }
+
+  public findRemaining(time: DateTime): Slot[] | undefined {
+    let videos = this._index.filter((element) => element["interval"].contains(time) || element["interval"].isAfter(time));
+    videos = videos.sort(Channel.indexSorter);
+    return videos.map((v) => v.entry);
   }
 
   public getForTime(time: DateTime): InternalVideo | undefined {
@@ -121,45 +131,6 @@ class Channel {
     }
     return video;
   }
-
-  //TODO: This is just a port from App.jsx - just for reference
-  /*
-  private parseProgramms(videos: Videos, time: DateTime, offset: number | undefined): InternalVideo | undefined {
-    //This is just here to silence the compiler
-    const convert = (urlEntry: JSONRecordingVideoURL): { src: string; type: string } => {
-      return { src: urlEntry.src.toString(), type: urlEntry.type };
-    };
-
-    let times = Object.keys(videos);
-    times = times.filter(function (e) {
-      return e !== "end";
-    });
-    times.sort((date1: string, date2: string) => new Date(date1).getTime() - new Date(date2).getTime());
-    for (let i = 0; i < times.length; i++) {
-      if (DateTime.fromISO(times[i]) <= time && DateTime.fromISO(times[i + 1]) > time) {
-        if (offset === undefined || offset === null || !Number.isInteger(offset)) {
-          offset = 0;
-        }
-        const entry = videos[times[i + offset]] as JSONRecording;
-
-        const video: InternalVideo = { start: (+time - +DateTime.fromISO(times[i])) / 1000, url: convert(entry["video_url"]) };
-        if ("video_url" in entry) {
-          video["url"] = convert(entry["video_url"]);
-        }
-        if ("meta_url" in entry) {
-          video["info"] = entry["meta_url"].toString();
-        }
-        // Fix possible data issues
-        if (video["url"]["type"] === undefined || video["url"]["type"] == null) {
-          video["url"]["type"] = "video/mp4";
-        }
-        video["startTime"] = times[i + offset];
-
-        return video;
-      }
-    }
-  }
-  */
 
   public checkStreamEnd(time: DateTime): boolean {
     if (+time > +this.end) {

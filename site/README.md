@@ -121,6 +121,28 @@ pip install --upgrade --force-reinstall -r requirements.txt
 npm update --save
 ```
 
+# Testing
+
+The followings should work
+* Teletext
+  * Navigation without video skipping
+  * Counter while waiting for page
+  * Entering page number via keybaord
+  * Clock
+
+* Videos
+
+* Buttons
+  * Mute
+  * Power off to static
+    power off disables teletext
+  * Channel up / down
+  * Fullscreen
+
+* Other
+  * Full screen on double click
+  * Info on video source
+
 # Other
 
 ## Python `strptime` example

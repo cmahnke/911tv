@@ -48,4 +48,4 @@ class Recording extends Slot {
 
 class Gap extends Slot {}
 
-export { Recording, Gap, MediaType };
+export { Slot, Recording, Gap, MediaType };

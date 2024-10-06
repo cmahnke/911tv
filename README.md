@@ -286,7 +286,6 @@ See also [development documentation](./site/README.md)
 
 ## Known Issues
 * Channel switching after end fails
-* Test card hides teletext
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
  * Maybe provide an overlay to trigger user interaction
