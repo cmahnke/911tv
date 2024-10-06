@@ -19,9 +19,7 @@ class Timer {
       } else {
         var resetDate = DateTime.fromISO(reset, { zone: timezone });
         if (resetDate < this.startDate) {
-          console.log(
-            `Time ${resetDate} earlier then ${this.startDate} (startTime)`,
-          );
+          console.log(`Time ${resetDate} earlier then ${this.startDate} (startTime)`);
         }
         if (resetDate > this.endDate) {
           console.log(`Time ${resetDate} later then ${this.endDate} (endTime)`);
@@ -29,19 +27,17 @@ class Timer {
         console.log(`Setting time to ${resetDate}`);
         this.timeDiff = this.localTime.diff(resetDate);
         Cookies.set(Timer.timeDiffCookieName, String(this.timeDiff), {
-          expires: Timer.cookieTTL,
+          expires: Timer.cookieTTL
         });
       }
     } else {
       if (Cookies.get(Timer.timeDiffCookieName) === undefined) {
         this.timeDiff = this.localTime.diff(this.startDate);
         Cookies.set(Timer.timeDiffCookieName, String(this.timeDiff), {
-          expires: Timer.cookieTTL,
+          expires: Timer.cookieTTL
         });
       } else {
-        let cookieDiff = Duration.fromISO(
-          Cookies.get(Timer.timeDiffCookieName),
-        );
+        let cookieDiff = Duration.fromISO(Cookies.get(Timer.timeDiffCookieName));
         // Fallback to apptime if diffence is greater then play length and no explicit time is requsted
         if (DateTime.now().minus(cookieDiff) > endDate) {
           this.timeDiff = this.localTime.diff(cookieDiff);
@@ -53,13 +49,13 @@ class Timer {
     this.setTimes();
 
     console.log(
-      `Starting time is ${this.startDate} (UTC), time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time / app time (as '${this.timezone}' used for display) is ${this.displayTime}`,
+      `Starting time is ${this.startDate} (UTC), time difference to current running time ${this.localTime} is ${this.timeDiff}, calculated application time is ${this.appTime}, local event time / app time (as '${this.timezone}' used for display) is ${this.displayTime}`
     );
 
     this.interval = setInterval(() => {
       this.setTimes();
       Cookies.set(Timer.timeCodeCookieName, String(this.appTime), {
-        expires: Timer.cookieTTL,
+        expires: Timer.cookieTTL
       });
     }, 1000);
   }
@@ -71,38 +67,23 @@ class Timer {
   }
 
   formatTimecode() {
-    return this.appTime
-      .setZone(this.timezone)
-      .setLocale("en-us")
-      .toFormat("EEE MMM dd hh:mm:ss");
+    return this.appTime.setZone(this.timezone).setLocale("en-us").toFormat("EEE MMM dd hh:mm:ss");
   }
 
   formatDate() {
-    return this.appTime
-      .setZone(this.timezone)
-      .setLocale("en-us")
-      .toFormat("EEE MMM dd");
+    return this.appTime.setZone(this.timezone).setLocale("en-us").toFormat("EEE MMM dd");
   }
 
   formatTime() {
-    return this.appTime
-      .setZone(this.timezone)
-      .setLocale("en-us")
-      .toFormat("hh:mm");
+    return this.appTime.setZone(this.timezone).setLocale("en-us").toFormat("hh:mm");
   }
 
   formatURLTimecode() {
-    return this.appTime
-      .setZone(this.timezone)
-      .setLocale("en-us")
-      .toFormat("yyyy-LL-dd'T'HH:mm:ssZZ");
+    return this.appTime.setZone(this.timezone).setLocale("en-us").toFormat("yyyy-LL-dd'T'HH:mm:ssZZ");
   }
 
   formatTimeWithSecs() {
-    return this.appTime
-      .setZone(this.timezone)
-      .setLocale("en-us")
-      .toFormat("hh:mm:ss");
+    return this.appTime.setZone(this.timezone).setLocale("en-us").toFormat("hh:mm:ss");
   }
 }
 

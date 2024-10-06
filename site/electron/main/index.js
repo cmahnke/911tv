@@ -20,8 +20,8 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, "../preload/index.mjs"),
       enableRemoteModule: true,
-      sandbox: false,
-    },
+      sandbox: false
+    }
   });
 
   if (process.platform == "darwin") {
@@ -34,7 +34,7 @@ function createWindow() {
       credits: "Videos and Metadata provided by the Internet Archive,",
       copyright: "Videos copyrighted by their respective owners",
       authors: ["Christian Mahnke"],
-      website: "https://911tv.projektemacher.org/",
+      website: "https://911tv.projektemacher.org/"
     });
   }
 
@@ -54,7 +54,7 @@ function createWindow() {
     mainWindow.loadURL(process.env["ELECTRON_RENDERER_URL"]);
   } else {
     mainWindow.loadFile(join(__dirname, "../renderer/index.html"), {
-      query: { a: true },
+      query: { a: true }
     });
   }
 }

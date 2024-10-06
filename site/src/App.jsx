@@ -12,6 +12,7 @@ import { DateTime } from "luxon";
 import LZString from "lz-string";
 import Timer from "./classes/Timer.js";
 import Util from "./classes/Util.ts";
+import Tuner from "./classes/Tuner.ts";
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -51,6 +52,8 @@ function App() {
   const infoRef = useRef(null);
   const infoContainerRef = useRef(null);
   const audioToggleRef = useRef(null);
+  const teletextToggleRef = useRef(null);
+  const fullscreenToggleRef = useRef(null);
 
   // Electron
   if (Util.isElectron()) {
@@ -75,16 +78,14 @@ function App() {
   let urls, pages, channels, channel;
   urls = parseJson(urlsImport);
   pages = parseJson(pagesImport);
-  channels = Object.keys(urls.channels);
-  channel = channels[0];
-
+  const tuner = new Tuner(urls.channels);
   let reset = false;
   let currentVideo = {};
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
-    channel = urlParams.get("c");
+    tuner.channel = urlParams.get("c");
     urlParams.delete("c");
     history.replaceState(
       {},
@@ -140,6 +141,9 @@ function App() {
   } else {
     pages.push({ number: subTitlesPageNr, markdown: urls.events });
   }
+
+  channels = tuner.channelNames;
+  channel = tuner.channel;
 
   const videoEventHandler = [
     {
@@ -204,7 +208,7 @@ function App() {
           ref={teletextRef}
           pages={pages}
           timer={timer}
-          channel={channel}
+          channel={tuner.channel}
         />
       ),
     },
@@ -282,18 +286,19 @@ function App() {
     var i = channels.indexOf(channel);
     var logPrefix;
     if (direction) {
-      if (i == 0) {
-        channel = channels[channels.length - 1];
-      } else {
-        channel = channels[i - 1];
-      }
-      logPrefix = "Next channel (down), now ";
-    } else {
       if (i == channels.length - 1) {
         channel = channels[0];
       } else {
         channel = channels[i + 1];
       }
+      logPrefix = "Next channel (down), now ";
+    } else {
+      if (i == 0) {
+        channel = channels[channels.length - 1];
+      } else {
+        channel = channels[i - 1];
+      }
+
       logPrefix = "Previous channel (up), now ";
     }
     teletextRef.current.setChannel(channel);
@@ -469,7 +474,7 @@ function App() {
   useEffect(() => {
     if (checkStreamEnd(channel)) {
       hideInfoContainer();
-      teletextRef.current.hide();
+      //teletextRef.current.hide();
       console.log("Event time passed, displaying test card.");
       noiseRef.current.changeMode("closedown");
     }
@@ -542,7 +547,7 @@ function App() {
   return (
     <>
       <div id="container" ref={rootRef}>
-        <div id="tv-frame" ref={tvFrameRef}>
+        <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
           <div id="tv-border"></div>
           <div id="tube">
             <RouterProvider router={router} />
@@ -606,6 +611,7 @@ function App() {
               <button
                 aria-label="Teletext"
                 title={teletextOn ? "Teletext enabled" : "Teletext disabled"}
+                ref={teletextToggleRef}
                 type="button"
                 className="button toggle-teletext"
                 onClick={(e) => {
@@ -618,7 +624,7 @@ function App() {
                 aria-label="Previous channel"
                 title="Previous channel"
                 type="button"
-                className="button zap-channel-up"
+                className="button zap-channel-down"
                 onClick={(e) => {
                   zapChannel(e, false);
                 }}
@@ -629,7 +635,7 @@ function App() {
                 aria-label="Next channel"
                 title="Next channel"
                 type="button"
-                className="button zap-channel-down"
+                className="button zap-channel-up"
                 onClick={(e) => {
                   zapChannel(e, true);
                 }}
@@ -639,6 +645,7 @@ function App() {
               <button
                 aria-label="Fullscreen"
                 title="Fullscreen"
+                ref={fullscreenToggleRef}
                 type="button"
                 className={
                   "button toggle-fullscreen " + (isMobileSafari ? "hide" : "")

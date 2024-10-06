@@ -27,6 +27,7 @@ export default [
     },
     rules: {
       "no-warning-comments": ["warn", {}],
+      "@typescript-eslint/no-unused-vars": ["warn"],
     },
   },
   {

@@ -12,7 +12,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("electron", electronAPI);
     contextBridge.exposeInMainWorld("api", api);
     contextBridge.exposeInMainWorld("projektemacher", {
-      settings: { cookie: { iaConsent: true } },
+      settings: { cookie: { iaConsent: true } }
     });
   } catch (error) {
     console.error(error);

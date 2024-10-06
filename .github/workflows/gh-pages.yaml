@@ -186,7 +186,8 @@ jobs:
       - name: Lint and Validate JSON
         working-directory: ./site
         run: |
-          npx eslint
+          npm run lint
+          npm run tsc
 
       - name: Build site
         working-directory: ./site

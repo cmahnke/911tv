@@ -280,12 +280,13 @@ See also [development documentation](./site/README.md)
     * Prefetch
   * Channel switching without loading
   * Handle (buffering) events
-* Testcard for gaps
+* enable Testcard for gaps
 * Debugging
   * Force test card
 
 ## Known Issues
-* Check order of url list
+* Channel switching after end fails
+* Test card hides teletext
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
  * Maybe provide an overlay to trigger user interaction
