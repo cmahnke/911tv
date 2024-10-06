@@ -3,7 +3,7 @@ import { DateTime, Interval, Duration } from "luxon";
 type MediaType = "video/mp4";
 
 class Slot {
-  _interval: Interval;
+  protected _interval: Interval;
 
   constructor(start: DateTime, end: DateTime) {
     this._interval = Interval.fromDateTimes(start, end);
@@ -14,14 +14,22 @@ class Slot {
   }
 
   get interval(): Interval {
-    return this.interval;
+    return this._interval;
+  }
+
+  get start(): DateTime {
+    return this._interval.start!;
+  }
+
+  get end(): DateTime {
+    return this._interval.end!;
   }
 }
 
 class Recording extends Slot {
-  src: URL;
-  info: URL | undefined;
-  type: MediaType;
+  public src: URL;
+  public info: URL | undefined;
+  public type: MediaType;
 
   constructor(start: DateTime | string, duration: number, src: URL, type: MediaType = "video/mp4", info?: URL) {
     let s: DateTime;

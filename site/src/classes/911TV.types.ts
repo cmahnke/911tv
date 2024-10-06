@@ -1,6 +1,6 @@
-import { DateTime, Duration } from "luxon";
+import { DateTime } from "luxon";
 
-import { Recording, Gap, MediaType } from "./Slot";
+import { MediaType } from "./Slot";
 
 /* These represent the JSON we import */
 type JSONRecordingVideoURL = {
@@ -15,10 +15,13 @@ type JSONRecording = {
   startTime?: DateTime;
 };
 
-/* This is how the legacy internal format */
+/* This is the legacy internal format */
 
 type InternalVideo = {
-  url: JSONRecordingVideoURL;
+  url: {
+    src: string;
+    type: string;
+  };
   info?: string;
   startTime?: string;
   start: number;
