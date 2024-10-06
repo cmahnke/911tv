@@ -1,20 +1,22 @@
 import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
 import videojs from "video.js";
+import ChannelPlaylistPlugin from "../classes/ChannelPlaylistPlugin.ts";
+
 import "video.js/dist/video-js.css";
 import "./VideoJS.scss";
 
 export const VideoJS = (props, playerRef) => {
   const placeholderRef = React.useRef(null);
-  const { options, onReady, eventHandlers } = props;
+  const { options, playlist, onReady, eventHandlers } = props;
 
   React.useEffect(() => {
     // Make sure Video.js player is only initialized once
     if (!playerRef.current) {
       const placeholderEl = placeholderRef.current;
-      const videoElement = placeholderEl.appendChild(
-        document.createElement("video-js"),
-      );
+      const videoElement = placeholderEl.appendChild(document.createElement("video-js"));
+
+      videojs.registerPlugin("channelPlaylistPlugin", ChannelPlaylistPlugin);
 
       const player = (playerRef.current = videojs(videoElement, options, () => {
         player.log("player is ready");
@@ -55,9 +57,9 @@ VideoJS.propTypes = {
   eventHandlers: PropTypes.arrayOf(
     PropTypes.shape({
       name: PropTypes.string,
-      handler: PropTypes.func,
-    }),
-  ),
+      handler: PropTypes.func
+    })
+  )
 };
 
 export default forwardRef(VideoJS);

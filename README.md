@@ -297,17 +297,16 @@ See also [development documentation](./site/README.md)
 ## Further ideas
 
 ### Short term
-* Reduce TODO's from code
+* Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App
   * Deploy using GitHub Actions
-
 * Data preprocessing
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
   * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions
 
 ### Long term
-* Migrate to [TypeScript](https://www.typescriptlang.org/)
+* Migrate to [TypeScript](https://www.typescriptlang.org/), done for channel switching
 * Teletext
   * Check Colors in teletext graphics
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)

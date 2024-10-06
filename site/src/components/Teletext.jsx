@@ -2,7 +2,7 @@ import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { useLocation, useParams, useNavigate, Link } from "react-router-dom";
 import parse, { domToReact } from "html-react-parser";
 import PropTypes from "prop-types";
-import Timer from "../classes/Timer.js";
+import Timer from "../classes/Timer.ts";
 
 import "./Teletext.scss";
 
@@ -58,16 +58,13 @@ export const Teletext = (props, ref) => {
         promises.push(
           sleep((i - from) * duration).then(() => {
             teletextPageNrRef.current.innerHTML = i;
-          }),
+          })
         );
       }
       return promises;
     }
 
-    if (
-      (typeof nr === "string" || nr instanceof String) &&
-      nr.startsWith("/")
-    ) {
+    if ((typeof nr === "string" || nr instanceof String) && nr.startsWith("/")) {
       nr = nr.substring(1);
     }
     if (count) {
@@ -119,15 +116,12 @@ export const Teletext = (props, ref) => {
             className += ` ${attribs.class}`;
           }
           return (
-            <Link
-              onClick={() => dialPage(attribs.href, true)}
-              className={className}
-            >
+            <Link onClick={() => dialPage(attribs.href, true)} className={className}>
               {domToReact(children)}
             </Link>
           );
         }
-      },
+      }
     };
     let parsedPage = pages.filter((obj) => {
       return obj.number == number;
@@ -136,14 +130,8 @@ export const Teletext = (props, ref) => {
       return undefined;
     }
 
-    if (
-      !Array.isArray(parsedPage.html) &&
-      typeof parsedPage.markdown !== "object"
-    ) {
-      parsedPage["react"] = parse(
-        `<div class="md-content">${parsedPage.html}</div>`,
-        options,
-      );
+    if (!Array.isArray(parsedPage.html) && typeof parsedPage.markdown !== "object") {
+      parsedPage["react"] = parse(`<div class="md-content">${parsedPage.html}</div>`, options);
     } else if (typeof parsedPage.markdown === "object") {
       let latest = Object.keys(parsedPage.markdown)[0];
       for (const ts in parsedPage.markdown) {
@@ -161,7 +149,7 @@ export const Teletext = (props, ref) => {
       }
       parsedPage["react"] = parse(
         `<div class="teletext-subtitle-spacer"></div><div class="teletext-subtitle">${formatClock(DateTime.fromISO(latest))} ${parsedPage.markdown[latest]}</div>`,
-        options,
+        options
       );
     } else {
       // TODO: Handle multiple HTML elements here
@@ -211,7 +199,7 @@ export const Teletext = (props, ref) => {
     },
     setChannel: (channel) => {
       setChannel(channel);
-    },
+    }
   }));
 
   useEffect(() => {
@@ -259,7 +247,7 @@ export const Teletext = (props, ref) => {
 Teletext.propTypes = {
   timer: PropTypes.instanceOf(Timer),
   pages: PropTypes.arrayOf(PropTypes.object),
-  channel: PropTypes.string,
+  channel: PropTypes.string
 };
 
 export default forwardRef(Teletext);

@@ -1,13 +1,7 @@
-import {
-  forwardRef,
-  useImperativeHandle,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
+import { forwardRef, useImperativeHandle, useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { Howl } from "howler";
-import Timer from "../classes/Timer.js";
+import Timer from "../classes/Timer.ts";
 
 import "./TVStatic.scss";
 import staticNoiseSound from "../assets/mp3/TVStatic.mp3";
@@ -22,8 +16,8 @@ export const TVStatic = (props, ref) => {
     closedown: {
       sound: closeDownSound,
       interval: 1000,
-      background: closeDownBackground,
-    },
+      background: closeDownBackground
+    }
   };
 
   const animationLengthMs = 1500;
@@ -111,7 +105,7 @@ export const TVStatic = (props, ref) => {
     },
     unmute: () => {
       unmute();
-    },
+    }
   }));
 
   /*
@@ -151,16 +145,10 @@ export const TVStatic = (props, ref) => {
       }
 
       const parser = new DOMParser();
-      var svgDoc = parser
-        .parseFromString(contents["closedown"]["background"], "image/svg+xml")
-        .querySelector("svg");
-      svgDoc.setAttribute(
-        "viewBox",
-        `0 0 ${svgDoc.getAttribute("width")} ${svgDoc.getAttribute("height")}`,
-      );
+      var svgDoc = parser.parseFromString(contents["closedown"]["background"], "image/svg+xml").querySelector("svg");
+      svgDoc.setAttribute("viewBox", `0 0 ${svgDoc.getAttribute("width")} ${svgDoc.getAttribute("height")}`);
       svgDoc.getElementById("header-date").textContent = timer.formatDate();
-      svgDoc.getElementById("header-time").textContent =
-        timer.formatTimeWithSecs();
+      svgDoc.getElementById("header-time").textContent = timer.formatTimeWithSecs();
       svgDoc.getElementById("footer-text-transmission-status").textContent = status;
 
       var svgData = new XMLSerializer().serializeToString(svgDoc);
@@ -188,13 +176,11 @@ export const TVStatic = (props, ref) => {
 
     //somehow this can be initilized twice
     if (noisePlayer === undefined) {
-      console.log(
-        "During development hot reload will use the noise sound twice",
-      );
+      console.log("During development hot reload will use the noise sound twice");
       noisePlayer = new Howl({
         src: [bgNoise],
         autoplay: true,
-        loop: true,
+        loop: true
       });
     }
     // The HTML element would be noisePlayer._sounds[0]._node
@@ -230,7 +216,7 @@ export const TVStatic = (props, ref) => {
 TVStatic.propTypes = {
   timer: PropTypes.instanceOf(Timer),
   id: PropTypes.string,
-  className: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default forwardRef(TVStatic);

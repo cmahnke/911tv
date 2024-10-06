@@ -138,6 +138,18 @@ class Channel {
     }
     return false;
   }
+
+  // This can be used to get fragments of vidoes
+  static generateQueryParams(start: string, length: string): string {
+    const defaultLength = 35;
+    const prefix = "?t=";
+    const suffix = "&ignore=x.mp4";
+    if (length === undefined || length === null) {
+      length = defaultLength.toString();
+    }
+    //?t=4226/4261&ignore=x.mp4
+    return `${prefix}${start}/${start + length}${suffix}`;
+  }
 }
 
 export default Channel;

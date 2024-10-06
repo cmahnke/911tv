@@ -143,6 +143,11 @@ The followings should work
   * Full screen on double click
   * Info on video source
 
+## Things to test
+
+* Time diff when returning after end time
+* Search for `throw new Error`, remove conditions that trigger those
+
 # Other
 
 ## Python `strptime` example

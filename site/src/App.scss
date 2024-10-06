@@ -51,6 +51,13 @@ $tube-width: 100%;
   max-width: 100vw;
   aspect-ratio: 604.9223 / 525.5515;
 
+  &.mute::before {
+    position: absolute;
+    display: block;
+    inset: 0;
+    z-index: 10;
+  }
+
   #tv-border {
     content: svg-load("assets/svg/frame.svg");
     z-index: 10;
@@ -96,10 +103,8 @@ $tube-width: 100%;
       */
 
       /*#313131*/
-      filter: drop-shadow(0 0 0.05rem color.adjust(#696969, $lightness: -20%))
-        drop-shadow(0 0 0.05rem color.adjust(#696969, $alpha: 0.6))
-        drop-shadow(0 0 0.1rem rgb(0 0 0 / 100%))
-        drop-shadow(0 0 0.1rem rgb(0 0 0 / 50%))
+      filter: drop-shadow(0 0 0.05rem color.adjust(#696969, $lightness: -20%)) drop-shadow(0 0 0.05rem color.adjust(#696969, $alpha: 0.6))
+        drop-shadow(0 0 0.1rem rgb(0 0 0 / 100%)) drop-shadow(0 0 0.1rem rgb(0 0 0 / 50%))
         drop-shadow(0 0 0.14rem color.adjust($bezel-color, $alpha: 0.9));
       font-weight: unset;
       color: unset;
@@ -132,16 +137,14 @@ $tube-width: 100%;
       margin: 0 0.8em;
       transition: all ease 0.2s;
       border: 0.1rem solid color.adjust($button-color, $lightness: -1%);
-      filter: drop-shadow(0 0.3em 0.1em #000) drop-shadow(0 0.3em 0.1em #000)
-        drop-shadow(0.05rem 0.05rem 0.1rem rgb(0 0 0 / 80%));
+      filter: drop-shadow(0 0.3em 0.1em #000) drop-shadow(0 0.3em 0.1em #000) drop-shadow(0.05rem 0.05rem 0.1rem rgb(0 0 0 / 80%));
 
       &:active {
         transform: translateY(0.2rem);
         transition: all ease 0.2s;
         border: 0.1rem solid color.adjust($button-color, $lightness: 5%);
         background-color: color.adjust($button-color, $lightness: 3%);
-        filter: drop-shadow(0 0.05em 0.1em #000)
-          drop-shadow(0.05rem 0.05rem 0.1rem rgb(0 0 0 / 80%));
+        filter: drop-shadow(0 0.05em 0.1em #000) drop-shadow(0.05rem 0.05rem 0.1rem rgb(0 0 0 / 80%));
         /* drop-shadow(0px 0px 0.2em #313131) */
       }
 
@@ -165,10 +168,7 @@ $tube-width: 100%;
 
       &.toggle-teletext {
         .icon {
-          content: svg-load(
-            "assets/svg/IEC_60417_-_Ref-No_5463.svg",
-            stroke=#696969
-          );
+          content: svg-load("assets/svg/IEC_60417_-_Ref-No_5463.svg", stroke=#696969);
         }
       }
 
@@ -196,10 +196,7 @@ $tube-width: 100%;
         height: 100%;
 
         .icon {
-          content: svg-load(
-            "assets/svg/IEC5009_Standby_Symbol.svg",
-            stroke=#696969
-          );
+          content: svg-load("assets/svg/IEC5009_Standby_Symbol.svg", stroke=#696969);
           height: 70%;
           width: 70%;
         }
@@ -280,9 +277,9 @@ $tube-width: 100%;
       border-top-left-radius: 1rem;
       border-bottom-left-radius: 1rem;
 
-      a.tv-brand-link {
+      a {
         text-decoration: none;
-        color: black;
+        color: white;
 
         &:hover,
         &:focus,

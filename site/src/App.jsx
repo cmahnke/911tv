@@ -7,9 +7,10 @@ import TVStatic from "./components/TVStatic.jsx";
 import Teletext, { subTitlesPageNr } from "./components/Teletext.jsx";
 import { DateTime } from "luxon";
 import LZString from "lz-string";
-import Timer from "./classes/Timer.js";
+import Timer from "./classes/Timer.ts";
 import Util from "./classes/Util.ts";
 import Tuner from "./classes/Tuner.ts";
+import ChannelPlaylistPlugin from "./classes/ChannelPlaylistPlugin.ts";
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -18,8 +19,6 @@ import pagesImport from "./assets/json/pages-lz-string-compressed.json";
 //import pagesImport from "./assets/json/pages.json";
 
 const consentCookieName = "iaConsent";
-// Length of video chunks to request, longer times take longer to load
-const chunkLength = 90;
 
 function parseJson(json) {
   if (typeof json == "object" && Object.keys(json).length == 2) {
@@ -73,14 +72,18 @@ function App() {
 
   // App internal
   let urls = parseJson(urlsImport);
+  // Cleanup
+  //urlsImport = null;
 
   const tuner = new Tuner(urls.channels);
+
   let reset = false;
+  const playlist = {};
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
-    tuner.channel = urlParams.get("c");
+    tuner.station = urlParams.get("c");
     urlParams.delete("c");
     history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
@@ -118,6 +121,8 @@ function App() {
   } else {
     pages.push({ number: subTitlesPageNr, markdown: urls.events });
   }
+  // remove from memory
+  urls = null;
 
   const videoEventHandler = [
     {
@@ -129,7 +134,7 @@ function App() {
     {
       name: "playing",
       handler: () => {
-        hideNoise();
+        noise(false);
       }
     },
     {
@@ -153,7 +158,7 @@ function App() {
     {
       name: "timeupdate",
       handler: () => {
-        checkVideoPosition();
+        //checkVideoPosition();
       }
     }
   ];
@@ -175,13 +180,15 @@ function App() {
   const router = createHashRouter([
     {
       path: "/:page?",
-      element: <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.channel} />
+      element: <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.station} />
     }
   ]);
 
   let currentVideo = {};
 
   function playVideo() {
+    //setupVideo();
+    let plugin = playerRef.current.channelPlaylistPlugin({ channel: tuner.channel, time: timer });
     playerRef.current.currentTime(currentVideo["start"]);
     playerRef.current.play();
     //TODO: Calculate the start time in seconds depending on `appTime` ond `chunkLength`
@@ -191,24 +198,23 @@ function App() {
     */
   }
 
+  function updateVideo(video) {
+    playerRef.current.src(video["url"]);
+    playerRef.current.currentTime(video["start"]);
+  }
+
   function zapChannel(e, direction) {
     if (!powerOn) {
       return;
     }
-    var logPrefix = `Switched from ${tuner.channel} to `;
+    var logPrefix = `Switched from ${tuner.station} to `;
 
     tuner.zap(direction);
-    teletextRef.current.setChannel(tuner.channel);
-    currentVideo = tuner.parseProgramms(tuner.channel, timer.appTime);
-    console.log(`${logPrefix}${tuner.channel} `, currentVideo);
+    teletextRef.current.setChannel(tuner.station);
+    currentVideo = tuner.parseProgramms(tuner.station, timer.appTime);
+    console.log(`${logPrefix}${tuner.station} `, currentVideo);
     showNoise("immediately");
-    playerRef.current.src(currentVideo["url"]);
-    playerRef.current.currentTime(currentVideo["start"]);
-  }
-
-  function checkVideoPosition() {
-    //TODO: Check if we're near the end of this video
-    //console.log(playerRef.current.currentTime());
+    updateVideo(video);
   }
 
   function setTitle(e, title) {
@@ -217,15 +223,30 @@ function App() {
     }
   }
 
+  function noise(state) {
+    if (typeof state === "boolean" && state == false) {
+      if (powerOn) {
+        noiseRef.current.hide();
+      }
+    } else {
+      if (typeof state === "boolean") {
+        throw new Error("noise() needs to be either called with false to disable or the modfe as string");
+      }
+      noiseRef.current.show(className);
+    }
+  }
+
   function showNoise(className) {
     noiseRef.current.show(className);
   }
 
+  /*
   function hideNoise() {
     if (powerOn) {
       noiseRef.current.hide();
     }
   }
+  */
 
   function toggleAudio(e) {
     if (!powerOn) {
@@ -299,10 +320,14 @@ function App() {
 
   function toggleInfo() {
     if (infoRef.current.classList.contains("show")) {
-      infoRef.current.querySelector("div a").setAttribute("href", tuner.parseProgramms(tuner.channel, timer.appTime)["info"]);
+      infoRef.current.querySelector("div a").setAttribute("href", tuner.parseProgramms(tuner.station, timer.appTime)["info"]);
     }
     infoRef.current.classList.toggle("hide");
     infoRef.current.classList.toggle("show");
+  }
+
+  function testcard(mode) {
+    noiseRef.current.changeMode(mode);
   }
 
   function on() {
@@ -346,7 +371,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (tuner.checkStreamEnd(tuner.channel, timer.appTime)) {
+    if (tuner.checkStreamEnd(tuner.station, timer.appTime)) {
       hideInfoContainer();
       //teletextRef.current.hide();
       console.log("Event time passed, displaying test card.");
@@ -356,7 +381,7 @@ function App() {
 
   //TODO: This isn't working yet
   useEffect(() => {
-    teletextRef.current.setChannel(tuner.channel);
+    teletextRef.current.setChannel(tuner.station);
   }, [teletextRef]);
 
   /*
@@ -393,8 +418,8 @@ function App() {
     }
   }, []);
 
-  if (!tuner.checkStreamEnd(tuner.channel, timer.appTime)) {
-    currentVideo = tuner.parseProgramms(tuner.channel, timer.appTime);
+  if (!tuner.checkStreamEnd(tuner.station, timer.appTime)) {
+    currentVideo = tuner.parseProgramms(tuner.station, timer.appTime);
     var stream_info;
     if (currentVideo === undefined) {
       currentVideo = {};
@@ -439,7 +464,7 @@ function App() {
               </div>
             </div>
             <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
-            <VideoJS options={videoJsOptions} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player" />
+            <VideoJS options={videoJsOptions} playlist={playlist} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player" />
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>

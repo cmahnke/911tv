@@ -18,17 +18,17 @@ export default function json(options = {}) {
         let crushed = LZString.compress(code);
         const end = Date.now();
         this.info(
-          `Compressed Json is ${crushed.length} bytes long (down from ${code.length}) ${((crushed.length / code.length) * 100).toFixed(2)}%, execution time ${end - start} ms`,
+          `Compressed Json is ${crushed.length} bytes long (down from ${code.length}) ${((crushed.length / code.length) * 100).toFixed(2)}%, execution time ${end - start} ms`
         );
         return {
           code: JSON.stringify({ type: "lzstring", content: crushed }),
-          map: { mappings: "" },
+          map: { mappings: "" }
         };
       } catch (err) {
         const message = "Could not parse JSON file";
         this.error({ message, id, cause: err });
         return null;
       }
-    },
+    }
   };
 }

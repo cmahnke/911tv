@@ -27,7 +27,11 @@ class Tuner {
     }
   }
 
-  get channel(): string {
+  get channel(): Channel {
+    return this.channels[this._currentChannel];
+  }
+
+  get station(): string {
     return this._currentChannel;
   }
 
