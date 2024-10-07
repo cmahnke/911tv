@@ -59,14 +59,19 @@ export default class ChannelPlaylistPlugin extends Plugin {
       this._metaCallback = options.callbacks!.meta;
     }
 
-    console.log(options);
+    console.log(`Initialized Playlist Plugin for ${this._channel.name}`, options);
     this.registerEvents();
     this.loadFirst();
   }
 
   public reset() {
+    removePreload();
+    if (this._timeouts !== undefined) {
+      for (const timeout of this._timeouts) {
+        clearTimeout(timeout);
+      }
+    }
     //TODO: clean intervals, player and channel
-    //like this._channel = null;
   }
 
   public static setChannel(player: videojs.Player, channel: Channel) {
@@ -88,12 +93,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
       this.player.on(event, handler);
     }
 
-    if (this._autostart) {
-      this.player.on("loadeddata", () => {
-        this.player.play();
-      });
-    }
-
     this.player.on("buffering", () => {
       console.log("buffered");
       this._faultCallback();
@@ -110,8 +109,8 @@ export default class ChannelPlaylistPlugin extends Plugin {
       console.log("rolling");
       this._playingCallback();
       if (this._fault == true) {
-        //TODO: We recover from an error, check if we need to skip
         this.sync();
+        this._fault = false;
       }
     });
   }
@@ -121,7 +120,8 @@ export default class ChannelPlaylistPlugin extends Plugin {
     const expectedVideo = this._channel.findVideo(this._timer.appTime);
     if (expectedVideo !== undefined && expectedVideo instanceof Recording) {
       if (this.player.src() == (expectedVideo as Recording).src.toString()) {
-        //Just ajust position
+        const start = (+this._timer.appTime - +video.interval.start) / 1000;
+        this.player.currentTime(start);
       } else {
         // We are in the wrong video
         //this.start()
@@ -154,16 +154,13 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   private handleTimeupdate(update: object): void {
-    console.log(update);
+    //console.log(update);
   }
 
   private handleDispose(): void {
+    reset();
     super.dispose();
-    if (this._timeouts !== undefined) {
-      for (const timeout of this._timeouts) {
-        clearTimeout(timeout);
-      }
-    }
+    console.log(`Disposing Playlist Plugin for ${this._channel.name}`);
   }
 
   private showGap() {

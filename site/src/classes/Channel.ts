@@ -146,37 +146,6 @@ class Channel {
     }
     return [video, (+time - +video.interval.start!) / 1000];
   }
-
-  /*
-  // Just for backward compatibility - remove later
-  public getForTime(time: DateTime): InternalVideo | undefined {
-    const video = this.findVideo(time);
-    //TODO: Handle Gaps here
-    if (video === undefined || video instanceof Gap) {
-      return undefined;
-    }
-    return Channel.convertEntry(time, video);
-  }
-  */
-
-  /*
-  // Just for backward compatibility - remove later
-  static convertEntry(time: DateTime, record: Recording): InternalVideo {
-    let start = 0;
-    if (record.interval.start !== undefined && record.interval.start !== null) {
-      start = +time - +record.interval.start;
-    }
-    const video: InternalVideo = { start: start / 1000, url: { src: record.src.toString(), type: record.type } };
-    if (record.info !== undefined) {
-      video["info"] = record.info.toString();
-    }
-
-    if (record.interval.start !== undefined && record.interval.start !== null) {
-      video["startTime"] = record.interval.start!.toISO()!;
-    }
-    return video;
-  }
-  */
 }
 
 export default Channel;

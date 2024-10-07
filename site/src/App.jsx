@@ -127,6 +127,7 @@ function App() {
   // remove from memory
   urls = null;
 
+  /*
   const videoEventHandler = [
     {
       name: "play",
@@ -143,13 +144,13 @@ function App() {
     {
       name: "stalled",
       handler: () => {
-        showNoise();
+        noise();
       }
     },
     {
       name: "buffering",
       handler: () => {
-        showNoise();
+        noise();
       }
     },
     {
@@ -159,18 +160,19 @@ function App() {
       }
     }
   ];
+  */
 
   const cookieConsent = (
     <CookieConsent
       cookieName={consentCookieName}
       cookieValue={true}
-      onAccept={playVideo}
+      onAccept={autoPlay}
       expires={999}
       overlay="true"
       overlayClasses="consent-overlay"
       location="bottom"
     >
-      This website uses external video services from the <a href="hteletextps://archive.org/">Internet Archive</a> which might set cookies.
+      This website uses external video services from the <a href="https://archive.org/">Internet Archive</a> which might set cookies.
     </CookieConsent>
   );
 
@@ -201,20 +203,21 @@ function App() {
           noise("closedown");
         },
         fault: () => {
-          showNoise("immediately");
+          noise("immediately");
         },
         meta: setMeta
       }
     });
   }
 
+  /*
   function playVideo() {
     let video, start;
     if (!tuner.channel.checkStreamEnd(timer.appTime)) {
       [video, start] = tuner.channel.at(timer.appTime);
       if (video === undefined) {
         console.log("Stream is undefined, dispaying static noise");
-        showNoise();
+        noise();
       }
     } else {
       noise("closedown");
@@ -228,6 +231,7 @@ function App() {
       playerRef.current.play();
     }
   }
+  */
 
   function zapChannel(e, direction) {
     if (!powerOn) {
@@ -237,8 +241,8 @@ function App() {
     tuner.zap(direction);
     teletextRef.current.setChannel(tuner.station);
     console.log(`${logPrefix}${tuner.station}`);
-    showNoise("immediately");
-    playVideo();
+    noise("immediately");
+    autoPlay();
   }
 
   function setTitle(e, title) {
@@ -259,19 +263,6 @@ function App() {
       noiseRef.current.show(state);
     }
   }
-
-  function showNoise(className) {
-    noise(className);
-    //noiseRef.current.show(className);
-  }
-
-  /*
-  function hideNoise() {
-    if (powerOn) {
-      noiseRef.current.hide();
-    }
-  }
-  */
 
   function toggleAudio(e) {
     if (!powerOn) {
@@ -435,7 +426,7 @@ function App() {
 
   useEffect(() => {
     if (getCookieConsentValue(consentCookieName)) {
-      playVideo();
+      autoPlay();
     }
   }, []);
 
@@ -469,7 +460,7 @@ function App() {
               </div>
             </div>
             <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
-            <VideoJS options={videoJsOptions} eventHandlers={videoEventHandler} ref={playerRef} id="video-js-player" />
+            <VideoJS options={videoJsOptions} /* eventHandlers={videoEventHandler} */ ref={playerRef} id="video-js-player" />
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>
