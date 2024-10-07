@@ -286,6 +286,12 @@ $tube-width: 100%;
         &:focus-visible {
         }
       }
+      &.disabled {
+        color: currentcolor;
+        cursor: not-allowed;
+        opacity: 0.5;
+        pointer-events: none;
+      }
     }
 
     &.show > .info-text {

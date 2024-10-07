@@ -13,6 +13,7 @@
   "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
     "dev": "vite",
+    "prod": "vite preview",
     "build": "vite build",
     "tsc": "tsc",
     "clean": "rimraf dist/* out/*",

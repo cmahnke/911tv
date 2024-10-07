@@ -11,6 +11,7 @@ import Timer from "./classes/Timer.ts";
 import Util from "./classes/Util.ts";
 import Tuner from "./classes/Tuner.ts";
 import ChannelPlaylistPlugin from "./classes/ChannelPlaylistPlugin.ts";
+
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -44,6 +45,7 @@ function App() {
   const rootRef = useRef(null);
   const tvFrameRef = useRef(null);
   const noiseRef = useRef(null);
+  const metaRef = useRef(null);
   const teletextRef = useRef(null);
   const infoRef = useRef(null);
   const infoContainerRef = useRef(null);
@@ -72,16 +74,18 @@ function App() {
 
   // App internal
   let urls = parseJson(urlsImport);
-  // Cleanup
-  //urlsImport = null;
-
   const tuner = new Tuner(urls.channels);
-
+  let playlistPlugin;
+  let debug = false;
   let reset = false;
-  const playlist = {};
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get("d") !== null && urlParams.get("d") !== undefined) {
+    debug = true;
+    urlParams.delete("d");
+    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
+  }
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
     tuner.station = urlParams.get("c");
     urlParams.delete("c");
@@ -110,7 +114,6 @@ function App() {
    * Client Time is called local time, timezone doesn't matter
    * App time is the UTC time of the ongoing event, it needs to be convertet into EDT
    */
-
   const startDate = DateTime.fromISO(urls.metadata.start);
   const endDate = DateTime.fromISO(urls.metadata.end);
   const timer = new Timer(startDate, endDate, urls.metadata.timezone, reset);
@@ -154,12 +157,6 @@ function App() {
       handler: () => {
         playerRef.current.play();
       }
-    },
-    {
-      name: "timeupdate",
-      handler: () => {
-        //checkVideoPosition();
-      }
     }
   ];
 
@@ -184,23 +181,52 @@ function App() {
     }
   ]);
 
-  let currentVideo = {};
-
-  function playVideo() {
-    //setupVideo();
-    let plugin = playerRef.current.channelPlaylistPlugin({ channel: tuner.channel, time: timer });
-    playerRef.current.currentTime(currentVideo["start"]);
-    playerRef.current.play();
-    //TODO: Calculate the start time in seconds depending on `appTime` ond `chunkLength`
-    /*
-    let videoTimestamp = DateTime.fromISO(currentVideo['startTime']);
-    let startTime = timer.appTime.diff(videoTimestamp).as('milliseconds') / 1000;
-    */
+  function autoPlay() {
+    if (playlistPlugin !== undefined) {
+      //ChannelPlaylistPlugin.setChannel(playerRef.current, tuner.channel);
+      playlistPlugin.dispose();
+    }
+    playlistPlugin = playerRef.current.channelPlaylistPlugin({
+      channel: tuner.channel,
+      timer: timer,
+      autostart: true,
+      callbacks: {
+        playing: () => {
+          noise(false);
+        },
+        gap: () => {
+          noise("gap");
+        },
+        ended: () => {
+          noise("closedown");
+        },
+        fault: () => {
+          showNoise("immediately");
+        },
+        meta: setMeta
+      }
+    });
   }
 
-  function updateVideo(video) {
-    playerRef.current.src(video["url"]);
-    playerRef.current.currentTime(video["start"]);
+  function playVideo() {
+    let video, start;
+    if (!tuner.channel.checkStreamEnd(timer.appTime)) {
+      [video, start] = tuner.channel.at(timer.appTime);
+      if (video === undefined) {
+        console.log("Stream is undefined, dispaying static noise");
+        showNoise();
+      }
+    } else {
+      noise("closedown");
+      console.log("Event time passed, showing closedown.");
+    }
+    if (video !== undefined) {
+      playerRef.current.src(video.src.toString());
+      playerRef.current.currentTime(start);
+      setTeletextStation(tuner.channel.name);
+      setMeta(video.info.toString());
+      playerRef.current.play();
+    }
   }
 
   function zapChannel(e, direction) {
@@ -208,13 +234,11 @@ function App() {
       return;
     }
     var logPrefix = `Switched from ${tuner.station} to `;
-
     tuner.zap(direction);
     teletextRef.current.setChannel(tuner.station);
-    currentVideo = tuner.parseProgramms(tuner.station, timer.appTime);
-    console.log(`${logPrefix}${tuner.station} `, currentVideo);
+    console.log(`${logPrefix}${tuner.station}`);
     showNoise("immediately");
-    updateVideo(video);
+    playVideo();
   }
 
   function setTitle(e, title) {
@@ -232,12 +256,13 @@ function App() {
       if (typeof state === "boolean") {
         throw new Error("noise() needs to be either called with false to disable or the modfe as string");
       }
-      noiseRef.current.show(className);
+      noiseRef.current.show(state);
     }
   }
 
   function showNoise(className) {
-    noiseRef.current.show(className);
+    noise(className);
+    //noiseRef.current.show(className);
   }
 
   /*
@@ -301,13 +326,6 @@ function App() {
     }
   }
 
-  /*
-  function toggleInfoContainer() {
-    infoContainerRef.current.classList.toggle('hide');
-    infoContainerRef.current.classList.toggle('show');
-  }
-  */
-
   function showInfoContainer() {
     infoContainerRef.current.classList.remove("hide");
     infoContainerRef.current.classList.add("show");
@@ -319,9 +337,6 @@ function App() {
   }
 
   function toggleInfo() {
-    if (infoRef.current.classList.contains("show")) {
-      infoRef.current.querySelector("div a").setAttribute("href", tuner.parseProgramms(tuner.station, timer.appTime)["info"]);
-    }
     infoRef.current.classList.toggle("hide");
     infoRef.current.classList.toggle("show");
   }
@@ -345,6 +360,19 @@ function App() {
     hideInfoContainer();
     disableAudio();
     powerOn = false;
+  }
+
+  function setMeta(url) {
+    if (metaRef.current !== null) {
+      metaRef.current.classList.remove("disabled");
+      metaRef.current.href = url;
+    }
+  }
+
+  function setTeletextStation(station) {
+    if (teletextRef.current !== null) {
+      teletextRef.current.setChannel(tuner.station);
+    }
   }
 
   function togglePower() {
@@ -371,29 +399,22 @@ function App() {
   }
 
   useEffect(() => {
-    if (tuner.checkStreamEnd(tuner.station, timer.appTime)) {
+    if (tuner.channel.checkStreamEnd(timer.appTime)) {
       hideInfoContainer();
-      //teletextRef.current.hide();
       console.log("Event time passed, displaying test card.");
       noiseRef.current.changeMode("closedown");
     }
   });
 
-  //TODO: This isn't working yet
   useEffect(() => {
-    teletextRef.current.setChannel(tuner.station);
-  }, [teletextRef]);
-
-  /*
-  useEffect(() => {
-    const timerDebugInterval = setInterval(() => {
-      if (window.app.timer == true) {
-        console.log(timer, timer.formatTimecode(), timer.formatURLTimecode())
-      }
-    }, 1000)
-
+    if (debug) {
+      setInterval(() => {
+        if (window.app.timer == true) {
+          console.log(timer, timer.formatTimecode(), timer.formatURLTimecode());
+        }
+      }, 1000);
+    }
   }, []);
-  */
 
   /*
   useEffect(() => {
@@ -418,30 +439,14 @@ function App() {
     }
   }, []);
 
-  if (!tuner.checkStreamEnd(tuner.station, timer.appTime)) {
-    currentVideo = tuner.parseProgramms(tuner.station, timer.appTime);
-    var stream_info;
-    if (currentVideo === undefined) {
-      currentVideo = {};
-      console.log("Stream is undefined, dispaying static noise");
-      //TODO: This currently won't work when end is passed via t
-    } else if ("info" in currentVideo && currentVideo["info"] !== undefined) {
-      stream_info = currentVideo["info"];
-    }
-  } else {
-    currentVideo = {};
-    console.log("Event time passed, using empty video.");
-  }
-  //console.log(teletextRef.current.getChannel() );
-
   // See https://videojs.com/guides/react/
   var videoJsOptions = {
     autoplay: false,
     controls: true,
-    fill: true,
+    //fill: true,
+    fluid: true,
     muted: false,
-    preload: "auto",
-    sources: [currentVideo["url"]]
+    preload: "auto"
   };
 
   return (
@@ -457,14 +462,14 @@ function App() {
                   <i className="info-icon"></i>
                 </button>
                 <div className="info-text">
-                  <a target="_blank" rel="noreferrer" href={stream_info}>
+                  <a target="_blank" rel="noreferrer" href="" ref={metaRef} className="disabled">
                     Stream Metadata
                   </a>
                 </div>
               </div>
             </div>
             <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
-            <VideoJS options={videoJsOptions} playlist={playlist} ref={playerRef} eventHandlers={videoEventHandler} id="video-js-player" />
+            <VideoJS options={videoJsOptions} eventHandlers={videoEventHandler} ref={playerRef} id="video-js-player" />
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>

@@ -1,6 +1,5 @@
-import { DateTime } from "luxon";
 import Channel from "./Channel";
-import type { Videos, InternalVideo } from "./911TV.types";
+import type { Videos } from "./911TV.types";
 
 class Tuner {
   private _channelList: string[] = [];
@@ -19,7 +18,7 @@ class Tuner {
     return Object.keys(this.channels);
   }
 
-  set channel(channel: string) {
+  set station(channel: string) {
     if (channel in this.channels) {
       this._currentChannel = channel;
     } else {
@@ -62,19 +61,6 @@ class Tuner {
       this.previous();
     }
     return this._currentChannel;
-  }
-
-  public getCurrentVideo(time: DateTime): InternalVideo | undefined {
-    return this.channels[this._currentChannel].getForTime(time);
-  }
-
-  // Just for backward compatibility - remove later
-  public parseProgramms(chan: string, time: DateTime) {
-    return this.channels[this._currentChannel].getForTime(time);
-  }
-
-  public checkStreamEnd(channel: string, time: DateTime): boolean {
-    return this.channels[channel].checkStreamEnd(time);
   }
 }
 

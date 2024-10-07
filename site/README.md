@@ -44,6 +44,7 @@ There are several URL params that can be used to test specific videos:
 * `t` - set a specific time
 * `c` - changes channel
 * `a` - set the accept cookie
+* `d` - debug - enable timer logging
 
 ## Change time
 

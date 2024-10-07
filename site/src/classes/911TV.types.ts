@@ -15,8 +15,10 @@ type JSONRecording = {
   startTime?: DateTime;
 };
 
-/* This is the legacy internal format */
+type Videos = { [key: string]: JSONRecording | string };
 
+/* This is the legacy internal format. Just for backward compatibility - remove later */
+/*
 type InternalVideo = {
   url: {
     src: string;
@@ -26,7 +28,5 @@ type InternalVideo = {
   startTime?: string;
   start: number;
 };
-
-type Videos = { [key: string]: JSONRecording | string };
-
-export { MediaType, JSONRecording, JSONRecordingVideoURL, InternalVideo, Videos };
+*/
+export { MediaType, JSONRecording, JSONRecordingVideoURL, Videos };

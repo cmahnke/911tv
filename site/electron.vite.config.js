@@ -6,19 +6,19 @@ export default {
     publicDir: "public",
     build: {
       lib: {
-        entry: "./electron/main/index.js",
-      },
+        entry: "./electron/main/index.js"
+      }
     },
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin()]
   },
   preload: {
     publicDir: "public",
     build: {
       lib: {
-        entry: "./electron/preload/index.js",
-      },
+        entry: "./electron/preload/index.js"
+      }
     },
-    plugins: [externalizeDepsPlugin()],
+    plugins: [externalizeDepsPlugin()]
   },
   renderer: {
     root: ".",
@@ -26,17 +26,17 @@ export default {
       rollupOptions: {
         input: "./index.html",
         output: {
-          assetFileNames: `assets/[name].[ext]`,
-        },
-      },
+          assetFileNames: `assets/[name].[ext]`
+        }
+      }
     },
     plugins: [react()],
     css: {
       preprocessorOptions: {
         scss: {
-          api: "modern-compiler",
-        },
-      },
-    },
-  },
+          api: "modern-compiler"
+        }
+      }
+    }
+  }
 };

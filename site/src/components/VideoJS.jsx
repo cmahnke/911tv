@@ -8,7 +8,7 @@ import "./VideoJS.scss";
 
 export const VideoJS = (props, playerRef) => {
   const placeholderRef = React.useRef(null);
-  const { options, playlist, onReady, eventHandlers } = props;
+  const { options, onReady, eventHandlers } = props;
 
   React.useEffect(() => {
     // Make sure Video.js player is only initialized once

@@ -1,6 +1,6 @@
 import { DateTime, Interval, Duration } from "luxon";
 
-import type { Videos, InternalVideo, JSONRecording } from "./911TV.types";
+import type { Videos, JSONRecording } from "./911TV.types";
 import { Recording, Gap, Slot } from "./Slot";
 
 type TimeIndexEntry = {
@@ -91,14 +91,27 @@ class Channel {
     return 0;
   }
 
-  public findVideo(time: DateTime): Recording | Gap | undefined {
+  public findIndexEntry(time: DateTime): TimeIndexEntry | undefined {
     const video = this._index.find((element) => element["interval"].contains(time));
     if (video === undefined) {
       if (Interval.fromDateTimes(this.start, this.end!).contains(time)) {
         throw new Error(`Entry for ${time.toISO()} missing from ${this.name}`);
       }
     }
-    return video?.entry;
+    return video;
+  }
+
+  public getIndexEntry(interval: Interval): TimeIndexEntry | undefined {
+    return this._index.find((element) => element["interval"] == interval);
+  }
+
+  public findVideo(time: DateTime): Recording | Gap | undefined {
+    return this.findIndexEntry(time)?.entry;
+  }
+
+  public findNextRecording(time: DateTime): Recording | undefined {
+    const indexEntry = this._index.find((element) => element.entry instanceof Recording && element["interval"].isAfter(time));
+    return indexEntry?.entry as Recording;
   }
 
   public findRemaining(time: DateTime): Slot[] | undefined {
@@ -107,6 +120,35 @@ class Channel {
     return videos.map((v) => v.entry);
   }
 
+  public checkStreamEnd(time: DateTime): boolean {
+    if (+time > +this.end) {
+      return true;
+    }
+    return false;
+  }
+
+  // This can be used to get fragments of videos, load the first 30 secs as chunk, and the preload
+  static generateQueryParams(start: string, length: string): string {
+    const defaultLength = 35;
+    const prefix = "?t=";
+    const suffix = "&ignore=x.mp4";
+    if (length === undefined || length === null) {
+      length = defaultLength.toString();
+    }
+    //?t=4226/4261&ignore=x.mp4
+    return `${prefix}${start}/${start + length}${suffix}`;
+  }
+
+  public at(time: DateTime): [Slot, number] | undefined {
+    const video = this.findVideo(time);
+    if (video === undefined) {
+      return undefined;
+    }
+    return [video, (+time - +video.interval.start!) / 1000];
+  }
+
+  /*
+  // Just for backward compatibility - remove later
   public getForTime(time: DateTime): InternalVideo | undefined {
     const video = this.findVideo(time);
     //TODO: Handle Gaps here
@@ -115,7 +157,10 @@ class Channel {
     }
     return Channel.convertEntry(time, video);
   }
+  */
 
+  /*
+  // Just for backward compatibility - remove later
   static convertEntry(time: DateTime, record: Recording): InternalVideo {
     let start = 0;
     if (record.interval.start !== undefined && record.interval.start !== null) {
@@ -131,25 +176,7 @@ class Channel {
     }
     return video;
   }
-
-  public checkStreamEnd(time: DateTime): boolean {
-    if (+time > +this.end) {
-      return true;
-    }
-    return false;
-  }
-
-  // This can be used to get fragments of vidoes
-  static generateQueryParams(start: string, length: string): string {
-    const defaultLength = 35;
-    const prefix = "?t=";
-    const suffix = "&ignore=x.mp4";
-    if (length === undefined || length === null) {
-      length = defaultLength.toString();
-    }
-    //?t=4226/4261&ignore=x.mp4
-    return `${prefix}${start}/${start + length}${suffix}`;
-  }
+  */
 }
 
 export default Channel;

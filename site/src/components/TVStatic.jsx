@@ -36,7 +36,11 @@ export const TVStatic = (props, ref) => {
     checkClosedown();
     canvasRef.current.classList.remove("hide");
     canvasRef.current.classList.add("show");
-    noisePlayer.fade(0, 1, animationLengthMs);
+    if (noisePlayer !== undefined) {
+      noisePlayer.fade(0, 1, animationLengthMs);
+    } else {
+      console.log("Noise player isn't defined!");
+    }
   }
 
   function hide(className) {
@@ -46,7 +50,11 @@ export const TVStatic = (props, ref) => {
     }
     canvasRef.current.classList.remove("show");
     canvasRef.current.classList.add("hide");
-    noisePlayer.fade(1, 0, animationLengthMs);
+    if (noisePlayer !== undefined) {
+      noisePlayer.fade(1, 0, animationLengthMs);
+    } else {
+      console.log("Noise player isn't defined!");
+    }
   }
 
   function changeMode(newMode) {

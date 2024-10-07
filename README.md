@@ -289,7 +289,6 @@ See also [development documentation](./site/README.md)
 * Powering on not working properly with test card
 * Audio is playing when disabled disabled after channel switch
  * Maybe provide an overlay to trigger user interaction
-* Channel switch via URL not shown in Teletext
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
   * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
@@ -297,6 +296,7 @@ See also [development documentation](./site/README.md)
 ## Further ideas
 
 ### Short term
+* Load the first 30 secs as chunk, then rely on prefetch
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App
   * Deploy using GitHub Actions

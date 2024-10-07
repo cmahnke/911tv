@@ -9,9 +9,16 @@ import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
 //import jsoncrush from "./src/plugins/rollup-plugin-jsoncrush.js";
 import { join } from "path";
 
+let defaultPort = 5173;
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  server: {
+    port: defaultPort
+  },
+  preview: {
+    port: defaultPort
+  },
   base: "./",
   plugins: [
     react(/*{
@@ -24,7 +31,7 @@ export default defineConfig({
     eslint(),
     {
       ...strip({ include: "**/*.(jsx|js)" }),
-      apply: "build",
+      apply: "build"
     },
     stylelint({ build: true, dev: false, lintOnStart: true }),
     svg({
@@ -34,12 +41,12 @@ export default defineConfig({
           name: "preset-default",
           params: {
             overrides: {
-              cleanupIds: false,
-            },
-          },
-        },
-      ],
-    }),
+              cleanupIds: false
+            }
+          }
+        }
+      ]
+    })
     /*
     {
       ...lzstring({ include: "src/assets/json/*.json" }),
@@ -53,26 +60,26 @@ export default defineConfig({
     rollupOptions: {
       input: {
         index: "./index.html",
-        "911tv": "src/main.jsx",
+        "911tv": "src/main.jsx"
       },
       output: {
-        assetFileNames: `assets/[name].[ext]`,
-      },
-    },
+        assetFileNames: `assets/[name].[ext]`
+      }
+    }
   },
   resolve: {
     alias: [
       {
         find: /~(.+)/,
-        replacement: join(process.cwd(), "node_modules/$1"),
-      },
-    ],
+        replacement: join(process.cwd(), "node_modules/$1")
+      }
+    ]
   },
   css: {
     preprocessorOptions: {
       scss: {
-        api: "modern-compiler",
-      },
-    },
-  },
+        api: "modern-compiler"
+      }
+    }
+  }
 });
