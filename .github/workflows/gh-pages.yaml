@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  VERSION: 2024.10.5
+  VERSION: 2024.10.8
 
 jobs:
   generate-json:

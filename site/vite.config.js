@@ -6,7 +6,7 @@ import browserslistToEsbuild from "browserslist-to-esbuild";
 import strip from "@rollup/plugin-strip";
 import svg from "vite-plugin-svgo";
 import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
-//import jsoncrush from "./src/plugins/rollup-plugin-jsoncrush.js";
+import inlineSource from "vite-plugin-inline-source";
 import { join } from "path";
 
 let defaultPort = 5173;
@@ -34,6 +34,7 @@ export default defineConfig({
       apply: "build"
     },
     stylelint({ build: true, dev: false, lintOnStart: true }),
+    inlineSource({ svgoOptions: { multipass: true } }),
     svg({
       multipass: true,
       plugins: [

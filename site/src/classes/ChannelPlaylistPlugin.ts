@@ -1,4 +1,4 @@
-import { DateTime, Interval } from "luxon";
+import { DateTime, Interval, Duration } from "luxon";
 import videojs from "video.js";
 
 import { Recording, Gap, Slot } from "./Slot";
@@ -65,7 +65,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   public reset() {
-    removePreload();
+    this.removePreload();
     if (this._timeouts !== undefined) {
       for (const timeout of this._timeouts) {
         clearTimeout(timeout);
@@ -115,32 +115,16 @@ export default class ChannelPlaylistPlugin extends Plugin {
     });
   }
 
-  private sync() {
-    return;
-    const expectedVideo = this._channel.findVideo(this._timer.appTime);
-    if (expectedVideo !== undefined && expectedVideo instanceof Recording) {
-      if (this.player.src() == (expectedVideo as Recording).src.toString()) {
-        const start = (+this._timer.appTime - +video.interval.start) / 1000;
-        this.player.currentTime(start);
-      } else {
-        // We are in the wrong video
-        //this.start()
-      }
-    } else if (expectedVideo instanceof Gap) {
-      console.log("TODO");
-    } else {
-      throw new Error(`Unknown type: ${typeof expectedVideo}`);
-    }
-  }
+  /**
+   * Note, that `this` in the event handler reffer to the player
+   */
 
   private handlePlay(): void {
     console.log("got play");
-    //TODO: Find a way to test if the player contains source
-    /*
+    //TODO: Find a way to test if the player contains source - this seems to be the player itself
     if (this.player.src() == "") {
       this._gapCallback();
     }
-    */
   }
 
   private handlePlaying(): void {
@@ -158,7 +142,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   private handleDispose(): void {
-    reset();
+    this.reset();
     super.dispose();
     console.log(`Disposing Playlist Plugin for ${this._channel.name}`);
   }
@@ -223,6 +207,31 @@ export default class ChannelPlaylistPlugin extends Plugin {
       if (nextRecording !== undefined) {
         this.preload(nextRecording.src);
       }
+      const wait: Duration = this._timer.appTime.diff(next.interval.start!);
+      this._timeouts.push(
+        setTimeout(() => {
+          //this.play(next.entry);
+        }, wait.toMillis())
+      );
+    }
+  }
+
+  private sync() {
+    const expectedVideo = this._channel.findVideo(this._timer.appTime);
+    if (expectedVideo !== undefined && expectedVideo instanceof Recording) {
+      if (this.player.src() == (expectedVideo as Recording).src.toString()) {
+        const start = (+this._timer.appTime - +expectedVideo!.interval.start!) / 1000;
+        const previousTime = this.player.currentTime();
+        this.player.currentTime(start);
+        console.log(`Resynced video stream from ${previousTime} to ${start}`);
+      } else {
+        //TODO:  We are in the wrong video
+        //this.start()
+      }
+    } else if (expectedVideo instanceof Gap) {
+      this._gapCallback();
+    } else {
+      throw new Error(`Unknown type: ${typeof expectedVideo}`);
     }
   }
 

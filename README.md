@@ -291,7 +291,6 @@ See also [development documentation](./site/README.md)
  * Maybe provide an overlay to trigger user interaction
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
-  * Clock gets out of sync / duplicated. Maybe after following link - certainly HMR related
 
 ## Further ideas
 

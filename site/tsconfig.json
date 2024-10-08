@@ -3,6 +3,8 @@
     "module": "esnext",
     "strictPropertyInitialization": false,
     "noImplicitAny": true,
+    "jsx": "react",
+    "skipLibCheck": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,

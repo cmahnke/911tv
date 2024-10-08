@@ -181,11 +181,13 @@ export const Teletext = (props, ref) => {
     teletextFooterRef.current.innerHTML = channel;
   }
 
+  /*
   function getChannel() {
     if (teletextFooterRef !== null) {
       return teletextFooterRef.current.innerHTML;
     }
   }
+  */
 
   useImperativeHandle(ref, () => ({
     show: () => {

@@ -10,7 +10,7 @@ export default [
   react.configs.flat["jsx-runtime"],
   ...[eslint.configs.recommended, ...tseslint.configs.recommended].map((conf) => ({
     ...conf,
-    files: ["src/**/*.ts"]
+    files: ["src/**/*.{ts,tsx}"]
   })),
   {
     files: ["src/**/*.{ts,tsx}"],

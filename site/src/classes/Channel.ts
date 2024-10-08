@@ -11,7 +11,7 @@ type TimeIndexEntry = {
 };
 
 class Channel {
-  protected name: string;
+  public name: string;
   protected _index: TimeIndexEntry[] = [];
   private _interval: Interval;
 
@@ -107,6 +107,11 @@ class Channel {
 
   public findVideo(time: DateTime): Recording | Gap | undefined {
     return this.findIndexEntry(time)?.entry;
+  }
+
+  public findNext(time: DateTime): Slot | undefined {
+    const indexEntry = this._index.find((element) => element["interval"].isAfter(time));
+    return indexEntry?.entry;
   }
 
   public findNextRecording(time: DateTime): Recording | undefined {

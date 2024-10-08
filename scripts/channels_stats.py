@@ -122,10 +122,10 @@ if __name__ == '__main__':
             json = json.load(f, cls=ChannelDecoder)
 
     if args.channel:
-        if args.channel in json["channels"]:
-            channel = args.channel
+        if args.channel.upper() in json["channels"]:
+            channel = args.channel.upper()
         else:
-            cprint(f"Channel {args.channel} not in list, choose from {get_channels(json)}!", 'red')
+            cprint(f"Channel {args.channel.upper()} not in list, choose from {get_channels(json)}!", 'red')
             sys.exit(1)
     else:
         channel = None

@@ -100,6 +100,12 @@ Get the end for AZT:
  python scripts/channels_stats.py -t -c AZT -i site/src/assets/json/urls.json ends
 ```
 
+## Example: Get the end time of the first BBC stream
+
+```
+python scripts/channels_stats.py -c bbc -t -i site/src/assets/json/urls.json durations | head -1
+```
+
 # Electron
 
 ## TODO
@@ -124,7 +130,8 @@ npm update --save
 
 # Testing
 
-The followings should work
+The followings should work:
+
 * Teletext
   * Navigation without video skipping
   * Counter while waiting for page
@@ -132,6 +139,9 @@ The followings should work
   * Clock
 
 * Videos
+  * Video starts initially at the right position
+  * Buffering and stalled events handled
+  * End of stream shows test card
 
 * Buttons
   * Mute

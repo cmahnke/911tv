@@ -1,0 +1,23 @@
+#mute-icon-container {
+  position: fixed;
+  width: 80vw;
+  display: none;
+  z-index: 100;
+  right: 10vw;
+  left: 10vw;
+
+  &:has(.speaker-checkbox:checked) {
+    display: flex;
+    justify-content: center;
+  }
+
+  .speaker-checkbox {
+    height: 0;
+    width: 0;
+    display: none;
+  }
+
+  svg {
+    margin: auto;
+  }
+}

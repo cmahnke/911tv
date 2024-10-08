@@ -5,13 +5,13 @@ import CookieConsent, { Cookies, getCookieConsentValue } from "react-cookie-cons
 import VideoJS from "./components/VideoJS.jsx";
 import TVStatic from "./components/TVStatic.jsx";
 import Teletext, { subTitlesPageNr } from "./components/Teletext.jsx";
+import Unmute from "./components/Unmute.tsx";
 import { DateTime } from "luxon";
 import LZString from "lz-string";
 import Timer from "./classes/Timer.ts";
 import Util from "./classes/Util.ts";
 import Tuner from "./classes/Tuner.ts";
-import ChannelPlaylistPlugin from "./classes/ChannelPlaylistPlugin.ts";
-
+//import ChannelPlaylistPlugin from "./classes/ChannelPlaylistPlugin.ts";
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -53,6 +53,13 @@ function App() {
   const teletextToggleRef = useRef(null);
   const fullscreenToggleRef = useRef(null);
 
+  // App internal
+  let urls = parseJson(urlsImport);
+  const tuner = new Tuner(urls.channels);
+  let playlistPlugin;
+  let debug = false;
+  let reset = false;
+
   // Electron
   if (Util.isElectron()) {
     if (projektemacher.settings.cookies !== undefined) {
@@ -65,19 +72,13 @@ function App() {
     }
   }
 
+  // Audio context
   let audioContext;
   try {
     audioContext = new AudioContext();
   } catch (e) {
     console.log("AudioContext failed", e);
   }
-
-  // App internal
-  let urls = parseJson(urlsImport);
-  const tuner = new Tuner(urls.channels);
-  let playlistPlugin;
-  let debug = false;
-  let reset = false;
 
   // URL params are 'c' (channel), 'r' (reset) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
@@ -127,41 +128,6 @@ function App() {
   // remove from memory
   urls = null;
 
-  /*
-  const videoEventHandler = [
-    {
-      name: "play",
-      handler: () => {
-        console.log("Got play event");
-      }
-    },
-    {
-      name: "playing",
-      handler: () => {
-        noise(false);
-      }
-    },
-    {
-      name: "stalled",
-      handler: () => {
-        noise();
-      }
-    },
-    {
-      name: "buffering",
-      handler: () => {
-        noise();
-      }
-    },
-    {
-      name: "loadeddata",
-      handler: () => {
-        playerRef.current.play();
-      }
-    }
-  ];
-  */
-
   const cookieConsent = (
     <CookieConsent
       cookieName={consentCookieName}
@@ -208,30 +174,8 @@ function App() {
         meta: setMeta
       }
     });
+    setTeletextStation(tuner.channel.name);
   }
-
-  /*
-  function playVideo() {
-    let video, start;
-    if (!tuner.channel.checkStreamEnd(timer.appTime)) {
-      [video, start] = tuner.channel.at(timer.appTime);
-      if (video === undefined) {
-        console.log("Stream is undefined, dispaying static noise");
-        noise();
-      }
-    } else {
-      noise("closedown");
-      console.log("Event time passed, showing closedown.");
-    }
-    if (video !== undefined) {
-      playerRef.current.src(video.src.toString());
-      playerRef.current.currentTime(start);
-      setTeletextStation(tuner.channel.name);
-      setMeta(video.info.toString());
-      playerRef.current.play();
-    }
-  }
-  */
 
   function zapChannel(e, direction) {
     if (!powerOn) {
@@ -262,6 +206,10 @@ function App() {
       }
       noiseRef.current.show(state);
     }
+  }
+
+  function firstClickCallback() {
+    console.log("Got first click");
   }
 
   function toggleAudio(e) {
@@ -332,9 +280,11 @@ function App() {
     infoRef.current.classList.toggle("show");
   }
 
+  /*
   function testcard(mode) {
     noiseRef.current.changeMode(mode);
   }
+  */
 
   function on() {
     powerOn = true;
@@ -362,7 +312,7 @@ function App() {
 
   function setTeletextStation(station) {
     if (teletextRef.current !== null) {
-      teletextRef.current.setChannel(tuner.station);
+      teletextRef.current.setChannel(station);
     }
   }
 
@@ -443,6 +393,7 @@ function App() {
   return (
     <>
       <div id="container" ref={rootRef}>
+        <Unmute clickCallback={firstClickCallback} />
         <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
           <div id="tv-border"></div>
           <div id="tube">
@@ -460,7 +411,7 @@ function App() {
               </div>
             </div>
             <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
-            <VideoJS options={videoJsOptions} /* eventHandlers={videoEventHandler} */ ref={playerRef} id="video-js-player" />
+            <VideoJS options={videoJsOptions} ref={playerRef} id="video-js-player" />
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>
