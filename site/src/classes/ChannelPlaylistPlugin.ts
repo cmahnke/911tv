@@ -151,33 +151,39 @@ export default class ChannelPlaylistPlugin extends Plugin {
     this._gapCallback();
   }
 
-  private loadFirst(): void {
-    let indexEntry;
-    let video;
-    if (!this._channel.checkStreamEnd(this._timer.appTime)) {
-      indexEntry = this._channel.findIndexEntry(this._timer.appTime);
-      video = indexEntry!.entry;
-      if (video instanceof Recording) {
-        if (video === undefined) {
-          if (this._faultCallback !== undefined) {
-            this._faultCallback();
-          }
-          console.log("Stream is undefined, dispaying static noise");
-        }
-      } else if (video instanceof Gap) {
-        this._gapCallback();
-        console.log("Showing gap");
-      } else {
-        throw new Error(`Unknown type: ${typeof video}`);
-      }
-    } else {
+  private checkTime(time: DateTime): boolean {
+    if (this._channel.checkStreamEnd(time)) {
       if (this._endedCallback !== undefined) {
         this._endedCallback();
       }
       console.log("Event time passed, showing closedown.");
+      return true;
+    }
+    return false;
+  }
+
+  private loadFirst(): void {
+    if (this.checkTime(this._timer.appTime)) {
+      return;
     }
 
-    if (video !== undefined) {
+    const indexEntry = this._channel.findIndexEntry(this._timer.appTime);
+    const video = indexEntry!.entry;
+    if (video instanceof Recording) {
+      if (video === undefined) {
+        if (this._faultCallback !== undefined) {
+          this._faultCallback();
+        }
+        console.log("Stream is undefined, dispaying static noise");
+      }
+    } else if (video instanceof Gap) {
+      this._gapCallback();
+      console.log("Showing gap");
+    } else {
+      throw new Error(`TODO: Unknown type: ${typeof video}`);
+    }
+
+    if (video !== undefined && video instanceof Recording) {
       let start = 0;
       if (video.interval.start !== undefined && video.interval.start !== null) {
         start = (+this._timer.appTime - +video.interval.start) / 1000;

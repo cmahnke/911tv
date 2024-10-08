@@ -17,6 +17,11 @@ export const TVStatic = (props, ref) => {
       sound: closeDownSound,
       interval: 1000,
       background: closeDownBackground
+    },
+    gap: {
+      sound: closeDownSound,
+      interval: 1000,
+      background: closeDownBackground
     }
   };
 
@@ -33,7 +38,11 @@ export const TVStatic = (props, ref) => {
     if (className !== undefined) {
       canvasRef.current.classList.remove(className);
     }
-    checkClosedown();
+
+    if (["closedown", "gap"].includes(className)) {
+      changeMode(className);
+    }
+
     canvasRef.current.classList.remove("hide");
     canvasRef.current.classList.add("show");
     if (noisePlayer !== undefined) {

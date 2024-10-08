@@ -281,7 +281,6 @@ See also [development documentation](./site/README.md)
   * Channel switching without loading
   * Handle (buffering) events
 * enable Testcard for gaps
-* Improve Play animation
 * Debugging
   * Force test card
 
@@ -295,6 +294,7 @@ See also [development documentation](./site/README.md)
 ## Further ideas
 
 ### Short term
+* Improve Play animation
 * Load the first 30 secs as chunk, then rely on prefetch
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App

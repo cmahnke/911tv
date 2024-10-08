@@ -86,6 +86,10 @@ Use these to test switch over to the following video
 python scripts/channels_stats.py -t -i site/src/assets/json/urls.json gaps
 ```
 
+## Examples
+
+* http://localhost:5173/?c=CNN&t=2001-09-14T01:59:37.345000-04:00
+
 ## Ends
 
 Use these to test the end test card
@@ -99,6 +103,12 @@ Get the end for AZT:
 ```
  python scripts/channels_stats.py -t -c AZT -i site/src/assets/json/urls.json ends
 ```
+
+### Examples
+
+* http://localhost:5173/?c=AZT&t=2001-09-17T19:07:56.110000-04:00
+* http://localhost:5173/?c=AZT&t=2001-09-17T20:13:12.760000-04:00
+
 
 ## Example: Get the end time of the first BBC stream
 

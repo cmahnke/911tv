@@ -19,10 +19,11 @@ class Tuner {
   }
 
   set station(channel: string) {
-    if (channel in this.channels) {
-      this._currentChannel = channel;
+    const station = channel.toUpperCase();
+    if (station in this.channels) {
+      this._currentChannel = station;
     } else {
-      throw new Error("Not a valid channel!");
+      throw new Error(`Not a valid channel: ${station}`);
     }
   }
 
