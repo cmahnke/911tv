@@ -209,7 +209,7 @@ function App() {
   }
 
   function firstClickCallback() {
-    console.log("Got first click");
+    enableAudio();
   }
 
   function toggleAudio(e) {
@@ -410,8 +410,8 @@ function App() {
                 </div>
               </div>
             </div>
-            <TVStatic ref={noiseRef} timer={timer} id="tv-static" className="show" />
-            <VideoJS options={videoJsOptions} ref={playerRef} id="video-js-player" />
+            <TVStatic ref={noiseRef} id="tv-static" className="show" timer={timer} />
+            <VideoJS ref={playerRef} id="video-js-player" options={videoJsOptions} />
           </div>
           <div id="tv-footer">
             <div className="tv-footer-spacer"></div>

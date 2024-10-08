@@ -1,23 +1,102 @@
+$color: rgb(0 0 0 / 90%);
+
 #mute-icon-container {
   position: fixed;
-  width: 80vw;
-  display: none;
+  width: 100vw;
+  height: 100vh;
   z-index: 100;
-  right: 10vw;
-  left: 10vw;
+  background: rgb(0 0 0 / 60%);
 
-  &:has(.speaker-checkbox:checked) {
+  display: none;
+
+  @keyframes fadeout {
+    to {
+      display: none;
+      opacity: 0;
+    }
+  }
+
+  label {
+    height: 100%;
+    width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
+
+    .speaker-checkbox {
+      height: 0;
+      width: 0;
+      display: none;
+      overflow: hidden;
+      cursor: default;
+      padding-block: unset;
+      padding-inline: unset;
+    }
+
+    svg {
+      max-height: 90vh;
+
+      path {
+        fill: $color;
+        stroke: $color;
+      }
+
+      #play {
+        transform-origin: center;
+        z-index: 110;
+      }
+
+      #cross {
+      }
+
+      #waves {
+      }
+    }
   }
 
-  .speaker-checkbox {
-    height: 0;
-    width: 0;
-    display: none;
+  &:has(label #speaker-checkbox:checked) {
+    animation: unset;
+    display: block;
   }
 
-  svg {
-    margin: auto;
+  &:has(label #speaker-checkbox:not(:checked)) {
+    animation: fadeout 0.7s forwards;
+    display: block;
+
+    svg {
+      @keyframes svg-cross {
+        to {
+          opacity: 0;
+          transform: scale(0);
+        }
+      }
+      @keyframes svg-waves {
+        from {
+        }
+        to {
+        }
+      }
+      @keyframes svg-play {
+        from {
+        }
+        to {
+          fill: red;
+          stroke: red;
+          transform: rotate(180deg);
+        }
+      }
+
+      #cross {
+        animation: svg-cross 0.5s forwards;
+      }
+
+      #waves {
+        animation: svg-waves 0.5s forwards;
+      }
+
+      #play {
+        animation: svg-play 0.5s forwards;
+      }
+    }
   }
 }

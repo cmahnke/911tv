@@ -5,9 +5,13 @@ import stylelint from "vite-plugin-stylelint";
 import browserslistToEsbuild from "browserslist-to-esbuild";
 import strip from "@rollup/plugin-strip";
 import svg from "vite-plugin-svgo";
-import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
+//import lzstring from "./src/plugins/rollup-plugin-lz-string.js";
 import inlineSource from "vite-plugin-inline-source";
 import { join } from "path";
+import svgr from "vite-plugin-svgr";
+
+// External configs
+import svgoConfig from "./svgo.config.mjs";
 
 let defaultPort = 5173;
 
@@ -21,6 +25,12 @@ export default defineConfig({
   },
   base: "./",
   plugins: [
+    svgr({
+      svgrOptions: {
+        plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
+        svgoConfig: svgoConfig
+      }
+    }),
     react(/*{
       /*
         parserOpts: {
@@ -35,7 +45,9 @@ export default defineConfig({
     },
     stylelint({ build: true, dev: false, lintOnStart: true }),
     inlineSource({ svgoOptions: { multipass: true } }),
-    svg({
+    svg(
+      svgoConfig
+      /*{
       multipass: true,
       plugins: [
         {
@@ -47,7 +59,9 @@ export default defineConfig({
           }
         }
       ]
-    })
+    }
+  */
+    )
     /*
     {
       ...lzstring({ include: "src/assets/json/*.json" }),

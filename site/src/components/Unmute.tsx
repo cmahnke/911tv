@@ -1,7 +1,7 @@
 import * as React from "react";
 import PropTypes from "prop-types";
-import SVG from "react-inlinesvg";
 import "./Unmute.scss";
+import SpeakerIcon from "../assets/svg/speaker.svg?react";
 
 type UnmuteProps = {
   clickCallback: () => void | undefined;
@@ -9,24 +9,34 @@ type UnmuteProps = {
 
 export const Unmute = (props: UnmuteProps) => {
   const { clickCallback } = props;
-  const checkboxRef = React.useRef<HTMLInputElement>();
+  const checkboxRef = React.useRef<HTMLInputElement>(null);
 
   const unmute = () => {
     if (clickCallback !== undefined) {
       clickCallback();
     }
-    if (checkboxRef.current != null) {
-      checkboxRef.current.checked = false;
-    }
+  };
+
+  const disable = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target;
+    target.disabled = true;
+    target.removeEventListener("click", unmute, false);
   };
 
   return (
     <React.StrictMode>
-      <div id="mute-icon-container" onClick={unmute}>
-        <label htmlFor="speaker-checkbox">
-          <SVG src="src/assets/svg/speaker.svg" />
+      <div id="mute-icon-container">
+        <label htmlFor="speaker-checkbox" onClick={unmute}>
+          <SpeakerIcon />
+          <input
+            type="checkbox"
+            id="speaker-checkbox"
+            ref={checkboxRef}
+            className="speaker-checkbox"
+            defaultChecked={true}
+            onChange={disable}
+          />
         </label>
-        <input type="checkbox" id="speaker-checkbox" ref={checkboxRef} className="speaker-checkbox" name="muted" defaultChecked={true} />
       </div>
     </React.StrictMode>
   );

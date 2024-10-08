@@ -281,14 +281,14 @@ See also [development documentation](./site/README.md)
   * Channel switching without loading
   * Handle (buffering) events
 * enable Testcard for gaps
+* Improve Play animation
 * Debugging
   * Force test card
 
 ## Known Issues
 * Channel switching after end fails
+* Multiple clicks might increase noise generators
 * Powering on not working properly with test card
-* Audio is playing when disabled disabled after channel switch
- * Maybe provide an overlay to trigger user interaction
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 
@@ -312,7 +312,7 @@ See also [development documentation](./site/README.md)
 * Check if video can be projected on a sphere using ThreeJS, see [WebGL examples](https://threejs.org/examples/?q=video#webgl_materials_video) or [VideoTexture](https://threejs.org/docs/#api/en/textures/VideoTexture) - a shader could do the rest
 * Bezel of TV set can be slimmer
 * Data preprocessing
-  * Multiple sub pages (manually split)
+  * Multiple sub pages (currently manually split)
   * check if generated sub pages are needed
 
 
