@@ -1,5 +1,9 @@
 import { externalizeDepsPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react";
+import svgr from "vite-plugin-svgr";
+
+// External configs
+import svgoConfig from "./svgo.config.mjs";
 
 export default {
   main: {
@@ -30,7 +34,15 @@ export default {
         }
       }
     },
-    plugins: [react()],
+    plugins: [
+      react(),
+      svgr({
+        svgrOptions: {
+          plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
+          svgoConfig: svgoConfig
+        }
+      })
+    ],
     css: {
       preprocessorOptions: {
         scss: {
