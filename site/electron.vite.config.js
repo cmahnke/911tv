@@ -1,5 +1,8 @@
 import { externalizeDepsPlugin } from "electron-vite";
 import react from "@vitejs/plugin-react";
+import strip from "@rollup/plugin-strip";
+import inlineSource from "vite-plugin-inline-source";
+import svg from "vite-plugin-svgo";
 import svgr from "vite-plugin-svgr";
 
 // External configs
@@ -41,7 +44,13 @@ export default {
           plugins: ["@svgr/plugin-svgo", "@svgr/plugin-jsx"],
           svgoConfig: svgoConfig
         }
-      })
+      }),
+      {
+        ...strip({ include: "**/*.(jsx|js)" }),
+        apply: "build"
+      },
+      inlineSource({ svgoOptions: svgoConfig }),
+      svg(svgoConfig)
     ],
     css: {
       preprocessorOptions: {
