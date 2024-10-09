@@ -274,11 +274,11 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 See also [development documentation](./site/README.md)
 
 # TODO:
-* Reimplement video switchover
+* Fix known issues
 
 ## Known Issues
-* Channel switching after end fails
 * Static noise not reenabled when changing from ended channel no running
+* Channel switching after end fails
 * Multiple clicks might increase noise generators
 * Powering on not working properly with test card
 * Warnings / Development issues

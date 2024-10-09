@@ -28,10 +28,10 @@ class Slot {
 
 class Recording extends Slot {
   public src: URL;
-  public info: URL | undefined;
+  public info: URL;
   public type: MediaType;
 
-  constructor(start: DateTime | string, duration: number, src: URL, type: MediaType = "video/mp4", info?: URL) {
+  constructor(start: DateTime | string, duration: number, src: URL, type: MediaType = "video/mp4", info: URL) {
     let s: DateTime;
     if (start instanceof DateTime) {
       s = start as DateTime;

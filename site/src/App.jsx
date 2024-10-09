@@ -7,11 +7,11 @@ import TVStatic from "./components/TVStatic.jsx";
 import Teletext, { subTitlesPageNr } from "./components/Teletext.jsx";
 import Unmute from "./components/Unmute.tsx";
 import { DateTime } from "luxon";
-import LZString from "lz-string";
+import { decompressFromBase64 } from "lz-string";
+//import {decompress} from "brotli-unicode/js";
 import Timer from "./classes/Timer.ts";
 import Util from "./classes/Util.ts";
 import Tuner from "./classes/Tuner.ts";
-//import ChannelPlaylistPlugin from "./classes/ChannelPlaylistPlugin.ts";
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -24,16 +24,13 @@ const consentCookieName = "iaConsent";
 function parseJson(json) {
   if (typeof json == "object" && Object.keys(json).length == 2) {
     if ("type" in json && json.type === "lz-string") {
-      return JSON.parse(LZString.decompressFromBase64(json["content"]));
+      return JSON.parse(decompressFromBase64(json["content"]));
     } else if ("type" in json && json.type === "brotli") {
       console.log("'brotli' isn't supported yet!");
-      return import("brotli-unicode")
-        .then((Brotli) => {
-          return Brotli.decompress(json["content"]);
-        })
-        .then((decompressed) => {
-          return JSON.parse(TextDecoder.decode(decompressed));
-        });
+      return import("brotli-unicode/js").then((Brotli) => {
+        const decompressed = Brotli.decompress(json["content"]);
+        return JSON.parse(TextDecoder.decode(decompressed));
+      });
     }
   }
   return json;

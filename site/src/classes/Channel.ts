@@ -6,13 +6,12 @@ import { Recording, Gap, Slot } from "./Slot";
 type TimeIndexEntry = {
   interval: Interval;
   entry: Recording | Gap;
-  //  next?: Interval;
   excess?: number;
 };
 
 class Channel {
   public name: string;
-  protected _index: TimeIndexEntry[] = [];
+  private _index: TimeIndexEntry[] = [];
   private _interval: Interval;
   private _indexInitilized: boolean;
 
@@ -54,7 +53,7 @@ class Channel {
       const record = new Recording(time, entry.duration, new URL(entry.video_url.src), entry.video_url.type, new URL(entry.meta_url));
       this._index.push({ interval: record.interval, entry: record });
     }
-    this.calculateGaps();
+    //this.calculateGaps();
   }
 
   private calculateGaps(): void {
@@ -80,12 +79,7 @@ class Channel {
       }
     }
     this._index.push(...gaps);
-    /*
     this._index = this._index.sort(Channel.indexSorter);
-    for (let i = 0; i < this._index.length - 1; i++) {
-      this._index[i].next = this._index[i + 1].interval;
-    }
-    */
   }
 
   private initIndex(): void {

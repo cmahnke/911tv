@@ -1,4 +1,4 @@
-import { DateTime, Interval, Duration } from "luxon";
+import { DateTime, Duration } from "luxon";
 import videojs from "video.js";
 
 import { Recording, Gap, Slot } from "./Slot";
@@ -96,7 +96,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
     this.player.on("buffering", () => {
       console.log("buffered");
       this._faultCallback();
-      //TODO: Check if this cann also happen during the stream
+      //TODO: Check if this can also happen during the stream
     });
 
     this.player.on("stalled", () => {
@@ -162,7 +162,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
     return false;
   }
 
-  //
+  //Explicit video for first load, maybe add chunking here
   private loadFirst(): void {
     if (this.checkTime(this._timer.appTime)) {
       return;
@@ -183,23 +183,32 @@ export default class ChannelPlaylistPlugin extends Plugin {
       throw new Error(`TODO: Unknown type: ${typeof video}`);
     }
 
-    if (video !== undefined && video instanceof Recording) {
-      let start = 0;
-      if (video.interval.start !== undefined && video.interval.start !== null) {
-        start = (+this._timer.appTime - +video.interval.start) / 1000;
-      }
-      this.player.src((video as Recording).src.toString());
-      this.player.currentTime(start);
-      if ("info" in video && video.info !== undefined) {
-        this._metaCallback(video.info.toString());
-      }
+    if (video !== undefined) {
+      this.play(video);
     }
+    /*
+    if (video !== undefined && video instanceof Recording) {
+      this.playRecording(video);
+    }
+    */
+    //this.player.play();
+  }
+
+  private playRecording(recording: Recording): void {
+    if (recording === undefined || !(recording instanceof Recording)) {
+      throw new Error("Can't play Slot, not a valid Recording");
+    }
+    let start = 0;
+    if (recording.interval.start !== undefined && recording.interval.start !== null) {
+      start = (+this._timer.appTime - +recording.interval.start) / 1000;
+    }
+    this.player.src((recording as Recording).src.toString());
+    this.player.currentTime(start);
     this.player.play();
-    this.setupNext();
+    this._metaCallback(recording.info.toString());
   }
 
   private setupNext(): void {
-    //TODO: setup next video here
     const time = this._timer.appTime;
 
     const next = this._channel.findNext(time);
@@ -212,7 +221,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
         this.preload(nextRecording.src);
       }
 
-      const wait: Duration = this._timer.appTime.diff(next.interval.start!);
+      const wait: Duration = next.interval.start!.diff(this._timer.appTime);
       this._timeouts.push(
         setTimeout(() => {
           this.play(next);
@@ -224,6 +233,9 @@ export default class ChannelPlaylistPlugin extends Plugin {
 
   private sync() {
     const expectedVideo = this._channel.findVideo(this._timer.appTime);
+    if (this.player == null) {
+      throw new Error("TODO: Player is null, set breakpoint to find the cause");
+    }
     if (expectedVideo !== undefined && expectedVideo instanceof Recording) {
       if (this.player.src() == (expectedVideo as Recording).src.toString()) {
         const start = (+this._timer.appTime - +expectedVideo!.interval.start!) / 1000;
@@ -231,8 +243,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
         this.player.currentTime(start);
         console.log(`Resynced video stream from ${previousTime} to ${start}`);
       } else {
-        //TODO:  We are in the wrong video
-        //this.start()
+        this.play(expectedVideo);
       }
     } else if (expectedVideo instanceof Gap) {
       this._gapCallback();
@@ -245,8 +256,9 @@ export default class ChannelPlaylistPlugin extends Plugin {
     if (slot instanceof Gap) {
       this._gapCallback();
     } else if (slot instanceof Recording) {
-      console.log("TODO");
+      this.playRecording(slot as Recording);
     }
+    this.setupNext();
   }
 
   private removePreload(): void {
@@ -274,13 +286,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
     document.head.appendChild(preloadLink);
     this._preloadId = id;
   }
-}
-
-class Next {
-  // See https://stackoverflow.com/questions/45802988/typescript-use-correct-version-of-settimeout-node-vs-window
-  timeout: ReturnType<typeof setTimeout>;
-
-  constructor() {}
 }
 
 class ChannelPlaylist extends videojs.EventTarget {
