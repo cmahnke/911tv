@@ -2,12 +2,17 @@ import fs from 'fs';
 // Node sucks - this is wrong, complicated and stupid
 import { createRequire } from "module";
 import { parseArgs } from "node:util";
+
 const require = createRequire(import.meta.url);
 const JSONCrush = await import(require.resolve("../site/node_modules/jsoncrush"));
-const crush = JSONCrush.default.crush
+const crush = JSONCrush.default.crush;
 
 const LZString = await import(require.resolve("../site/node_modules/lz-string"));
-const compress = LZString.default.compressToBase64
+const lzCompress = LZString.default.compressToBase64;
+
+const Brotli = await import(require.resolve("../site/node_modules/brotli-unicode"));
+const brotliCompress = Brotli.default.compress;
+
 
 const defaultMethod = "jsoncrush";
 
@@ -44,7 +49,10 @@ if (input !== undefined) {
     compressed = crush(fileContents);
   } else if (method == "lz-string") {
     console.error(`Compressing JSON`);
-    compressed = compress(fileContents);
+    compressed = lzCompress(fileContents);
+  } else if (method == "brotli") {
+    console.error(`Compressing JSON`);
+    compressed = await brotliCompress(Buffer.from(fileContents));
   } else {
     console.error(`unknown compression type ${method}`);
     process.exit(1);

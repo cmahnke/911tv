@@ -86,7 +86,7 @@ Use these to test switch over to the following video
 python scripts/channels_stats.py -t -i site/src/assets/json/urls.json gaps
 ```
 
-## Examples
+### Examples
 
 * http://localhost:5173/?c=CNN&t=2001-09-14T01:59:37.345000-04:00
 
@@ -103,6 +103,11 @@ Get the end for AZT:
 ```
  python scripts/channels_stats.py -t -c AZT -i site/src/assets/json/urls.json ends
 ```
+
+### Examples
+The shortest channel is `GLVSN`:
+
+* http://localhost:5173/?c=GLVSN&t=2001-09-13T15:41:46.607000-04:00
 
 ### Examples
 

@@ -56,7 +56,9 @@ jobs:
       - name: Compress JSON
         run: |
           node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-lz-string-compressed.json -t lz-string
+          node scripts/compress-json.mjs -i site/src/assets/json/urls.json -o site/src/assets/json/urls-brotli-compressed.json -t brotli
           node scripts/compress-json.mjs -i site/src/assets/json/pages.json -o site/src/assets/json/pages-lz-string-compressed.json -t lz-string
+          node scripts/compress-json.mjs -i site/src/assets/json/pages.json -o site/src/assets/json/pages-brotli-compressed.json -t brotli
 
       - name: Provide url artifact
         uses: actions/upload-artifact@v4

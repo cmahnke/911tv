@@ -274,18 +274,11 @@ convert site/src/assets/svg/cm.svg -size 70x70 -monochrome cm.png
 See also [development documentation](./site/README.md)
 
 # TODO:
-* Video addressing
-  * Seek - not tested yet, might be issues with gaps in coverage
-  * Segmentation
-    * Prefetch
-  * Channel switching without loading
-  * Handle (buffering) events
-* enable Testcard for gaps
-* Debugging
-  * Force test card
+* Reimplement video switchover
 
 ## Known Issues
 * Channel switching after end fails
+* Static noise not reenabled when changing from ended channel no running
 * Multiple clicks might increase noise generators
 * Powering on not working properly with test card
 * Warnings / Development issues
@@ -294,11 +287,11 @@ See also [development documentation](./site/README.md)
 ## Further ideas
 
 ### Short term
-* Improve Play animation
 * Load the first 30 secs as chunk, then rely on prefetch
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App
   * Deploy using GitHub Actions
+* Improve Play animation
 * Data preprocessing
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
@@ -306,6 +299,8 @@ See also [development documentation](./site/README.md)
 
 ### Long term
 * Migrate to [TypeScript](https://www.typescriptlang.org/), done for channel switching
+* Check if it's possible to work with two alternating players to get a better caching control
+  * Channel switching without loading
 * Teletext
   * Check Colors in teletext graphics
 * CRT effect, [see](https://babylonjs.medium.com/retro-crt-shader-a-post-processing-effect-study-1cb3f783afbc) and [Codepen](https://codepen.io/Mobius1/pen/zZpoXj)

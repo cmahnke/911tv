@@ -25,11 +25,15 @@ function parseJson(json) {
   if (typeof json == "object" && Object.keys(json).length == 2) {
     if ("type" in json && json.type === "lz-string") {
       return JSON.parse(LZString.decompressFromBase64(json["content"]));
-    } else if ("type" in json && json.type === "jsoncrush") {
-      console.log("'jsoncrush' isn't supported anymore!");
-      return import("jsoncrush").then((JSONCrush) => {
-        return JSON.parse(JSONCrush.uncrush(json["content"]));
-      });
+    } else if ("type" in json && json.type === "brotli") {
+      console.log("'brotli' isn't supported yet!");
+      return import("brotli-unicode")
+        .then((Brotli) => {
+          return Brotli.decompress(json["content"]);
+        })
+        .then((decompressed) => {
+          return JSON.parse(TextDecoder.decode(decompressed));
+        });
     }
   }
   return json;
@@ -238,7 +242,7 @@ function App() {
     audioToggleRef.current.classList.add("enabled");
   }
 
-  function disableAudio(fade) {
+  function disableAudio() {
     muted = true;
     audioContext.suspend();
     playerRef.current.volume(0);

@@ -162,13 +162,13 @@ export default class ChannelPlaylistPlugin extends Plugin {
     return false;
   }
 
+  //
   private loadFirst(): void {
     if (this.checkTime(this._timer.appTime)) {
       return;
     }
 
-    const indexEntry = this._channel.findIndexEntry(this._timer.appTime);
-    const video = indexEntry!.entry;
+    const video = this._channel.findVideo(this._timer.appTime);
     if (video instanceof Recording) {
       if (video === undefined) {
         if (this._faultCallback !== undefined) {
@@ -193,32 +193,32 @@ export default class ChannelPlaylistPlugin extends Plugin {
       if ("info" in video && video.info !== undefined) {
         this._metaCallback(video.info.toString());
       }
-      if (indexEntry !== undefined && indexEntry.next !== undefined) {
-        this.setupNext(indexEntry.next, this._timer.appTime);
-      }
     }
     this.player.play();
+    this.setupNext();
   }
 
-  private setupNext(key: Interval, time: DateTime) {
+  private setupNext(): void {
     //TODO: setup next video here
-    const next = this._channel.getIndexEntry(key);
+    const time = this._timer.appTime;
+
+    const next = this._channel.findNext(time);
     let nextRecording;
     if (next !== undefined) {
-      if (next.entry instanceof Gap) {
+      if (next instanceof Gap) {
         nextRecording = this._channel.findNextRecording(time);
-      } else if (next.entry instanceof Recording) {
-        nextRecording = next.entry;
-      }
-      if (nextRecording !== undefined) {
+      } else if (next instanceof Recording) {
+        nextRecording = next;
         this.preload(nextRecording.src);
       }
+
       const wait: Duration = this._timer.appTime.diff(next.interval.start!);
       this._timeouts.push(
         setTimeout(() => {
-          //this.play(next.entry);
+          this.play(next);
         }, wait.toMillis())
       );
+      console.log(`Set timer for next slot (${typeof next}) video (${next?.interval.start}) in ${wait.toMillis()}ms`, next);
     }
   }
 

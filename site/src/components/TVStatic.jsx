@@ -74,12 +74,6 @@ export const TVStatic = (props, ref) => {
     }
   }
 
-  function checkClosedown() {
-    if (timer.appTime > timer.endDate) {
-      changeMode("closedown");
-    }
-  }
-
   function toggle() {
     if (showState) {
       hide();

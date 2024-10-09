@@ -6,7 +6,7 @@ import { Recording, Gap, Slot } from "./Slot";
 type TimeIndexEntry = {
   interval: Interval;
   entry: Recording | Gap;
-  next?: Interval;
+  //  next?: Interval;
   excess?: number;
 };
 
@@ -14,6 +14,7 @@ class Channel {
   public name: string;
   protected _index: TimeIndexEntry[] = [];
   private _interval: Interval;
+  private _indexInitilized: boolean;
 
   constructor(name: string, videos: Videos) {
     this.name = name;
@@ -53,6 +54,10 @@ class Channel {
       const record = new Recording(time, entry.duration, new URL(entry.video_url.src), entry.video_url.type, new URL(entry.meta_url));
       this._index.push({ interval: record.interval, entry: record });
     }
+    this.calculateGaps();
+  }
+
+  private calculateGaps(): void {
     // Calculate gaps
     const gaps: TimeIndexEntry[] = [];
     const d = Duration.fromMillis(1, {});
@@ -75,9 +80,18 @@ class Channel {
       }
     }
     this._index.push(...gaps);
+    /*
     this._index = this._index.sort(Channel.indexSorter);
     for (let i = 0; i < this._index.length - 1; i++) {
       this._index[i].next = this._index[i + 1].interval;
+    }
+    */
+  }
+
+  private initIndex(): void {
+    if (!this._indexInitilized) {
+      this.calculateGaps();
+      this._indexInitilized = true;
     }
   }
 
@@ -92,6 +106,7 @@ class Channel {
   }
 
   public findIndexEntry(time: DateTime): TimeIndexEntry | undefined {
+    this.initIndex();
     const video = this._index.find((element) => element["interval"].contains(time));
     if (video === undefined) {
       if (Interval.fromDateTimes(this.start, this.end!).contains(time)) {
@@ -102,6 +117,7 @@ class Channel {
   }
 
   public getIndexEntry(interval: Interval): TimeIndexEntry | undefined {
+    this.initIndex();
     return this._index.find((element) => element["interval"] == interval);
   }
 
@@ -110,19 +126,31 @@ class Channel {
   }
 
   public findNext(time: DateTime): Slot | undefined {
+    this.initIndex();
     const indexEntry = this._index.find((element) => element["interval"].isAfter(time));
     return indexEntry?.entry;
   }
 
   public findNextRecording(time: DateTime): Recording | undefined {
+    this.initIndex();
     const indexEntry = this._index.find((element) => element.entry instanceof Recording && element["interval"].isAfter(time));
     return indexEntry?.entry as Recording;
   }
 
   public findRemaining(time: DateTime): Slot[] | undefined {
+    this.initIndex();
     let videos = this._index.filter((element) => element["interval"].contains(time) || element["interval"].isAfter(time));
     videos = videos.sort(Channel.indexSorter);
     return videos.map((v) => v.entry);
+  }
+
+  public at(time: DateTime): [Slot, number] | undefined {
+    this.initIndex();
+    const video = this.findVideo(time);
+    if (video === undefined) {
+      return undefined;
+    }
+    return [video, (+time - +video.interval.start!) / 1000];
   }
 
   public checkStreamEnd(time: DateTime): boolean {
@@ -142,14 +170,6 @@ class Channel {
     }
     //?t=4226/4261&ignore=x.mp4
     return `${prefix}${start}/${start + length}${suffix}`;
-  }
-
-  public at(time: DateTime): [Slot, number] | undefined {
-    const video = this.findVideo(time);
-    if (video === undefined) {
-      return undefined;
-    }
-    return [video, (+time - +video.interval.start!) / 1000];
   }
 }
 
