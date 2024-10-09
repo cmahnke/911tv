@@ -4,8 +4,8 @@ import { createRequire } from "module";
 import { parseArgs } from "node:util";
 
 const require = createRequire(import.meta.url);
-const JSONCrush = await import(require.resolve("../site/node_modules/jsoncrush"));
-const crush = JSONCrush.default.crush;
+//const JSONCrush = await import(require.resolve("../site/node_modules/jsoncrush"));
+//const crush = JSONCrush.default.crush;
 
 const LZString = await import(require.resolve("../site/node_modules/lz-string"));
 const lzCompress = LZString.default.compressToBase64;
@@ -14,7 +14,7 @@ const Brotli = await import(require.resolve("../site/node_modules/brotli-unicode
 const brotliCompress = Brotli.default.compress;
 
 
-const defaultMethod = "jsoncrush";
+const defaultMethod = "lz-string";
 
 const {
   values: { input, output, type },
