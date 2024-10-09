@@ -31,20 +31,14 @@ export default defineConfig({
         svgoConfig: svgoConfig
       }
     }),
-    react(/*{
-      /*
-        parserOpts: {
-          plugins: ['optionalChainingAssign'],
-        },
-      },
-    }*/),
+    react(),
     eslint(),
     {
       ...strip({ include: "**/*.(jsx|js)" }),
       apply: "build"
     },
     stylelint({ build: true, dev: false, lintOnStart: true }),
-    inlineSource({ svgoOptions: { multipass: true } }),
+    inlineSource({ svgoOptions: svgoConfig }),
     svg(
       svgoConfig
       /*{
