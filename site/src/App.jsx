@@ -402,7 +402,11 @@ function App() {
 
   return (
     <div id="container" ref={rootRef}>
-      <Unmute clickCallback={firstClickCallback} />
+      {(() => {
+        if (!Util.isElectron()) {
+          return <Unmute clickCallback={firstClickCallback} />;
+        }
+      })()}
       <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
         <div id="tv-border"></div>
         <div id="tube">
