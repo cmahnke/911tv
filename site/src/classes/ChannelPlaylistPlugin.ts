@@ -22,6 +22,8 @@ type PluginsOptions = {
 const Plugin = videojs.getPlugin("plugin");
 
 export default class ChannelPlaylistPlugin extends Plugin {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  _eventHandlers: { [key: string]: (...args: any) => void };
   _playingCallback: () => void | undefined;
   _gapCallback: () => void | undefined;
   _endedCallback: () => void | undefined;
@@ -33,15 +35,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
   _preloadId: string | null;
   _autostart: boolean = true;
   _timeouts: ReturnType<typeof setTimeout>[] = [];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  _eventHandlers: { [key: string]: (...args: any) => void } = {
-    play: this.handlePlay,
-    //playing: this.handlePlaying,
-    ready: this.handleReady,
-    timeupdate: this.handleTimeupdate,
-    dispose: this.handleDispose,
-    setChannel: this._setChannel
-  };
 
   constructor(player: videojs.Player, options: PluginsOptions) {
     super(player);
@@ -68,10 +61,15 @@ export default class ChannelPlaylistPlugin extends Plugin {
     this.removePreload();
     if (this._timeouts !== undefined) {
       for (const timeout of this._timeouts) {
+        console.log(`Clearing timeout ${timeout}`);
         clearTimeout(timeout);
       }
     }
-    //TODO: clean intervals, player and channel
+    if (this._eventHandlers !== undefined) {
+      for (const [event, handler] of Object.entries(this._eventHandlers)) {
+        this.player.off(event, handler);
+      }
+    }
   }
 
   public static setChannel(player: videojs.Player, channel: Channel) {
@@ -89,59 +87,21 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   private registerEvents(): void {
+    this._eventHandlers = {
+      play: this.handlePlay.bind(this),
+      ready: this.handleReady.bind(this),
+      playing: this.handlePlaying.bind(this),
+      stalled: this.handleStalled.bind(this),
+      buffering: this.handleBuffering.bind(this),
+      timeupdate: this.handleTimeupdate.bind(this),
+      setchannel: this.handleSetchannel.bind(this)
+    };
     for (const [event, handler] of Object.entries(this._eventHandlers)) {
       this.player.on(event, handler);
     }
-
-    this.player.on("buffering", () => {
-      console.log("buffered");
-      this._faultCallback();
-      //TODO: Check if this can also happen during the stream
-    });
-
-    this.player.on("stalled", () => {
-      console.log("stalled");
-      this._faultCallback();
-      this._fault = true;
-    });
-
-    this.player.on("playing", () => {
-      console.log("rolling");
-      this._playingCallback();
-      if (this._fault == true) {
-        this.sync();
-        this._fault = false;
-      }
-    });
   }
 
-  /**
-   * Note, that `this` in the event handler reffer to the player
-   */
-
-  private handlePlay(): void {
-    console.log("got play");
-    //TODO: Find a way to test if the player contains source - this seems to be the player itself
-    if (this.player.src() == "") {
-      this._gapCallback();
-    }
-  }
-
-  private handlePlaying(): void {
-    console.log("rolling");
-    this._playingCallback();
-  }
-
-  private handleReady(): void {
-    //this.loadFirst();
-    console.log("Player ready");
-  }
-
-  private handleTimeupdate(update: object): void {
-    //console.log(update);
-  }
-
-  private handleDispose(): void {
+  public dispose(): void {
     this.reset();
     super.dispose();
     console.log(`Disposing Playlist Plugin for ${this._channel.name}`);
@@ -180,7 +140,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
       this._gapCallback();
       console.log("Showing gap");
     } else {
-      throw new Error(`TODO: Unknown type: ${typeof video}`);
+      throw new Error(`Unknown type`);
     }
 
     if (video !== undefined) {
@@ -234,21 +194,26 @@ export default class ChannelPlaylistPlugin extends Plugin {
   private sync() {
     const expectedVideo = this._channel.findVideo(this._timer.appTime);
     if (this.player == null) {
-      throw new Error("TODO: Player is null, set breakpoint to find the cause");
+      throw new Error("Player is null, this can happen in dev mode");
     }
-    if (expectedVideo !== undefined && expectedVideo instanceof Recording) {
-      if (this.player.src() == (expectedVideo as Recording).src.toString()) {
-        const start = (+this._timer.appTime - +expectedVideo!.interval.start!) / 1000;
-        const previousTime = this.player.currentTime();
-        this.player.currentTime(start);
-        console.log(`Resynced video stream from ${previousTime} to ${start}`);
+    if (expectedVideo !== undefined) {
+      if (expectedVideo instanceof Recording) {
+        if (this.player.src() == (expectedVideo as Recording).src.toString()) {
+          const start = (+this._timer.appTime - +expectedVideo!.interval.start!) / 1000;
+          const previousTime = this.player.currentTime();
+          this.player.currentTime(start);
+          console.log(`Resynced video stream from ${previousTime} to ${start}`);
+        } else {
+          this.play(expectedVideo);
+        }
+      } else if (expectedVideo instanceof Gap) {
+        this._gapCallback();
       } else {
-        this.play(expectedVideo);
+        console.log(`Unknown type`);
       }
-    } else if (expectedVideo instanceof Gap) {
-      this._gapCallback();
     } else {
-      throw new Error(`Unknown type: ${typeof expectedVideo}`);
+      //TODO: Expected slot is undefined
+      throw new Error(`TODO: Expected slot is undefined`);
     }
   }
 
@@ -285,6 +250,51 @@ export default class ChannelPlaylistPlugin extends Plugin {
     preloadLink.as = "object";
     document.head.appendChild(preloadLink);
     this._preloadId = id;
+  }
+
+  /* ---------------------- _eventHandlers ------------- */
+  public handlePlay() {
+    console.log(`Got play for ${this._channel.name}`);
+    //TODO: Find a way to test if the player contains source - this seems to be the player itself
+    if (this.player != null && this.player.src() == "") {
+      this._gapCallback();
+    }
+    if (this.player != null) {
+      console.warn("Player is null, this can happen in dev mode");
+    }
+  }
+
+  public handleBuffering() {
+    console.log(`Buffering`);
+    this._faultCallback();
+  }
+
+  public handleStalled() {
+    console.log(`Channel ${this._channel.name} is staled, syncing later`);
+    this._gapCallback();
+    this._fault = true;
+  }
+
+  public handlePlaying() {
+    console.log(`Playing ${this._channel.name}`);
+    if (this._fault == true) {
+      this.sync();
+      this._fault = false;
+    }
+    this._playingCallback();
+  }
+
+  public handleReady() {
+    //this.loadFirst();
+    console.log("Player ready");
+  }
+
+  public handleTimeupdate(update: object) {
+    //console.log(update);
+  }
+
+  public handleSetchannel(channel: Channel) {
+    this._setChannel(channel);
   }
 }
 

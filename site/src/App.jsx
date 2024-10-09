@@ -281,14 +281,9 @@ function App() {
     infoRef.current.classList.toggle("show");
   }
 
-  /*
-  function testcard(mode) {
-    noiseRef.current.changeMode(mode);
-  }
-  */
-
   function on() {
     powerOn = true;
+    autoPlay();
     //teletextRef.current.show();
     noiseRef.current.hide("immediately");
     showInfoContainer();
@@ -301,6 +296,7 @@ function App() {
     noiseRef.current.show("immediately");
     hideInfoContainer();
     disableAudio();
+    tuner.off();
     powerOn = false;
   }
 
@@ -392,124 +388,116 @@ function App() {
   };
 
   return (
-    <>
-      <div id="container" ref={rootRef}>
-        <Unmute clickCallback={firstClickCallback} />
-        <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
-          <div id="tv-border"></div>
-          <div id="tube">
-            <RouterProvider router={router} />
-            <div ref={infoContainerRef} className="show" id="info-container">
-              <div ref={infoRef} id="info" className="hide">
-                <button type="button" className="button toggle-info" onClick={toggleInfo}>
-                  <i className="info-icon"></i>
-                </button>
-                <div className="info-text">
-                  <a target="_blank" rel="noreferrer" href="" ref={metaRef} className="disabled">
-                    Stream Metadata
-                  </a>
-                </div>
+    <div id="container" ref={rootRef}>
+      <Unmute clickCallback={firstClickCallback} />
+      <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
+        <div id="tv-border"></div>
+        <div id="tube">
+          <RouterProvider router={router} />
+          <div ref={infoContainerRef} className="show" id="info-container">
+            <div ref={infoRef} id="info" className="hide">
+              <button type="button" className="button toggle-info" onClick={toggleInfo}>
+                <i className="info-icon"></i>
+              </button>
+              <div className="info-text">
+                <a target="_blank" rel="noreferrer" href="" ref={metaRef} className="disabled">
+                  Stream Metadata
+                </a>
               </div>
             </div>
-            <TVStatic ref={noiseRef} id="tv-static" className="show" timer={timer} />
-            <VideoJS ref={playerRef} id="video-js-player" options={videoJsOptions} />
           </div>
-          <div id="tv-footer">
-            <div className="tv-footer-spacer"></div>
-            <div id="tv-brand">
-              <a
-                target="_blank"
-                rel="noreferrer"
-                className="tv-brand-link"
-                title="Projektemacher product"
-                href="https://projektemacher.org/"
-              >
-                %nbsp;
-              </a>
-            </div>
-            <div id="tv-controls">
-              <button
-                aria-label="Mute"
-                title={audioStatus() ? "Audio enabled" : "Audio disabled"}
-                ref={audioToggleRef}
-                type="button"
-                className={"button toggle-audio " + (audioStatus() ? "enabled" : "disabled")}
-                onClick={(e) => {
-                  toggleAudio(e);
-                }}
-              >
-                <i className="icon"></i>
-              </button>
-              <button
-                aria-label="Teletext"
-                title={teletextOn ? "Teletext enabled" : "Teletext disabled"}
-                ref={teletextToggleRef}
-                type="button"
-                className="button toggle-teletext"
-                onClick={(e) => {
-                  toggleTeletext(e);
-                }}
-              >
-                <i className="icon"></i>
-              </button>
-              <button
-                aria-label="Previous channel"
-                title="Previous channel"
-                type="button"
-                className="button zap-channel-down"
-                onClick={(e) => {
-                  zapChannel(e, false);
-                }}
-              >
-                <i className="icon"></i>
-              </button>
-              <button
-                aria-label="Next channel"
-                title="Next channel"
-                type="button"
-                className="button zap-channel-up"
-                onClick={(e) => {
-                  zapChannel(e, true);
-                }}
-              >
-                <i className="icon"></i>
-              </button>
-              <button
-                aria-label="Fullscreen"
-                title="Fullscreen"
-                ref={fullscreenToggleRef}
-                type="button"
-                className={"button toggle-fullscreen " + (isMobileSafari ? "hide" : "")}
-                onClick={toggleFullscreen}
-              >
-                <i className="icon"></i>
-              </button>
-              <button
-                aria-label="Power"
-                title={powerOn ? "Power on" : "Power off"}
-                type="button"
-                className="button toggle-power"
-                onClick={(e) => {
-                  if (powerOn) {
-                    e.target.title = "Power off";
-                  } else {
-                    e.target.title = "Power on";
-                  }
-                  togglePower();
-                }}
-              >
-                <i className="icon"></i>
-              </button>
-            </div>
+          <TVStatic ref={noiseRef} id="tv-static" className="show" timer={timer} />
+          <VideoJS ref={playerRef} id="video-js-player" options={videoJsOptions} />
+        </div>
+        <div id="tv-footer">
+          <div className="tv-footer-spacer"></div>
+          <div id="tv-brand">
+            <a target="_blank" rel="noreferrer" className="tv-brand-link" title="Projektemacher product" href="https://projektemacher.org/">
+              %nbsp;
+            </a>
+          </div>
+          <div id="tv-controls">
+            <button
+              aria-label="Mute"
+              title={audioStatus() ? "Audio enabled" : "Audio disabled"}
+              ref={audioToggleRef}
+              type="button"
+              className={"button toggle-audio " + (audioStatus() ? "enabled" : "disabled")}
+              onClick={(e) => {
+                toggleAudio(e);
+              }}
+            >
+              <i className="icon"></i>
+            </button>
+            <button
+              aria-label="Teletext"
+              title={teletextOn ? "Teletext enabled" : "Teletext disabled"}
+              ref={teletextToggleRef}
+              type="button"
+              className="button toggle-teletext"
+              onClick={(e) => {
+                toggleTeletext(e);
+              }}
+            >
+              <i className="icon"></i>
+            </button>
+            <button
+              aria-label="Previous channel"
+              title="Previous channel"
+              type="button"
+              className="button zap-channel-down"
+              onClick={(e) => {
+                zapChannel(e, false);
+              }}
+            >
+              <i className="icon"></i>
+            </button>
+            <button
+              aria-label="Next channel"
+              title="Next channel"
+              type="button"
+              className="button zap-channel-up"
+              onClick={(e) => {
+                zapChannel(e, true);
+              }}
+            >
+              <i className="icon"></i>
+            </button>
+            <button
+              aria-label="Fullscreen"
+              title="Fullscreen"
+              ref={fullscreenToggleRef}
+              type="button"
+              className={"button toggle-fullscreen " + (isMobileSafari ? "hide" : "")}
+              onClick={toggleFullscreen}
+            >
+              <i className="icon"></i>
+            </button>
+            <button
+              aria-label="Power"
+              title={powerOn ? "Power on" : "Power off"}
+              type="button"
+              className="button toggle-power"
+              onClick={(e) => {
+                if (powerOn) {
+                  e.target.title = "Power off";
+                } else {
+                  e.target.title = "Power on";
+                }
+                togglePower();
+              }}
+            >
+              <i className="icon"></i>
+            </button>
           </div>
         </div>
-        {(() => {
-          if (!Util.isElectron()) {
-            return cookieConsent;
-          }
-        })()}
       </div>
-    </>
+      {(() => {
+        if (!Util.isElectron()) {
+          return cookieConsent;
+        }
+      })()}
+    </div>
   );
 }
 

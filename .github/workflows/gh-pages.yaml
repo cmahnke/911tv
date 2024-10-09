@@ -19,9 +19,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  VERSION: 2024.10.8
-
 jobs:
   generate-json:
     runs-on: ubuntu-latest
@@ -147,14 +144,14 @@ jobs:
 
       - name: Release
         uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
+        if: ${{ github.event_name == 'release' && github.actor != 'dependabot[bot]' }}
         with:
           makeLatest: true
           token: ${{ github.token }}
           prerelease: true
           allowUpdates: true
           artifactErrorsFailBuild: true
-          tag: ${{ env.VERSION }}
+          tag: ${{ github.event.release.name }}
           # ./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip
           artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
 

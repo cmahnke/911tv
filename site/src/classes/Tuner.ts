@@ -23,6 +23,7 @@ class Tuner {
     if (station in this.channels) {
       this._currentChannel = station;
     } else {
+      this._currentChannel = this._channelList[0];
       throw new Error(`Not a valid channel: ${station}`);
     }
   }
@@ -33,6 +34,10 @@ class Tuner {
 
   get station(): string {
     return this._currentChannel;
+  }
+
+  public off(): void {
+    this._currentChannel = this._channelList[0];
   }
 
   public next(): string {
