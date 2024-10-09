@@ -280,7 +280,7 @@ See also [development documentation](./site/README.md)
 * Static noise not reenabled when changing from ended channel no running
 * Channel switching after end fails
 * Multiple clicks might increase noise generators
-* Powering on not working properly with test card
+* Powering on not working properly with test card - power off resets tuner now
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
 

@@ -8,6 +8,8 @@
 }
 
 .video-js {
+  pointer-events: none;
+
   .vjs-loading-spinner,
   .vjs-control-bar,
   .vjs-big-play-button {

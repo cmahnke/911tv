@@ -87,7 +87,6 @@ function App() {
       params = "?" + params;
     }
     return window.location.origin + window.location.pathname + params;
-    //history.replaceState({}, "", window.location.origin + window.location.pathname + params);
   };
 
   // URL params are 'c' (channel), 'r' (reset), 'a' (accept), 'd' (debug) and 't' (time)
@@ -392,7 +391,11 @@ function App() {
     //fill: true,
     fluid: true,
     muted: false,
-    preload: "auto"
+    preload: "auto",
+    nativeControlsForTouch: false,
+    userActions: {
+      click: false
+    }
   };
 
   return (

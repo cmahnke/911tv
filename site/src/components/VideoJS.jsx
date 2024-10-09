@@ -20,6 +20,7 @@ export const VideoJS = (props, playerRef) => {
 
       const player = (playerRef.current = videojs(videoElement, options, () => {
         player.log("player is ready");
+        //player.removeControlsListeners();
         onReady && onReady(player);
       }));
 
