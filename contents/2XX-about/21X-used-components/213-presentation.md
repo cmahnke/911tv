@@ -11,6 +11,7 @@ number: 213
 * [react-cookie-consent](https://github.com/Mastermindzh/react-cookie-consent){:target="_blank" rel="noreferrer"}
 * [react-device-detect](https://github.com/duskload/react-device-detect#readme){:target="_blank" rel="noreferrer"}
 * [React Router](https://github.com/remix-run/react-router){:target="_blank" rel="noreferrer"}
+* [SVGR](https://react-svgr.com/){:target="_blank" rel="noreferrer"}
 * [video.js](https://videojs.com/){:target="_blank" rel="noreferrer"}
 
 <!-- -->

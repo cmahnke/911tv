@@ -64,11 +64,12 @@ In addition, the following software components were used:
 * [Python Frontmatter](https://github.com/eyeseast/python-frontmatter)
 * [Python-Markdown](https://python-markdown.github.io/)
 * [Python Pillow](https://python-pillow.org/)
+* [Python HTTPX](https://www.python-httpx.org/)
 * [NumPy](https://numpy.org/)
 * [Requests](https://requests.readthedocs.io/)
 * [termcolor](https://github.com/termcolor/termcolor)
-* [JSONCrush](https://github.com/KilledByAPixel/JSONCrush)
 * [lz-string](https://github.com/pieroxy/lz-string)
+* [brotli-unicode](https://github.com/kyr0/brotli-unicode)
 
 ### Presentation
 
@@ -80,6 +81,7 @@ In addition, the following software components were used:
 * [react-cookie-consent](https://github.com/Mastermindzh/react-cookie-consent)
 * [react-device-detect](https://github.com/duskload/react-device-detect#readme)
 * [React Router](https://github.com/remix-run/react-router)
+* [SVGR](https://react-svgr.com/)
 * [video.js](https://videojs.com/)
 
 ### Development
@@ -292,6 +294,8 @@ See also [development documentation](./site/README.md)
 * Electron App
   * Deploy using GitHub Actions
 * Improve Play animation
+* More Contents:
+  * Desktop Apps
 * Data preprocessing
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
