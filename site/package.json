@@ -1,7 +1,7 @@
 {
   "name": "911tv",
   "private": true,
-  "version": "2024.10.8",
+  "version": "2024.10.9",
   "type": "module",
   "main": "./out/main/index.js",
   "author": "Christian Mahnke",
@@ -13,7 +13,7 @@
   "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
     "dev": "vite",
-    "prod": "vite preview",
+    "prod": "npm run clean && vite build && vite preview",
     "build": "vite build",
     "tsc": "tsc",
     "clean": "rimraf dist/* out/*",
