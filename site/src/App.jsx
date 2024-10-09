@@ -159,7 +159,6 @@ function App() {
 
   function autoPlay() {
     if (playlistPlugin !== undefined) {
-      //ChannelPlaylistPlugin.setChannel(playerRef.current, tuner.channel);
       playlistPlugin.dispose();
     }
     playlistPlugin = playerRef.current.channelPlaylistPlugin({
@@ -304,6 +303,9 @@ function App() {
     hideInfoContainer();
     disableAudio();
     tuner.off();
+    if (playlistPlugin !== undefined) {
+      playlistPlugin.dispose();
+    }
     powerOn = false;
   }
 
