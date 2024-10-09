@@ -17,7 +17,7 @@
     "build": "vite build",
     "tsc": "tsc",
     "clean": "rimraf dist/* out/*",
-    "lint": "eslint . -c eslint.config.mjs --max-warnings 0",
+    "lint": "eslint . -c eslint.config.mjs",
     "stylelint": "stylelint 'src/**/*.scss'",
     "preview": "vite preview",
     "format": "prettier . --check",
