@@ -475,7 +475,7 @@ function App() {
             </button>
             <button
               aria-label="Power"
-              title={powerOn ? "Power on" : "Power off"}
+              title={powerOn ? "Power off" : "Power on"}
               type="button"
               className="button toggle-power"
               onClick={(e) => {

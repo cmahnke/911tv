@@ -212,6 +212,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
         console.log(`Unknown type`);
       }
     } else {
+      this._faultCallback();
       //TODO: Expected slot is undefined
       throw new Error(`TODO: Expected slot is undefined`);
     }
