@@ -5,7 +5,7 @@ import icon from "../../public/images/favicon-512.png?asset";
 
 const appId = "org.projektemacher.911tv";
 const appName = "911TV";
-const appVersion = "2024.10";
+const appVersion = app.getVersion();
 
 function createWindow() {
   // Create the browser window.
