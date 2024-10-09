@@ -81,34 +81,42 @@ function App() {
     console.log("AudioContext failed", e);
   }
 
-  // URL params are 'c' (channel), 'r' (reset) and 't' (time)
+  const updateAdress = (urlParams) => {
+    let params = urlParams.toString();
+    if (params != "") {
+      params = "?" + params;
+    }
+    return window.location.origin + window.location.pathname + params;
+    //history.replaceState({}, "", window.location.origin + window.location.pathname + params);
+  };
+
+  // URL params are 'c' (channel), 'r' (reset), 'a' (accept), 'd' (debug) and 't' (time)
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get("d") !== null && urlParams.get("d") !== undefined) {
     debug = true;
     urlParams.delete("d");
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   if (urlParams.get("c") !== null && urlParams.get("c") !== undefined) {
     tuner.station = urlParams.get("c");
     urlParams.delete("c");
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   if (urlParams.get("r") !== null && urlParams.get("r") !== undefined) {
     reset = true;
     urlParams.delete("r");
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   if (urlParams.get("t") !== null && urlParams.get("t") !== undefined) {
     reset = urlParams.get("t");
     urlParams.delete("t");
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
   }
   // Accept cookie notice - used for debugging
   if (urlParams.get("a") !== null && urlParams.get("a") !== undefined) {
     urlParams.delete("a");
-    history.replaceState({}, "", window.location.origin + window.location.pathname + urlParams.toString());
     Cookies.set(consentCookieName, true, { expires: 999 });
     console.log(`Set ${consentCookieName} to ${Cookies.get(consentCookieName)}`);
+  }
+
+  if (window.location.href != updateAdress(urlParams)) {
+    history.replaceState({}, "", updateAdress(urlParams));
   }
 
   /*
