@@ -142,13 +142,13 @@ jobs:
           mv win-arm64-unpacked 911tv
           zip -r 911tv-win-arm64 911tv
           rm -r 911tv
+          ls -l
 #          mv mac-arm64 911tv
 #          zip -r 911tv-mac-arm64 911tv
 #          rm 911tv
 #          mv mac-universal 911tv
 #          zip -r 911tv-mac-universal 911tv
 #          rm 911tv
-          ls -l
 
       - name: Release
         uses: softprops/action-gh-release@v2
