@@ -14,6 +14,7 @@
   "scripts": {
     "postinstall": "run-script-os",
     "postinstall:darwin": "patch-package",
+    "postinstall:default": "",
     "dev": "vite",
     "prod": "npm run clean && vite build && vite preview",
     "build": "vite build",
