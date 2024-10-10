@@ -279,8 +279,8 @@ See also [development documentation](./site/README.md)
 * Fix known issues
 
 ## Known Issues
-* Static noise not reenabled when changing from ended channel no running
 * Channel switching after end fails
+  * Static noise not reenabled when changing from ended channel no running
 * Multiple clicks might increase noise generators
 * Powering on not working properly with test card - power off resets tuner now
 * Warnings / Development issues

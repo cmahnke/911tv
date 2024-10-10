@@ -152,9 +152,9 @@ http://localhost:5173/#/404
 
 # Electron
 
-## TODO
+On release make sure to provide a Tag matching the [Semver](https://semver.org/) pattern.
 
-* Better branding: https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
+## TODO
 
 # Maintanace
 

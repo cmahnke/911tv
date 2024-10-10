@@ -12,6 +12,7 @@
   },
   "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
+    "postinstall": "patch-package",
     "dev": "vite",
     "prod": "npm run clean && vite build && vite preview",
     "build": "vite build",
@@ -70,6 +71,7 @@
     "eslint-plugin-react-refresh": "^0.4.12",
     "globals": "^15.11.0",
     "html-react-parser": "^5.1.18",
+    "patch-package": "^8.0.0",
     "postcss": "^8.4.47",
     "postcss-combine-duplicated-selectors": "^10.0.3",
     "postcss-inline-svg": "^6.0.0",
