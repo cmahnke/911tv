@@ -90,6 +90,14 @@ python scripts/channels_stats.py -t -i site/src/assets/json/urls.json gaps
 
 * http://localhost:5173/?c=CNN&t=2001-09-14T01:59:37.345000-04:00
 
+## Durations
+
+### Example: Get the end time of the first BBC stream
+
+```
+python scripts/channels_stats.py -c bbc -t -i site/src/assets/json/urls.json durations | head -1
+```
+
 ## Ends
 
 Use these to test the end test card
@@ -109,10 +117,12 @@ The shortest channel is `GLVSN`:
 
 * http://localhost:5173/?c=GLVSN&t=2001-09-13T15:41:46.607000-04:00
 
-### Example: Get the end time of the first BBC stream
+The default channel ist `AZT`:
+
+* http://localhost:5173/?c=AZT&t=2001-09-17T19:07:56.110000-04:00
 
 ```
-python scripts/channels_stats.py -c bbc -t -i site/src/assets/json/urls.json durations | head -1
+python scripts/channels_stats.py -c azt -t -i site/src/assets/json/urls.json ends | head -1
 ```
 
 ### Examples
@@ -141,7 +151,6 @@ A Recording that switches to Gap after a minute:
 ## TODO
 
 * Better branding: https://stackoverflow.com/questions/41551110/unable-to-override-app-name-on-mac-os-electron-menu
-* Add downloads to GitHub
 
 # Maintanace
 
@@ -165,24 +174,31 @@ The followings should work:
 * Teletext
   * Navigation without video skipping
   * Counter while waiting for page
-  * Entering page number via keybaord
+  * Entering page number via keyboard
+  * Clicking page numbers
   * Clock
 
 * Videos
   * Video starts initially at the right position
-  * Buffering and stalled events handled
+  * Buffering and stalled events handled with resync
   * End of stream shows test card
+  * Doesn't react on click
+  * Gaps set test card to "interrupted"
+  * Video at end of stream set test card to "ended"
 
 * Buttons
   * Mute
-  * Power off to static
-    power off disables teletext
+  * Power off...
+    * Switches to static
+    * Disables teletext
+    * Resets tuner
   * Channel up / down
   * Fullscreen
 
 * Other
   * Full screen on double click
   * Info on video source
+  * Info gets updated
 
 ## Things to test
 

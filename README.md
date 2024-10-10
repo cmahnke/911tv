@@ -292,7 +292,7 @@ See also [development documentation](./site/README.md)
 * Load the first 30 secs as chunk, then rely on prefetch
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App
-  * Deploy using GitHub Actions
+  * See also [development documentation](./site/README.md)
 * Improve Play animation
 * More Contents:
   * Desktop Apps

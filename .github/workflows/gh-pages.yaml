@@ -118,7 +118,7 @@ jobs:
         if: ${{ github.event_name == 'release' && github.actor != 'dependabot[bot]' }}
         working-directory: ./site
         run: |
-          jq '.version = "${{ github.event.release.name }}"' package.json | sponge package.json
+          jq '.version = "${{ github.event.release.tag_name }}"' package.json | sponge package.json
           npm run app:win
 
       - name: Build apps
@@ -159,7 +159,7 @@ jobs:
           prerelease: true
           allowUpdates: true
           artifactErrorsFailBuild: true
-          tag: ${{ github.event.release.name }}
+          tag: ${{ github.event.release.tag_name }}
           # ./site/dist/911tv-mac-universal.zip,./site/dist/911tv-mac-amd64.zip
           artifacts: "./site/dist/911tv-linux-arm64.tgz,./site/dist/911tv-linux-amd64.tgz,./site/dist/911tv-win-arm64.zip,./site/dist/911tv-win-x64.zip,,./site/dist/911tv-arm64-setup.exe,./site/dist/911tv-x64-setup.exe,./site/dist/911tv-arm64.AppImage,./site/dist/911tv-x86_64.AppImage"
 
