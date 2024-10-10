@@ -146,6 +146,10 @@ A Recording that switches to Gap after a minute:
 
 * http://localhost:5173/?c=BBC&t=2001-09-11T08:44:06.807000-04:00
 
+## 404 Page
+
+http://localhost:5173/#/404
+
 # Electron
 
 ## TODO
