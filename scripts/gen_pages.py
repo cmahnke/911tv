@@ -185,6 +185,8 @@ def count_headings(md_content):
 
 pages = []
 for file in Path(CONTENT_DIR).glob(CONTENT_PATTERN):
+    if re.search(r'.*/_.*', str(file)):
+        continue
     page = {}
     cprint(f"Loading file {file}", 'green', flush=True, file=sys.stderr)
     post = frontmatter.load(file)
