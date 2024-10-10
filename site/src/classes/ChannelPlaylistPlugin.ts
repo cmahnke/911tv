@@ -290,18 +290,13 @@ export default class ChannelPlaylistPlugin extends Plugin {
     console.log("Player ready");
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public handleTimeupdate(update: object) {
     //console.log(update);
   }
 
   public handleSetchannel(channel: Channel) {
     this._setChannel(channel);
-  }
-}
-
-class ChannelPlaylist extends videojs.EventTarget {
-  constructor(options = {}) {
-    super();
   }
 }
 
