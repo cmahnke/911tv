@@ -1,5 +1,5 @@
 diff --git a/node_modules/electron/dist/Electron.app/Contents/Info.plist b/node_modules/electron/dist/Electron.app/Contents/Info.plist
-index b526976..5c6f3f3 100644
+index e6233e1..6326079 100644
 --- a/node_modules/electron/dist/Electron.app/Contents/Info.plist
 +++ b/node_modules/electron/dist/Electron.app/Contents/Info.plist
 @@ -13,7 +13,7 @@
