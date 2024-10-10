@@ -12,7 +12,8 @@
   },
   "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
-    "postinstall": "patch-package",
+    "test": "run-script-os",
+    "test:darwin": "patch-package",
     "dev": "vite",
     "prod": "npm run clean && vite build && vite preview",
     "build": "vite build",
@@ -79,6 +80,7 @@
     "postcss-svgo": "^7.0.1",
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
+    "run-script-os": "^1.1.6",
     "sass": "^1.79.4",
     "stylelint": "^16.9.0",
     "stylelint-config-standard-scss": "^13.1.0",
