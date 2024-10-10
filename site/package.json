@@ -13,7 +13,7 @@
   "homepage": "https://911tv.projektemacher.org/",
   "scripts": {
     "postinstall": "run-script-os",
-    "postinstall": "test \"$(uname -s)\" = \"Darwin\" && npx patch-package",
+    "postinstall": "test $(uname -s) = Darwin && npx patch-package",
     "dev": "vite",
     "prod": "npm run clean && vite build && vite preview",
     "build": "vite build",
