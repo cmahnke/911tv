@@ -33,3 +33,6 @@ out
 build/icon.icns
 build/icon.ico
 build/compiled
+
+public/privacy/
+static/privacy/

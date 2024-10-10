@@ -16,6 +16,7 @@ import emoji
 CONTENT_DIR = './contents'
 CONTENT_PATTERN = '**/*.md'
 SUBPAGE_SEPERATOR = '<!--more-->'
+HTML_OUT_DIR = './site/public/'
 
 # pylint: disable=invalid-name,undefined-variable
 
@@ -186,6 +187,16 @@ def count_headings(md_content):
 pages = []
 for file in Path(CONTENT_DIR).glob(CONTENT_PATTERN):
     if re.search(r'.*/_.*', str(file)):
+        with open(file, 'r', encoding="utf-8") as in_f:
+            md_in = in_f.read()
+        html = markdown.markdown(md_in)
+        out_html = file.relative_to(Path(CONTENT_DIR)).parent.joinpath(file.stem + ".html")
+        if str(out_html)[0] == '_':
+            out_html = str(out_html)[1:-1]
+        out_html = Path(HTML_OUT_DIR).joinpath(out_html)
+        out_html.parent.mkdir(parents=True, exist_ok=True)
+        with open(out_html, 'w', encoding="utf-8") as out_f:
+            out_f.write(html)
         continue
     page = {}
     cprint(f"Loading file {file}", 'green', flush=True, file=sys.stderr)

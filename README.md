@@ -290,6 +290,7 @@ See also [development documentation](./site/README.md)
 
 ### Short term
 * Load the first 30 secs as chunk, then rely on prefetch
+* Privacy policy
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Electron App
   * See also [development documentation](./site/README.md)
