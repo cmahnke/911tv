@@ -32,7 +32,8 @@ export default [
     files: ["*.config.js"],
     ...eslint.configs.recommended,
     rules: {
-      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }]
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+      "no-console": ["warn", {}]
     }
   },
   {
@@ -53,12 +54,18 @@ export default [
       }
     },
     rules: {
-      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }]
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+      "no-console": ["warn", {}]
     }
   },
   {
     files: ["src/**/*.{js,jsx,mjs,cjs}"],
     ...eslint.configs.recommended,
+    settings: {
+      react: {
+        version: "detect"
+      }
+    },
     languageOptions: {
       ...react.configs.flat.recommended.languageOptions,
       parserOptions: {
@@ -81,7 +88,8 @@ export default [
       "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
       "no-warning-comments": ["warn", {}],
       "react/prop-types": [1],
-      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }]
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "no-console": ["warn", {}]
     }
   },
   {

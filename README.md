@@ -281,7 +281,7 @@ See also [development documentation](./site/README.md)
 ## Known Issues
 * Channel switching after end fails
   * Static noise not reenabled when changing from ended channel no running
-* Multiple clicks might increase noise generators
+* Multiple clicks might increase noise generators - currently handled by removing click handler
 * Powering on not working properly with test card - power off resets tuner now
 * Warnings / Development issues
   * `react.development.js:209 Warning: forwardRef render functions do not support propTypes or defaultProps.`
@@ -292,8 +292,6 @@ See also [development documentation](./site/README.md)
 * Load the first 30 secs as chunk, then rely on prefetch
 * Privacy policy
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
-* Electron App
-  * See also [development documentation](./site/README.md)
 * Improve Play animation
 * More Contents:
   * Desktop Apps
@@ -314,7 +312,8 @@ See also [development documentation](./site/README.md)
 * Data preprocessing
   * Multiple sub pages (currently manually split)
   * check if generated sub pages are needed
-
+* More contents
+  * https://www.youtube.com/watch?v=PcAsxPuusiE&ab_channel=PointlessHub
 
 <p align="center">
   <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">
