@@ -291,6 +291,7 @@ See also [development documentation](./site/README.md)
 ### Short term
 * Load the first 30 secs as chunk, then rely on prefetch
 * Privacy policy
+* Arrow Keys for channel switching
 * Reduce TODO's from code, also see "Things to test" in [Development docs](./site/README.md)
 * Improve Play animation
 * More Contents:
