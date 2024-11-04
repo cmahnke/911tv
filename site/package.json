@@ -51,7 +51,7 @@
   "devDependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^3.0.0",
-    "@eslint/js": "^9.13.0",
+    "@eslint/js": "^9.14.0",
     "@fontsource/press-start-2p": "^5.1.0",
     "@rollup/plugin-strip": "^3.0.4",
     "@svgr/plugin-svgo": "^8.1.0",
@@ -66,12 +66,12 @@
     "electron-builder": "^25.1.8",
     "electron-vite": "^2.3.0",
     "esbuild-wasm": "^0.24.0",
-    "eslint": "^9.13.0",
+    "eslint": "^9.14.0",
     "eslint-plugin-json-es": "^1.6.0",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",
-    "globals": "^15.11.0",
+    "globals": "^15.12.0",
     "html-react-parser": "^5.1.18",
     "patch-package": "^8.0.0",
     "postcss": "^8.4.47",
@@ -82,7 +82,7 @@
     "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "run-script-os": "^1.1.6",
-    "sass": "^1.80.5",
+    "sass": "^1.80.6",
     "stylelint": "^16.10.0",
     "stylelint-config-standard-scss": "^13.1.0",
     "svgo": "^3.3.2",
@@ -93,7 +93,7 @@
     "vite-plugin-inline-source": "^2.5.2",
     "vite-plugin-stylelint": "^5.3.1",
     "vite-plugin-svgo": "1.6.2",
-    "vite-plugin-svgr": "^4.2.0"
+    "vite-plugin-svgr": "^4.3.0"
   },
   "overrides": {
     "eslint-plugin-react-hooks": {
