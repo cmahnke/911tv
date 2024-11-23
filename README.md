@@ -300,6 +300,7 @@ See also [development documentation](./site/README.md)
   * GLVSN does't seem to be working - metadata is fetched
 * Add more videos
   * https://www.youtube.com/watch?v=rz0EwLAzm2E&ab_channel=EMProductions
+  * https://www.youtube.com/watch?v=hLNPIdiAx2w&ab_channel=TheMagnificentMrMcGee
 
 ### Long term
 * Migrate to [TypeScript](https://www.typescriptlang.org/), done for channel switching
