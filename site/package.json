@@ -45,7 +45,7 @@
     "react-cookie-consent": "^9.0.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.0.2",
+    "react-router-dom": "^7.1.0",
     "video.js": "^7.21.6"
   },
   "devDependencies": {
@@ -65,7 +65,7 @@
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "electron-vite": "^2.3.0",
-    "esbuild-wasm": "^0.24.1",
+    "esbuild-wasm": "^0.24.2",
     "eslint": "^9.17.0",
     "eslint-plugin-json-es": "^1.6.0",
     "eslint-plugin-react": "^7.37.2",
