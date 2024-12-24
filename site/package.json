@@ -45,7 +45,7 @@
     "react-cookie-consent": "^9.0.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.0",
+    "react-router-dom": "^7.1.1",
     "video.js": "^7.21.6"
   },
   "devDependencies": {
@@ -68,7 +68,7 @@
     "esbuild-wasm": "^0.24.2",
     "eslint": "^9.17.0",
     "eslint-plugin-json-es": "^1.6.0",
-    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react": "^7.37.3",
     "eslint-plugin-react-hooks": "^5.1.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
@@ -87,7 +87,7 @@
     "stylelint-config-standard-scss": "^14.0.0",
     "svgo": "^3.3.2",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.1",
+    "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inline-source": "^2.5.2",
