@@ -1,6 +1,6 @@
 ---
 title: Cultural impact
-number: 530
+number: 531
 ---
 # Loose Change
 
