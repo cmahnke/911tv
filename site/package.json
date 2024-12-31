@@ -87,7 +87,7 @@
     "stylelint-config-standard-scss": "^14.0.0",
     "svgo": "^3.3.2",
     "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.2",
+    "typescript-eslint": "^8.19.0",
     "vite": "^6.0.6",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inline-source": "^2.5.2",
