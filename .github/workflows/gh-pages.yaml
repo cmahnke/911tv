@@ -44,7 +44,7 @@ jobs:
       - name: Install Node dependencies
         working-directory: ./site
         run: |
-          npm i
+          npm i --force
 
       - name: Generate required dependencies
         run: |
