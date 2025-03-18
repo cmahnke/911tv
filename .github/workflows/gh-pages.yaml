@@ -37,7 +37,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v4.3.0
         with:
           node-version-file: '.nvmrc'
 
@@ -96,7 +96,7 @@ jobs:
           wine uninstaller --list
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v4.3.0
         with:
           node-version-file: '.nvmrc'
 
@@ -172,7 +172,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.2.0
+        uses: actions/setup-node@v4.3.0
         with:
           node-version-file: '.nvmrc'
 
