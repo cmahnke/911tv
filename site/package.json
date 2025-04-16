@@ -88,7 +88,7 @@
     "svgo": "^3.3.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1",
-    "vite": "^6.2.6",
+    "vite": "^6.3.0",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inline-source": "^2.5.2",
     "vite-plugin-stylelint": "^6.0.0",
