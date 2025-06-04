@@ -45,7 +45,7 @@
     "react-cookie-consent": "^9.0.0",
     "react-device-detect": "^2.2.3",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.1",
+    "react-router-dom": "^7.6.2",
     "video.js": "^7.21.7"
   },
   "devDependencies": {
@@ -59,10 +59,10 @@
     "@types/js-cookie": "^3.0.6",
     "@types/luxon": "^3.6.2",
     "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5",
+    "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.1",
     "browserslist-to-esbuild": "^2.1.1",
-    "electron": "^36.3.2",
+    "electron": "^36.4.0",
     "electron-builder": "^26.0.12",
     "electron-vite": "^3.1.0",
     "esbuild-wasm": "^0.25.5",
