@@ -65,7 +65,7 @@
     "electron": "^37.2.3",
     "electron-builder": "^26.0.12",
     "electron-vite": "^4.0.0",
-    "esbuild-wasm": "^0.25.6",
+    "esbuild-wasm": "^0.25.8",
     "eslint": "^9.31.0",
     "eslint-plugin-json-es": "^1.6.0",
     "eslint-plugin-react": "^7.37.5",
