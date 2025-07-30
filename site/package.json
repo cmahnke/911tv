@@ -57,7 +57,7 @@
     "@svgr/plugin-svgo": "^8.1.0",
     "@types/eslint__js": "^9.14.0",
     "@types/js-cookie": "^3.0.6",
-    "@types/luxon": "^3.7.0",
+    "@types/luxon": "^3.7.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.7.0",
