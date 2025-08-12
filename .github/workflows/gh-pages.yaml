@@ -23,7 +23,7 @@ jobs:
   generate-json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Install dependencies
         run: sudo apt-get install -y mediainfo
@@ -73,7 +73,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: generate-json
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -109,7 +109,7 @@ jobs:
         run: |
           ./scripts/image-assets.sh
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: generated-json
           path: ./site/src/assets/json
@@ -169,7 +169,7 @@ jobs:
     needs: generate-json
     steps:
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v4.4.0
@@ -185,7 +185,7 @@ jobs:
         run: |
           ./scripts/image-assets.sh
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v5
         with:
           name: generated-json
           path: ./site/src/assets/json
