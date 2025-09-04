@@ -29,12 +29,12 @@ jobs:
         run: sudo apt-get install -y mediainfo imagemagick
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
 
       - name: Setup Go Lang
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '^1.21'
 
@@ -45,7 +45,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
 
@@ -84,7 +84,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Setup Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: '1.23.2'
 
@@ -104,7 +104,7 @@ jobs:
           wine uninstaller --list
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
 
@@ -180,7 +180,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4.4.0
+        uses: actions/setup-node@v5.0.0
         with:
           node-version-file: '.nvmrc'
 
