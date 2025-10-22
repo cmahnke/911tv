@@ -307,7 +307,11 @@ def enrich_worker(q, r, download_counter):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(prog='gen_urls.py')
     parser.add_argument('--output', '-o', help='Output file')
+    parser.add_argument('--processes', '-p', type=int, help='Number of parallel processes')
     args = parser.parse_args()
+
+    if args.processes and not args.processes > POOL_SIZE:
+        POOL_SIZE = args.processes
 
     cprint(f"Using {POOL_SIZE} processes, using { mediainfo_opts['library_file'] if 'library_file' in mediainfo_opts else 'buildin' } as mediainfo dependency", "yellow", file=sys.stderr)
     times = gen_timecode(timespan)
