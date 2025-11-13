@@ -58,7 +58,7 @@
     "@types/eslint__js": "^9.14.0",
     "@types/js-cookie": "^3.0.6",
     "@types/luxon": "^3.7.1",
-    "@types/react": "^19.2.3",
+    "@types/react": "^19.2.4",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",
     "browserslist-to-esbuild": "^2.1.1",
