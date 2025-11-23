@@ -23,7 +23,7 @@ jobs:
   generate-json:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install dependencies
         run: sudo apt-get install -y mediainfo imagemagick
@@ -81,7 +81,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: generate-json
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Go
         uses: actions/setup-go@v6
@@ -177,7 +177,7 @@ jobs:
     needs: generate-json
     steps:
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v6.0.0
