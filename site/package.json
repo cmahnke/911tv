@@ -83,7 +83,7 @@
     "rimraf": "^6.1.2",
     "run-script-os": "^1.1.6",
     "sass": "^1.94.2",
-    "stylelint": "^16.26.0",
+    "stylelint": "^16.26.1",
     "stylelint-config-standard-scss": "^16.0.0",
     "svgo": "^4.0.0",
     "typescript": "^5.9.3",
