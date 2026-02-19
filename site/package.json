@@ -62,7 +62,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "browserslist-to-esbuild": "^2.1.1",
-    "electron": "^40.4.1",
+    "electron": "^40.6.0",
     "electron-builder": "^26.8.1",
     "electron-vite": "^5.0.0",
     "esbuild-wasm": "^0.27.3",
