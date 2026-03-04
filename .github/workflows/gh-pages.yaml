@@ -66,7 +66,7 @@ jobs:
           node scripts/compress-json.mjs -i site/src/assets/json/pages.json -o site/src/assets/json/pages-brotli-compressed.json -t brotli
 
       - name: Provide url artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: generated-json
           path: |
@@ -117,7 +117,7 @@ jobs:
         run: |
           ./scripts/image-assets.sh
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: generated-json
           path: ./site/src/assets/json
@@ -193,7 +193,7 @@ jobs:
         run: |
           ./scripts/image-assets.sh
 
-      - uses: actions/download-artifact@v7
+      - uses: actions/download-artifact@v8
         with:
           name: generated-json
           path: ./site/src/assets/json
