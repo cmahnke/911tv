@@ -88,10 +88,10 @@
     "svgo": "^4.0.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.1",
-    "vite": "^8.0.0",
+    "vite": "^8.0.1",
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-inline-source": "^4.1.0",
-    "vite-plugin-stylelint": "^6.0.4",
+    "vite-plugin-stylelint": "^6.1.0",
     "vite-plugin-svgo": "2.0.0",
     "vite-plugin-svgr": "^4.5.0"
   },
