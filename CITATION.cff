@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+title: 911TV
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Chrisitian
+    family-names: Mahnke
+    orcid: 'https://orcid.org/0009-0003-1361-4159'
+    email: mahnke@kustodie.uni-goettingen.de
+repository-code: 'https://github.com/cmahnke/911tv'
+url: 'https://911tv.projektemacher.org/'
+abstract: >-
+  In 2007, the Internet Archive set up the September 11
+  Television Archive, a collection of TV broadcasts from 20
+  channels over 7 days, totalling about 3000 hours of
+  material. Although mainly US channels, it also includes
+  some international channels.
+
+  This digital exhibit presents the material on a virtual
+  television screen with a minimalist user interface,
+  allowing visitors to experience the event of that time in
+  an immersive way, mirroring the media consumption patterns
+  of the era.
+keywords:
+  - TV
+  - Internet Archive
+  - September 11 Television Archive
+  - '911'
+license: CC-BY-NC-4.0

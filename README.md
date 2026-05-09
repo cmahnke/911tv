@@ -278,6 +278,10 @@ See also [development documentation](./site/README.md)
 # TODO:
 * Fix known issues
 
+## Upgrades
+* Vite 8 (https://github.com/alex8088/electron-vite/issues/894)
+* Electron 42 (https://github.com/alex8088/electron-vite/issues/904)
+
 ## Known Issues
 * Channel switching after end fails
   * Static noise not reenabled when changing from ended channel no running
@@ -303,7 +307,7 @@ See also [development documentation](./site/README.md)
   * https://www.youtube.com/watch?v=hLNPIdiAx2w&ab_channel=TheMagnificentMrMcGee
 
 ### Long term
-* Migrate to [TypeScript](https://www.typescriptlang.org/), done for channel switching
+* Migrate to [TypeScript](https://www.typescriptlang.org/), done for web app, still neded for Electron
 * Check if it's possible to work with two alternating players to get a better caching control
   * Channel switching without loading
 * Teletext
@@ -320,3 +324,24 @@ See also [development documentation](./site/README.md)
 <p align="center">
   <img alt="Projektemacher Logo" src="https://raw.githubusercontent.com/cmahnke/911tv/main/site/src/assets/svg/cm.svg">
 </p>
+
+# Quick Setup
+
+Provide example file
+
+```
+cp Source\ Files/test-data/urls.json ./site/src/assets/json/
+```
+
+Install dependencies
+
+```
+pip install -r requirements.txt
+./scripts/setup.sh 
+```
+
+```
+cd site
+npm i
+
+```
