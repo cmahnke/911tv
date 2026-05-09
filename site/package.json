@@ -64,7 +64,7 @@
     "browserslist-to-esbuild": "^2.1.1",
     "electron": "^42.0.0",
     "electron-builder": "^26.8.1",
-    "electron-vite": "^5.0.0",
+    "electron-vite": "^6.0.0-beta.1",
     "esbuild-wasm": "^0.28.0",
     "eslint": "^10.3.0",
     "eslint-plugin-json-es": "^1.6.0",

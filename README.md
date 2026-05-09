@@ -281,6 +281,7 @@ See also [development documentation](./site/README.md)
 ## Upgrades
 * Vite 8 (https://github.com/alex8088/electron-vite/issues/894)
 * Electron 42 (https://github.com/alex8088/electron-vite/issues/904)
+* ESLint 10 (https://github.com/jsx-eslint/eslint-plugin-react/issues/3977)
 
 ## Known Issues
 * Channel switching after end fails
@@ -337,7 +338,7 @@ Install dependencies
 
 ```
 pip install -r requirements.txt
-./scripts/setup.sh 
+./scripts/setup.sh
 ```
 
 ```

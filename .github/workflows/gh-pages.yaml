@@ -54,6 +54,10 @@ jobs:
         run: |
           npm i --force
 
+      - name: Reuse test data
+        run: |
+          cp Source\ Files/test-data/urls.json ./site/src/assets/json/
+
       - name: Generate required dependencies
         run: |
           ./scripts/setup.sh
