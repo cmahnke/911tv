@@ -1,5 +1,4 @@
 import * as React from "react";
-import PropTypes from "prop-types";
 import "./Unmute.scss";
 import SpeakerIcon from "../assets/svg/speaker.svg?react";
 
@@ -40,10 +39,6 @@ export const Unmute = (props: UnmuteProps) => {
       </div>
     </React.StrictMode>
   );
-};
-
-Unmute.propTypes = {
-  clickCallback: PropTypes.func
 };
 
 export default Unmute;

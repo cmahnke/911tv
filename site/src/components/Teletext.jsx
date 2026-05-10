@@ -1,15 +1,15 @@
 import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 import { useLocation, useParams, useNavigate, Link } from "react-router-dom";
 import parse, { domToReact } from "html-react-parser";
-import PropTypes from "prop-types";
-import Timer from "../classes/Timer.ts";
+import Timer from "../classes/Timer.js";
+import { DateTime } from "luxon";
 
 import "./Teletext.scss";
 
 export const subTitlesPageNr = 300;
 
 export const Teletext = (props, ref) => {
-  const { timer, pages, channel } = props;
+  const { timer, pages, channel /* , initalPage */ } = props;
   const divRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,6 +17,11 @@ export const Teletext = (props, ref) => {
   var showState = true;
   var cleanup = [];
   const { page = 100 } = useParams();
+  /*
+  if (initalPage !== undefined) {
+    page = initalPage;
+  }
+  */
 
   var curPage = getPage(page);
   var title = curPage.title;
@@ -181,14 +186,6 @@ export const Teletext = (props, ref) => {
     teletextFooterRef.current.innerHTML = channel;
   }
 
-  /*
-  function getChannel() {
-    if (teletextFooterRef !== null) {
-      return teletextFooterRef.current.innerHTML;
-    }
-  }
-  */
-
   useImperativeHandle(ref, () => ({
     show: () => {
       show();
@@ -246,10 +243,6 @@ export const Teletext = (props, ref) => {
   );
 };
 
-Teletext.propTypes = {
-  timer: PropTypes.instanceOf(Timer),
-  pages: PropTypes.arrayOf(PropTypes.object),
-  channel: PropTypes.string
-};
+
 
 export default forwardRef(Teletext);

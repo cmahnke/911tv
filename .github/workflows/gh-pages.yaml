@@ -192,6 +192,7 @@ jobs:
         working-directory: ./site
         run: |
           npm i
+          npx update-browserslist-db@latest
 
       - name: Generate required images
         run: |
@@ -213,9 +214,9 @@ jobs:
         run: |
           npx vite build
 
-      - name: Copy generated files
-        run: |
-          cp ./site/src/assets/json/*.json ./site/dist
+#      - name: Copy generated files
+#        run: |
+#          cp ./site/src/assets/json/*.json ./site/dist
 
       - name: Deploy site
         uses: peaceiris/actions-gh-pages@v4.0.0

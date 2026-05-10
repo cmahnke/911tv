@@ -1,38 +1,40 @@
-import React, { forwardRef } from "react";
-import PropTypes from "prop-types";
+import React from "react";
 import videojs from "video.js";
+import Player from "video.js/dist/types/player";
 import ChannelPlaylistPlugin from "../classes/ChannelPlaylistPlugin.ts";
 
 import "video.js/dist/video-js.css";
 import "./VideoJS.scss";
 
-export const VideoJS = (props, playerRef) => {
-  const placeholderRef = React.useRef(null);
-  const { options, onReady } = props;
+type VideoJSProps = {
+  options: typeof videojs.options;
+  onReady?: (player: Player) => void;
+  ref: React.RefObject<Player | null>;
+};
+
+export const VideoJS = ({ options, onReady, ref: playerRef }: VideoJSProps) => {
+  const placeholderRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
-    // Make sure Video.js player is only initialized once
     if (!playerRef.current) {
-      const placeholderEl = placeholderRef.current;
+      const placeholderEl = placeholderRef.current!;
       const videoElement = placeholderEl.appendChild(document.createElement("video-js"));
 
       videojs.registerPlugin("channelPlaylistPlugin", ChannelPlaylistPlugin);
 
       const player = (playerRef.current = videojs(videoElement, options, () => {
-        player.log("player is ready");
-        //player.removeControlsListeners();
-        onReady && onReady(player);
+        console.log("player is ready");
+        if (onReady) {
+          onReady(player);
+        }
       }));
-
-      // You can update player in the `else` block here, for example:
     } else {
       const player = playerRef.current;
       player.autoplay(options.autoplay);
       player.src(options.sources);
     }
-  }, [options, onReady]);
+  }, [options, onReady, playerRef]);
 
-  // Dispose the Video.js player when the functional component unmounts
   React.useEffect(() => {
     const player = playerRef.current;
 
@@ -43,12 +45,8 @@ export const VideoJS = (props, playerRef) => {
       }
     };
   }, [playerRef]);
+
   return <div ref={placeholderRef} className="video-container"></div>;
 };
 
-VideoJS.propTypes = {
-  onReady: PropTypes.func,
-  options: PropTypes.object
-};
-
-export default forwardRef(VideoJS);
+export default VideoJS;
