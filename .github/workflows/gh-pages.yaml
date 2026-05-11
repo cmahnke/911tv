@@ -123,6 +123,7 @@ jobs:
         # See https://gitlab.winehq.org/wine/wine/-/wikis/Debian-Ubuntu
         run: |
           go install github.com/jackmordaunt/icns/cmd/icnsify@latest
+          sudo apt-get update
           sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib dirmngr ca-certificates gnupg sudo wget imagemagick jq moreutils
           sudo mkdir -pm755 /etc/apt/keyrings
           sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
@@ -213,8 +214,15 @@ jobs:
         with:
           node-version-file: '.nvmrc'
 
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.23.2'
+
       - name: Install dependencies
-        run: sudo apt-get install -y mediainfo imagemagick
+        run: |
+          go install github.com/jackmordaunt/icns/cmd/icnsify@latest
+          sudo apt-get install -y mediainfo imagemagick
 
       - name: Install Node dependencies
         working-directory: ./site
