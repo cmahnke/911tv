@@ -139,7 +139,17 @@ jobs:
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt install -y --install-recommends wine-stable
-          sudo ln -s /usr/bin/wine-stable /usr/bin/wine
+
+      - name: Debug and fix Wine path
+        run: |
+          which wine-stable || true
+          which wine64 || true
+          find /usr -name "wine*" -type f -print
+          find /opt -name "wine*" -type f -print 
+
+      - name: Wine links
+        run: |
+          sudo ln -sf $(which wine-stable) /usr/bin/wine
           ls -al /usr/bin/wine*
           /usr/bin/wine uninstaller --list
 
