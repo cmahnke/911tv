@@ -326,4 +326,4 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 }
 
-export { ChannelPlaylistPlugin };
+export { ChannelPlaylistPlugin, PluginsOptions };
