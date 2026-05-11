@@ -221,3 +221,7 @@ time = "2001-09-17 23:07:56.110000+00:00"
 dt = datetime.datetime.strptime(time, "%Y-%m-%d %H:%M:%S.%f%z")
 print(dt.isoformat())
 ```
+
+# Issues during upgrade
+
+* Power off after channel switch resets to previous channel

@@ -1,10 +1,11 @@
 import React from "react";
 import videojs from "video.js";
-import Player from "video.js/dist/types/player";
 import ChannelPlaylistPlugin from "../classes/ChannelPlaylistPlugin.ts";
 
 import "video.js/dist/video-js.css";
 import "./VideoJS.scss";
+
+type Player = ReturnType<typeof videojs>;
 
 type VideoJSProps = {
   options: typeof videojs.options;

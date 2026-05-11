@@ -1,9 +1,10 @@
 import { DateTime, Duration } from "luxon";
 import videojs from "video.js";
-
 import { Recording, Gap, Slot } from "./Slot";
 import Channel from "./Channel";
 import Timer from "./Timer";
+
+type Player = ReturnType<typeof videojs>;
 
 // Instead of videojs.PlayerOptions
 type PluginsOptions = {
@@ -19,7 +20,10 @@ type PluginsOptions = {
   };
 };
 
-const Plugin = videojs.getPlugin("plugin");
+const Plugin = videojs.getPlugin("plugin") as unknown as new (player: Player, options?: PluginsOptions) => {
+  player: Player;
+  dispose(): void;
+};
 
 export default class ChannelPlaylistPlugin extends Plugin {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,12 +36,15 @@ export default class ChannelPlaylistPlugin extends Plugin {
   _channel: Channel;
   _timer: Timer;
   _fault: boolean = false;
-  _preloadId: string | null;
+  _preloadId: string | null = null;
   _autostart: boolean = true;
   _timeouts: ReturnType<typeof setTimeout>[] = [];
+  _player: Player;
 
-  constructor(player: videojs.Player, options: PluginsOptions) {
-    super(player);
+
+  constructor(player: Player, options: PluginsOptions) {
+    super(player, options);
+    this._player = player;
     this._channel = options.channel;
     this._timer = options.timer;
     if ("autostart" in options) {
@@ -57,22 +64,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
     this.loadFirst();
   }
 
-  public reset() {
-    this.removePreload();
-    if (this._timeouts !== undefined) {
-      for (const timeout of this._timeouts) {
-        console.log(`Clearing timeout ${timeout}`);
-        clearTimeout(timeout);
-      }
-    }
-    if (this._eventHandlers !== undefined) {
-      for (const [event, handler] of Object.entries(this._eventHandlers)) {
-        this.player.off(event, handler);
-      }
-    }
-  }
-
-  public static setChannel(player: videojs.Player, channel: Channel) {
+  public static setChannel(player: Player, channel: Channel) {
     player.trigger("setchannel", channel);
   }
 
@@ -82,7 +74,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
     console.log(`Switched to ${this._channel}`);
     this.loadFirst();
     if (this._autostart) {
-      this.player.play();
+      this._player.play();
     }
   }
 
@@ -97,14 +89,52 @@ export default class ChannelPlaylistPlugin extends Plugin {
       setchannel: this.handleSetchannel.bind(this)
     };
     for (const [event, handler] of Object.entries(this._eventHandlers)) {
-      this.player.on(event, handler);
+      this._player.on(event, handler);
     }
   }
 
-  public dispose(): void {
-    this.reset();
-    super.dispose();
+  public override dispose(): void {
     console.log(`Disposing Playlist Plugin for ${this._channel.name}`);
+    
+    if (this._timeouts !== undefined) {
+      for (const timeout of this._timeouts) {
+        console.log(`Clearing timeout ${timeout}`);
+        clearTimeout(timeout);
+      }
+      this._timeouts = [];
+    }
+
+    this.removePreload();
+
+    if (this._eventHandlers !== undefined && this._player !== undefined) {
+      for (const [event, handler] of Object.entries(this._eventHandlers)) {
+        this._player.off(event, handler);
+      }
+      this._eventHandlers = {};
+    }
+    // TODO: Check if this disables transitions
+    if (this.eventBusEl_ != null) {
+      super.dispose();
+    }
+  }
+
+  public reset() {
+    this.removePreload();
+
+    if (this._timeouts !== undefined) {
+      for (const timeout of this._timeouts) {
+        console.log(`Clearing timeout ${timeout}`);
+        clearTimeout(timeout);
+      }
+      this._timeouts = [];
+    }
+
+    if (this._eventHandlers !== undefined && this._player !== undefined) {
+      for (const [event, handler] of Object.entries(this._eventHandlers)) {
+        this._player.off(event, handler);
+      }
+      this._eventHandlers = {};
+    }
   }
 
   private showGap() {
@@ -122,7 +152,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
     return false;
   }
 
-  //Explicit video for first load, maybe add chunking here
+  //TODO: Explicit video for first load, maybe add chunking here
   private loadFirst(): void {
     if (this.checkTime(this._timer.appTime)) {
       return;
@@ -134,7 +164,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
         if (this._faultCallback !== undefined) {
           this._faultCallback();
         }
-        console.log("Stream is undefined, dispaying static noise");
+        console.log("Stream is undefined, displaying static noise");
       }
     } else if (video instanceof Gap) {
       this._gapCallback();
@@ -146,12 +176,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
     if (video !== undefined) {
       this.play(video);
     }
-    /*
-    if (video !== undefined && video instanceof Recording) {
-      this.playRecording(video);
-    }
-    */
-    //this.player.play();
   }
 
   private playRecording(recording: Recording): void {
@@ -162,9 +186,9 @@ export default class ChannelPlaylistPlugin extends Plugin {
     if (recording.interval.start !== undefined && recording.interval.start !== null) {
       start = (+this._timer.appTime - +recording.interval.start) / 1000;
     }
-    this.player.src((recording as Recording).src.toString());
-    this.player.currentTime(start);
-    this.player.play();
+    this._player.src((recording as Recording).src.toString());
+    this._player.currentTime(start);
+    this._player.play();
     this._metaCallback(recording.info.toString());
   }
 
@@ -187,21 +211,24 @@ export default class ChannelPlaylistPlugin extends Plugin {
           this.play(next);
         }, wait.toMillis())
       );
-      console.log(`Set timer for next slot (${typeof next}) video (${next?.interval.start}) in ${wait.toMillis()}ms`, next);
+      console.log(
+        `Set timer for next slot (${typeof next}) video (${next?.interval.start}) in ${wait.toMillis()}ms`,
+        next
+      );
     }
   }
 
   private sync() {
     const expectedVideo = this._channel.findVideo(this._timer.appTime);
-    if (this.player == null) {
+    if (this._player == null) {
       throw new Error("Player is null, this can happen in dev mode");
     }
     if (expectedVideo !== undefined) {
       if (expectedVideo instanceof Recording) {
-        if (this.player.src() == (expectedVideo as Recording).src.toString()) {
+        if (this.player.currentSrc() == (expectedVideo as Recording).src.toString()) {
           const start = (+this._timer.appTime - +expectedVideo!.interval.start!) / 1000;
-          const previousTime = this.player.currentTime();
-          this.player.currentTime(start);
+          const previousTime = this._player.currentTime();
+          this._player.currentTime(start);
           console.log(`Resynced video stream from ${previousTime} to ${start}`);
         } else {
           this.play(expectedVideo);
@@ -213,7 +240,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
       }
     } else {
       this._faultCallback();
-      //TODO: Expected slot is undefined
+      // TODO: Expected slot is undefined
       throw new Error(`TODO: Expected slot is undefined`);
     }
   }
@@ -257,10 +284,10 @@ export default class ChannelPlaylistPlugin extends Plugin {
   public handlePlay() {
     console.log(`Got play for ${this._channel.name}`);
     //TODO: Find a way to test if the player contains source - this seems to be the player itself
-    if (this.player != null && this.player.src() == "") {
+    if (this._player != null && this._player.currentSrc() == "") {
       this._gapCallback();
     }
-    if (this.player != null) {
+    if (this._player == null) {
       console.warn("Player is null, this can happen in dev mode");
     }
   }
@@ -271,7 +298,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   public handleStalled() {
-    console.log(`Channel ${this._channel.name} is staled, syncing later`);
+    console.log(`Channel ${this._channel.name} is stalled, syncing later`);
     this._gapCallback();
     this._fault = true;
   }
@@ -286,7 +313,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
   }
 
   public handleReady() {
-    //this.loadFirst();
     console.log("Player ready");
   }
 

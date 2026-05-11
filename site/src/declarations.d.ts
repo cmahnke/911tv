@@ -38,3 +38,6 @@ declare module "*.json" {
   const value: unknown;
   export default value;
 }
+
+declare module '@fontsource/press-start-2p';
+declare module 'brotli-unicode/js';

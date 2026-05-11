@@ -143,9 +143,10 @@ if (pages.some((p) => p.number === subTitlesPageNr)) {
 }
 
 function App() {
-  let powerOn = true;
-  let muted = false;
-  let teletextOn = true;
+  // Convert mutable state variables to refs to avoid stale closures
+  const powerOnRef = useRef<boolean>(true);
+  const mutedRef = useRef<boolean>(false);
+  const teletextOnRef = useRef<boolean>(true);
 
   const playerRef = useRef<VideoJSHandle>(null);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -161,31 +162,7 @@ function App() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const playlistPluginRef = useRef<{ dispose: () => void } | undefined>(undefined);
 
-  const cookieConsent = (
-    <CookieConsent
-      cookieName={consentCookieName}
-      cookieValue={true}
-      onAccept={autoPlay}
-      expires={999}
-      overlay="true"
-      overlayClasses="consent-overlay"
-      location="bottom"
-    >
-      This website uses external video services from the{" "}
-      <a href="https://archive.org/">Internet Archive</a> which might set cookies.
-    </CookieConsent>
-  );
-
-  const router = createHashRouter([
-    {
-      path: "/:page?",
-      element: (
-        <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.station} />
-      )
-    }
-  ]);
-
-  function getAudioContext(): AudioContext {
+  const getAudioContext = useCallback((): AudioContext => {
     if (!audioContextRef.current) {
       try {
         audioContextRef.current = new AudioContext();
@@ -195,56 +172,29 @@ function App() {
       }
     }
     return audioContextRef.current;
-  }
+  }, []);
 
-  function autoPlay() {
-    if (playlistPluginRef.current !== undefined) {
-      playlistPluginRef.current.dispose();
+  const audioStatus = useCallback((): boolean => {
+    const ctx = audioContextRef.current;
+    if (!ctx || ctx.state === "suspended" || mutedRef.current) {
+      return false;
     }
-    playlistPluginRef.current = playerRef.current?.channelPlaylistPlugin({
-      channel: tuner.channel,
-      timer: timer,
-      autostart: true,
-      callbacks: {
-        playing: () => {
-          noise(false);
-        },
-        gap: () => {
-          noise("gap");
-        },
-        ended: () => {
-          noise("closedown");
-        },
-        fault: () => {
-          noise("immediately");
-        },
-        meta: setMeta
-      }
-    });
-    setTeletextStation(tuner.channel.name);
-  }
+    return true;
+  }, []);
 
-  function zapChannel(e: React.MouseEvent, direction: boolean) {
-    if (!powerOn) {
-      return;
-    }
-    const logPrefix = `Switched from ${tuner.station} to `;
-    tuner.zap(direction);
-    teletextRef.current?.setChannel(tuner.station);
-    console.log(`${logPrefix}${tuner.station}`);
-    noise("immediately");
-    autoPlay();
-  }
+  const showInfoContainer = useCallback(() => {
+    infoContainerRef.current?.classList.remove("hide");
+    infoContainerRef.current?.classList.add("show");
+  }, []);
 
-  function setTitle(e: React.MouseEvent | undefined, title: string) {
-    if (e !== undefined && e.target !== undefined) {
-      (e.target as HTMLElement).title = title;
-    }
-  }
+  const hideInfoContainer = useCallback(() => {
+    infoContainerRef.current?.classList.add("hide");
+    infoContainerRef.current?.classList.remove("show");
+  }, []);
 
-  function noise(state: boolean | string) {
+  const noise = useCallback((state: boolean | string) => {
     if (typeof state === "boolean" && state === false) {
-      if (powerOn) {
+      if (powerOnRef.current) {
         noiseRef.current?.hide();
       }
     } else {
@@ -255,57 +205,101 @@ function App() {
       }
       noiseRef.current?.show(state);
     }
-  }
+  }, []);
 
-  function firstClickCallback() {
-    enableAudio();
-  }
-
-  function toggleAudio(e: React.MouseEvent) {
-    if (!powerOn) {
-      return;
+  const setMeta = useCallback((url: string) => {
+    if (metaRef.current !== null) {
+      metaRef.current.classList.remove("disabled");
+      metaRef.current.href = url;
     }
-    console.log("Toggling audio");
-    if (!audioStatus()) {
-      enableAudio();
-      setTitle(e, "Audio enabled");
-    } else {
-      disableAudio();
-      setTitle(e, "Audio disabled");
-    }
-  }
+  }, []);
 
-  function enableAudio() {
-    if (!powerOn) {
-      return;
+  const setTeletextStation = useCallback((station: string) => {
+    if (teletextRef.current !== null) {
+      teletextRef.current.setChannel(station);
     }
-    muted = false;
-    getAudioContext().resume();
-    playerRef.current?.volume(1);
-    noiseRef.current?.unmute();
-    audioToggleRef.current?.classList.remove("disabled");
-    audioToggleRef.current?.classList.add("enabled");
-  }
+  }, []);
 
-  function disableAudio() {
-    muted = true;
+  const disableAudio = useCallback(() => {
+    mutedRef.current = true;
     getAudioContext().suspend();
     playerRef.current?.volume(0);
     noiseRef.current?.mute();
     audioToggleRef.current?.classList.remove("enabled");
     audioToggleRef.current?.classList.add("disabled");
     console.log("Audio is suspended");
-  }
+  }, [getAudioContext]);
 
-  function audioStatus(): boolean {
-    const ctx = audioContextRef.current;
-    if (!ctx || ctx.state === "suspended" || muted) {
-      return false;
+  const enableAudio = useCallback(() => {
+    if (!powerOnRef.current) {
+      return;
     }
-    return true;
-  }
+    mutedRef.current = false;
+    getAudioContext().resume();
+    playerRef.current?.volume(1);
+    noiseRef.current?.unmute();
+    audioToggleRef.current?.classList.remove("disabled");
+    audioToggleRef.current?.classList.add("enabled");
+  }, [getAudioContext]);
 
-  function toggleFullscreen() {
+  const autoPlay = useCallback(() => {
+    if (playlistPluginRef.current !== undefined) {
+      playlistPluginRef.current.dispose();
+    }
+    playlistPluginRef.current = playerRef.current?.channelPlaylistPlugin({
+      channel: tuner.channel,
+      timer: timer,
+      autostart: true,
+      callbacks: {
+        playing: () => noise(false),
+        gap: () => noise("gap"),
+        ended: () => noise("closedown"),
+        fault: () => noise("immediately"),
+        meta: setMeta
+      }
+    });
+    setTeletextStation(tuner.channel.name);
+  }, [noise, setMeta, setTeletextStation]);
+
+  const zapChannel = useCallback(
+    (e: React.MouseEvent, direction: boolean) => {
+      if (!powerOnRef.current) {
+        return;
+      }
+      const logPrefix = `Switched from ${tuner.station} to `;
+      tuner.zap(direction);
+      teletextRef.current?.setChannel(tuner.station);
+      console.log(`${logPrefix}${tuner.station}`);
+      noise("immediately");
+      autoPlay();
+    },
+    [noise, autoPlay]
+  );
+
+  const setTitle = useCallback((e: React.MouseEvent | undefined, title: string) => {
+    if (e !== undefined && e.target !== undefined) {
+      (e.target as HTMLElement).title = title;
+    }
+  }, []);
+
+  const toggleAudio = useCallback(
+    (e: React.MouseEvent) => {
+      if (!powerOnRef.current) {
+        return;
+      }
+      console.log("Toggling audio");
+      if (!audioStatus()) {
+        enableAudio();
+        setTitle(e, "Audio enabled");
+      } else {
+        disableAudio();
+        setTitle(e, "Audio disabled");
+      }
+    },
+    [audioStatus, enableAudio, disableAudio, setTitle]
+  );
+
+  const toggleFullscreen = useCallback(() => {
     if (
       document.fullscreenElement ||
       tvFrameRef.current?.getAttribute("class") === "fullscreen"
@@ -316,32 +310,22 @@ function App() {
       console.log("Entering Fullscreen");
       rootRef.current?.requestFullscreen();
     }
-  }
+  }, []);
 
-  function showInfoContainer() {
-    infoContainerRef.current?.classList.remove("hide");
-    infoContainerRef.current?.classList.add("show");
-  }
-
-  function hideInfoContainer() {
-    infoContainerRef.current?.classList.add("hide");
-    infoContainerRef.current?.classList.remove("show");
-  }
-
-  function toggleInfo() {
+  const toggleInfo = useCallback(() => {
     infoRef.current?.classList.toggle("hide");
     infoRef.current?.classList.toggle("show");
-  }
+  }, []);
 
-  function on() {
-    powerOn = true;
+  const on = useCallback(() => {
+    powerOnRef.current = true;
     autoPlay();
     noiseRef.current?.hide();
     showInfoContainer();
     enableAudio();
-  }
+  }, [autoPlay, showInfoContainer, enableAudio]);
 
-  function off() {
+  const off = useCallback(() => {
     teletextRef.current?.hide();
     noiseRef.current?.changeMode("static");
     noiseRef.current?.show("immediately");
@@ -351,44 +335,44 @@ function App() {
     if (playlistPluginRef.current !== undefined) {
       playlistPluginRef.current.dispose();
     }
-    powerOn = false;
-  }
+    powerOnRef.current = false;
+  }, [hideInfoContainer, disableAudio]);
 
-  function setMeta(url: string) {
-    if (metaRef.current !== null) {
-      metaRef.current.classList.remove("disabled");
-      metaRef.current.href = url;
-    }
-  }
-
-  function setTeletextStation(station: string) {
-    if (teletextRef.current !== null) {
-      teletextRef.current.setChannel(station);
-    }
-  }
-
-  function togglePower() {
-    if (powerOn) {
+  const togglePower = useCallback(() => {
+    if (powerOnRef.current) {
       off();
     } else {
-      on();
+      try {
+        on();
+      } catch (e) {
+        noiseRef.current?.changeMode("exception");
+        console.log(e);
+      }
     }
-  }
+  }, [off, on]);
 
-  function toggleTeletext(e: React.MouseEvent) {
-    if (!powerOn) {
+  const toggleTeletext = useCallback((e: React.MouseEvent) => {
+    if (!powerOnRef.current) {
       return;
     }
-    if (teletextOn) {
+    if (teletextOnRef.current) {
       teletextRef.current?.hide();
-      teletextOn = false;
-      setTitle(e, "Teletext disabled");
+      teletextOnRef.current = false;
+      if (e !== undefined && e.target !== undefined) {
+        (e.target as HTMLElement).title = "Teletext disabled";
+      }
     } else {
       teletextRef.current?.show();
-      teletextOn = true;
-      setTitle(e, "Teletext enabled");
+      teletextOnRef.current = true;
+      if (e !== undefined && e.target !== undefined) {
+        (e.target as HTMLElement).title = "Teletext enabled";
+      }
     }
-  }
+  }, []);
+
+  const firstClickCallback = useCallback(() => {
+    enableAudio();
+  }, [enableAudio]);
 
   useEffect(() => {
     if (tuner.channel.checkStreamEnd(timer.appTime)) {
@@ -408,13 +392,11 @@ function App() {
     return () => clearInterval(intervalId);
   }, []);
 
-  const stableAutoPlay = useCallback(autoPlay, []);
-
   useEffect(() => {
     if (getCookieConsentValue(consentCookieName)) {
-      stableAutoPlay();
+      autoPlay();
     }
-  }, [stableAutoPlay]);
+  }, [autoPlay]);
 
   const videoJsOptions = {
     autoplay: false,
@@ -428,10 +410,34 @@ function App() {
     }
   };
 
+  const cookieConsent = (
+    <CookieConsent
+      cookieName={consentCookieName}
+      cookieValue="true"
+      onAccept={autoPlay}
+      expires={999}
+      overlay={true}
+      overlayClasses="consent-overlay"
+      location="bottom"
+    >
+      This website uses external video services from the{" "}
+      <a href="https://archive.org/">Internet Archive</a> which might set cookies.
+    </CookieConsent>
+  );
+
+  const router = createHashRouter([
+    {
+      path: "/:page?",
+      element: (
+        <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.station} />
+      )
+    }
+  ]);
+
   return (
     <div id="container" ref={rootRef}>
       {!Util.isElectron() && <Unmute clickCallback={firstClickCallback} />}
-      <div id="tv-frame" ref={tvFrameRef} onDoubleClick={() => toggleFullscreen()}>
+      <div id="tv-frame" ref={tvFrameRef} onDoubleClick={toggleFullscreen}>
         <div id="tv-border"></div>
         <div id="tube">
           <RouterProvider router={router} />
@@ -476,17 +482,17 @@ function App() {
               ref={audioToggleRef}
               type="button"
               className={"button toggle-audio " + (audioStatus() ? "enabled" : "disabled")}
-              onClick={(e) => toggleAudio(e)}
+              onClick={toggleAudio}
             >
               <i className="icon"></i>
             </button>
             <button
               aria-label="Teletext"
-              title={teletextOn ? "Teletext enabled" : "Teletext disabled"}
+              title={teletextOnRef.current ? "Teletext enabled" : "Teletext disabled"}
               ref={teletextToggleRef}
               type="button"
               className="button toggle-teletext"
-              onClick={(e) => toggleTeletext(e)}
+              onClick={toggleTeletext}
             >
               <i className="icon"></i>
             </button>
@@ -520,11 +526,11 @@ function App() {
             </button>
             <button
               aria-label="Power"
-              title={powerOn ? "Power off" : "Power on"}
+              title={powerOnRef.current ? "Power off" : "Power on"}
               type="button"
               className="button toggle-power"
               onClick={(e) => {
-                (e.target as HTMLElement).title = powerOn ? "Power off" : "Power on";
+                (e.target as HTMLElement).title = powerOnRef.current ? "Power off" : "Power on";
                 togglePower();
               }}
             >

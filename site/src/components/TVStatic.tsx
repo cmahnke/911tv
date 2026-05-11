@@ -7,7 +7,7 @@ import staticNoiseSound from "../assets/mp3/TVStatic.mp3";
 import closeDownSound from "../assets/mp3/1khz.mp3";
 import closeDownBackground from "../assets/svg/Philips_PM5544.svg";
 
-type TVStaticMode = "static" | "closedown" | "gap";
+type TVStaticMode = "static" | "closedown" | "gap" | "exception";
 
 type ContentConfig = {
   sound: string;
@@ -31,21 +31,21 @@ export type TVStaticHandle = {
   unmute: () => void;
 };
 
-export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticProps) => {
-  const contents: Record<TVStaticMode, ContentConfig> = {
-    static: { sound: staticNoiseSound, interval: 50 },
-    closedown: {
-      sound: closeDownSound,
-      interval: 1000,
-      background: closeDownBackground
-    },
-    gap: {
-      sound: closeDownSound,
-      interval: 1000,
-      background: closeDownBackground
-    }
-  };
+const CONTENTS: Record<TVStaticMode, ContentConfig> = {
+  static: { sound: staticNoiseSound, interval: 50 },
+  closedown: {
+    sound: closeDownSound,
+    interval: 1000,
+    background: closeDownBackground
+  },
+  gap: {
+    sound: closeDownSound,
+    interval: 1000,
+    background: closeDownBackground
+  }
+};
 
+export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticProps) => {
   const animationLengthMs = 1500;
   let showState = true;
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -87,7 +87,7 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
   }
 
   function changeMode(newMode: TVStaticMode) {
-    if (newMode in contents && mode !== newMode) {
+    if (newMode in CONTENTS && mode !== newMode) {
       console.log(`Setting mode to ${newMode}`);
       noisePlayerRef.current?.stop();
       setMode(newMode);
@@ -119,24 +119,12 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
   }
 
   useImperativeHandle(ref, () => ({
-    show: (fade?: string) => {
-      show(fade);
-    },
-    hide: () => {
-      hide();
-    },
-    toggle: () => {
-      toggle();
-    },
-    changeMode: (mode: TVStaticMode) => {
-      changeMode(mode);
-    },
-    mute: () => {
-      mute();
-    },
-    unmute: () => {
-      unmute();
-    }
+    show: (fade?: string) => show(fade),
+    hide: () => hide(),
+    toggle: () => toggle(),
+    changeMode: (mode: TVStaticMode) => changeMode(mode),
+    mute: () => mute(),
+    unmute: () => unmute()
   }));
 
   useEffect(() => {
@@ -153,6 +141,18 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
       time = (time + 1) % canvas.height;
     };
 
+    const makeBlack = function () {
+      const imgd = context.createImageData(canvas.width, canvas.height);
+      const data = imgd.data;
+      for (let i = 0; i < data.length; i += 4) {
+        data[i]     = 0;
+        data[i + 1] = 0;
+        data[i + 2] = 0;
+        data[i + 3] = 255;
+      }
+      context.putImageData(imgd, 0, 0);
+    }
+
     const makeTestcard = function (status?: string) {
       if (status === undefined) {
         status = "ended";
@@ -160,7 +160,7 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
 
       const parser = new DOMParser();
       const svgDoc = parser
-        .parseFromString(contents["closedown"]["background"] ?? "", "image/svg+xml")
+        .parseFromString(CONTENTS["closedown"]["background"] ?? "", "image/svg+xml")
         .querySelector("svg")!;
       svgDoc.setAttribute(
         "viewBox",
@@ -190,7 +190,7 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
     let time = 0;
     const canvas = canvasRef.current!;
     let context = canvas.getContext("2d")!;
-    bgNoiseRef.current = contents[mode]["sound"];
+    bgNoiseRef.current = CONTENTS[mode]["sound"];
 
     if (noisePlayerRef.current === undefined) {
       console.log("During development hot reload will use the noise sound twice");
@@ -203,6 +203,8 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
 
     if (mode === "static") {
       makeNoise();
+    } else if (mode === "exception") {
+      makeBlack();
     } else if (mode === "gap") {
       makeTestcard("interrupted");
     } else if (mode === "closedown") {
@@ -217,14 +219,16 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
       } else if (mode === "closedown") {
         makeTestcard();
       }
-    }, contents[mode]["interval"]);
+    }, CONTENTS[mode]["interval"]);
+
     return () => clearInterval(interval);
-  }, [ref, mode]);
+  }, [ref, mode, timer]);
 
   let className = "tv-static";
   if (classNameProp !== undefined) {
     className += " " + classNameProp;
   }
+
   return <canvas id={id} ref={canvasRef} className={className}></canvas>;
 };
 
