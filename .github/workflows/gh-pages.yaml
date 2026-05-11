@@ -114,6 +114,8 @@ jobs:
   dist:
     runs-on: ubuntu-latest
     needs: [generate-json, lint]
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v6
 
@@ -140,12 +142,12 @@ jobs:
           sudo apt-get update
           sudo apt install -y --install-recommends wine-stable
 
-      - name: Debug and fix Wine path
-        run: |
-          which wine-stable || true
-          which wine64 || true
-          find /usr -name "wine*" -type f -print
-          find /opt -name "wine*" -type f -print 
+#      - name: Debug and fix Wine path
+#        run: |
+#          which wine-stable || true
+#          which wine64 || true
+#          find /usr -name "wine*" -type f -print
+#          find /opt -name "wine*" -type f -print 
 
         # Binaries go to /opt/wine-stable/bin/
       - name: Wine links
