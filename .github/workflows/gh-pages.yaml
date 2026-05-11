@@ -132,7 +132,10 @@ jobs:
           sudo apt-get install -y mediainfo libopenjp2-tools rpm libarchive-tools gcc-multilib g++-multilib dirmngr ca-certificates gnupg sudo wget imagemagick jq moreutils
           sudo mkdir -pm755 /etc/apt/keyrings
           sudo wget -O /etc/apt/keyrings/winehq-archive.key https://dl.winehq.org/wine-builds/winehq.key
-          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
+          export UBUNTU_VERSION=$(lsb_release -cs)
+          echo "Running $UBUNTU_VERSION"
+          sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/${UBUNTU_VERSION}/winehq-${UBUNTU_VERSION}.sources ||  sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/jammy/winehq-jammy.sources
+          #sudo wget -NP /etc/apt/sources.list.d/ https://dl.winehq.org/wine-builds/ubuntu/dists/noble/winehq-noble.sources
           sudo dpkg --add-architecture i386
           sudo apt-get update
           sudo apt install -y --install-recommends wine-stable
