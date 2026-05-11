@@ -4,7 +4,7 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     groups:
       github-actions:
         patterns:
@@ -13,10 +13,7 @@ updates:
     directory: "/site/"
     versioning-strategy: increase
     schedule:
-      interval: "daily"
-    ignore:
-      - dependency-name: "video.js"
-        update-types: ["version-update:semver-major"]
+      interval: "weekly"
     groups:
       npm:
         patterns:
@@ -24,7 +21,7 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     ignore:
       - dependency-name: "numpy"
     groups:
