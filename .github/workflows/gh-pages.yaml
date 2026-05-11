@@ -147,10 +147,10 @@ jobs:
           find /usr -name "wine*" -type f -print
           find /opt -name "wine*" -type f -print 
 
+        # Binaries go to /opt/wine-stable/bin/
       - name: Wine links
         run: |
-          sudo ln -sf $(which wine-stable) /usr/bin/wine
-          ls -al /usr/bin/wine*
+          sudo ln -sf /opt/wine-stable/bin/wine /usr/bin/wine
           /usr/bin/wine uninstaller --list
 
       - name: Setup Node.js
