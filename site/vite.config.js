@@ -67,7 +67,7 @@ export default defineConfig({
   build: {
     target: browserslistToEsbuild(),
     rollupOptions: {
-      external: ['electron', 'usb', 'node-gyp-build'],
+      external: ["electron", "usb", "node-gyp-build"],
       input: {
         index: "./index.html",
         "911tv": "src/main.jsx"

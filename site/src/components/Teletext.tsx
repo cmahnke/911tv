@@ -46,59 +46,61 @@ export const Teletext = ({ timer, pages, channel, ref }: TeletextProps) => {
   const teletextBodyRef = useRef<HTMLDivElement>(null);
   const teletextFooterRef = useRef<HTMLDivElement>(null);
 
-  const checkPage = useCallback((number: string | number): boolean => {
-    return (
-      pages.filter((obj) => {
-        return obj.number == Number(number);
-      })[0] !== undefined
-    );
-  }, [pages]);
+  const checkPage = useCallback(
+    (number: string | number): boolean => {
+      return (
+        pages.filter((obj) => {
+          return obj.number == Number(number);
+        })[0] !== undefined
+      );
+    },
+    [pages]
+  );
 
   // Fix 2: dialPage mit useCallback damit es als Dependency nutzbar ist
-  const dialPage = useCallback((nr: string | number, count: boolean): void => {
-    function sleep(ms: number): Promise<void> {
-      return new Promise((resolve) => setTimeout(resolve, ms));
-    }
-
-    function updateTeletextNumber(
-      from: number,
-      to: number,
-      duration: number = 40
-    ): Promise<void>[] {
-      const promises: Promise<void>[] = [];
-      for (let i = from; i < to; i++) {
-        promises.push(
-          sleep((i - from) * duration).then(() => {
-            if (teletextPageNrRef.current) {
-              teletextPageNrRef.current.innerHTML = String(i);
-            }
-          })
-        );
+  const dialPage = useCallback(
+    (nr: string | number, count: boolean): void => {
+      function sleep(ms: number): Promise<void> {
+        return new Promise((resolve) => setTimeout(resolve, ms));
       }
-      return promises;
-    }
 
-    if (typeof nr === "string" && nr.startsWith("/")) {
-      nr = (nr as string).substring(1);
-    }
+      function updateTeletextNumber(from: number, to: number, duration: number = 40): Promise<void>[] {
+        const promises: Promise<void>[] = [];
+        for (let i = from; i < to; i++) {
+          promises.push(
+            sleep((i - from) * duration).then(() => {
+              if (teletextPageNrRef.current) {
+                teletextPageNrRef.current.innerHTML = String(i);
+              }
+            })
+          );
+        }
+        return promises;
+      }
 
-    if (count) {
-      const start = curPageRef.current?.number ?? 100;
-      if (start > Number(nr)) {
-        Promise.all(updateTeletextNumber(start, 900)).then(() => {
-          Promise.all(updateTeletextNumber(100, Number(nr))).then(() => {
+      if (typeof nr === "string" && nr.startsWith("/")) {
+        nr = (nr as string).substring(1);
+      }
+
+      if (count) {
+        const start = curPageRef.current?.number ?? 100;
+        if (start > Number(nr)) {
+          Promise.all(updateTeletextNumber(start, 900)).then(() => {
+            Promise.all(updateTeletextNumber(100, Number(nr))).then(() => {
+              navigate(`/${nr}`);
+            });
+          });
+        } else {
+          Promise.all(updateTeletextNumber(start, Number(nr))).then(() => {
             navigate(`/${nr}`);
           });
-        });
+        }
       } else {
-        Promise.all(updateTeletextNumber(start, Number(nr))).then(() => {
-          navigate(`/${nr}`);
-        });
+        navigate(`/${nr}`);
       }
-    } else {
-      navigate(`/${nr}`);
-    }
-  }, [navigate]);  // curPageRef ist ein Ref → kein Dependency nötig
+    },
+    [navigate]
+  ); // curPageRef ist ein Ref → kein Dependency nötig
 
   function getPage(number: string | number): TeletextPage {
     function formatClock(tsDt: DateTime): string {
@@ -116,26 +118,18 @@ export const Teletext = ({ timer, pages, channel, ref }: TeletextProps) => {
     const options = {
       replace: (domNode: DOMNode) => {
         const node = domNode as Element;
-        if (
-          node.name === "a" &&
-          node.attribs?.href &&
-          !node.attribs.href.startsWith("http")
-        ) {
+        if (node.name === "a" && node.attribs?.href && !node.attribs.href.startsWith("http")) {
           let className = "page";
           if (node.attribs.class) {
             className += ` ${node.attribs.class}`;
           }
           return (
-            <Link
-              onClick={() => dialPage(node.attribs.href, true)}
-              className={className}
-              to={node.attribs.href}
-            >
+            <Link onClick={() => dialPage(node.attribs.href, true)} className={className} to={node.attribs.href}>
               {domToReact(node.children as DOMNode[])}
             </Link>
           );
         }
-      },
+      }
     };
 
     const parsedPage: TeletextPage | undefined = pages.filter((obj) => {
@@ -146,14 +140,8 @@ export const Teletext = ({ timer, pages, channel, ref }: TeletextProps) => {
       return { number: 404, title: "Not Found" };
     }
 
-    if (
-      !Array.isArray(parsedPage.html) &&
-      typeof parsedPage.markdown !== "object"
-    ) {
-      parsedPage["react"] = parse(
-        `<div class="md-content">${parsedPage.html}</div>`,
-        options
-      );
+    if (!Array.isArray(parsedPage.html) && typeof parsedPage.markdown !== "object") {
+      parsedPage["react"] = parse(`<div class="md-content">${parsedPage.html}</div>`, options);
     } else if (typeof parsedPage.markdown === "object") {
       const markdownObj = parsedPage.markdown as Record<string, string>;
       let latest = Object.keys(markdownObj)[0];
@@ -221,26 +209,29 @@ export const Teletext = ({ timer, pages, channel, ref }: TeletextProps) => {
     show: () => show(),
     hide: () => hide(),
     toggle: () => toggle(),
-    setChannel: (ch: string) => setChannel(ch),
+    setChannel: (ch: string) => setChannel(ch)
   }));
 
-  const teletextSelector = useCallback((e: KeyboardEvent): void => {
-    if (isNaN(Number(e.key))) {
-      return;
-    }
-    teletextSelectorBufferRef.current.push(e.key);
-    console.log(e.key, teletextSelectorBufferRef.current);
-    if (teletextSelectorBufferRef.current.length === 3) {
-      let selectedPage: string | number = teletextSelectorBufferRef.current.join("");
-      if (!checkPage(selectedPage)) {
-        selectedPage = 404;
+  const teletextSelector = useCallback(
+    (e: KeyboardEvent): void => {
+      if (isNaN(Number(e.key))) {
+        return;
       }
-      if (selectedPage != curPageRef.current?.number) {
-        dialPage(selectedPage, true);
+      teletextSelectorBufferRef.current.push(e.key);
+      console.log(e.key, teletextSelectorBufferRef.current);
+      if (teletextSelectorBufferRef.current.length === 3) {
+        let selectedPage: string | number = teletextSelectorBufferRef.current.join("");
+        if (!checkPage(selectedPage)) {
+          selectedPage = 404;
+        }
+        if (selectedPage != curPageRef.current?.number) {
+          dialPage(selectedPage, true);
+        }
+        teletextSelectorBufferRef.current = [];
       }
-      teletextSelectorBufferRef.current = [];
-    }
-  }, [checkPage, dialPage]);
+    },
+    [checkPage, dialPage]
+  );
 
   useEffect(() => {
     document.title = "9/11 TV: " + title;

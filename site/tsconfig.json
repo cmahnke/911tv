@@ -15,7 +15,7 @@
     "strict": true,
     "declaration": true,
     "allowJs": true,
-    "allowImportingTsExtensions": true,
+    //"allowImportingTsExtensions": true,
     "target": "es2022",
     "rootDir": "./src",
     "outDir": "build/compiled",

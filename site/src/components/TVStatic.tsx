@@ -42,6 +42,11 @@ const CONTENTS: Record<TVStaticMode, ContentConfig> = {
     sound: closeDownSound,
     interval: 1000,
     background: closeDownBackground
+  },
+  exception: {
+    sound: "",
+    interval: 1000,
+    background: closeDownBackground
   }
 };
 
@@ -145,13 +150,13 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
       const imgd = context.createImageData(canvas.width, canvas.height);
       const data = imgd.data;
       for (let i = 0; i < data.length; i += 4) {
-        data[i]     = 0;
+        data[i] = 0;
         data[i + 1] = 0;
         data[i + 2] = 0;
         data[i + 3] = 255;
       }
       context.putImageData(imgd, 0, 0);
-    }
+    };
 
     const makeTestcard = function (status?: string) {
       if (status === undefined) {
@@ -159,13 +164,8 @@ export const TVStatic = ({ timer, id, className: classNameProp, ref }: TVStaticP
       }
 
       const parser = new DOMParser();
-      const svgDoc = parser
-        .parseFromString(CONTENTS["closedown"]["background"] ?? "", "image/svg+xml")
-        .querySelector("svg")!;
-      svgDoc.setAttribute(
-        "viewBox",
-        `0 0 ${svgDoc.getAttribute("width")} ${svgDoc.getAttribute("height")}`
-      );
+      const svgDoc = parser.parseFromString(CONTENTS["closedown"]["background"] ?? "", "image/svg+xml").querySelector("svg")!;
+      svgDoc.setAttribute("viewBox", `0 0 ${svgDoc.getAttribute("width")} ${svgDoc.getAttribute("height")}`);
       svgDoc.getElementById("header-date")!.textContent = timer.formatDate();
       svgDoc.getElementById("header-time")!.textContent = timer.formatTimeWithSecs();
       svgDoc.getElementById("footer-text-transmission-status")!.textContent = status;

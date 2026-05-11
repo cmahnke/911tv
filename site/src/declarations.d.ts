@@ -39,5 +39,5 @@ declare module "*.json" {
   export default value;
 }
 
-declare module '@fontsource/press-start-2p';
-declare module 'brotli-unicode/js';
+declare module "@fontsource/press-start-2p";
+declare module "brotli-unicode/js";

@@ -2,15 +2,15 @@ import { useEffect, useRef, useCallback } from "react";
 import { createHashRouter, RouterProvider } from "react-router-dom";
 import { isMobileSafari } from "react-device-detect";
 import CookieConsent, { Cookies, getCookieConsentValue } from "react-cookie-consent";
-import VideoJS, { VideoJSHandle } from "./components/VideoJS.tsx";
-import TVStatic, { TVStaticHandle } from "./components/TVStatic.tsx";
-import Teletext, { subTitlesPageNr, TeletextHandle } from "./components/Teletext.jsx";
-import Unmute from "./components/Unmute.tsx";
+import VideoJS, { VideoJSHandle } from "./components/VideoJS";
+import TVStatic, { TVStaticHandle } from "./components/TVStatic";
+import Teletext, { subTitlesPageNr, TeletextHandle } from "./components/Teletext";
+import Unmute from "./components/Unmute";
 import { DateTime } from "luxon";
 import { decompressFromBase64 } from "lz-string";
-import Timer from "./classes/Timer.ts";
-import Util from "./classes/Util.ts";
-import Tuner from "./classes/Tuner.ts";
+import Timer from "./classes/Timer";
+import Util from "./classes/Util";
+import Tuner from "./classes/Tuner";
 import "@fontsource/press-start-2p";
 import "./App.scss";
 import urlsImport from "./assets/json/urls-lz-string-compressed.json";
@@ -199,9 +199,7 @@ function App() {
       }
     } else {
       if (typeof state === "boolean") {
-        throw new Error(
-          "noise() needs to be either called with false to disable or the mode as string"
-        );
+        throw new Error("noise() needs to be either called with false to disable or the mode as string");
       }
       noiseRef.current?.show(state);
     }
@@ -300,10 +298,7 @@ function App() {
   );
 
   const toggleFullscreen = useCallback(() => {
-    if (
-      document.fullscreenElement ||
-      tvFrameRef.current?.getAttribute("class") === "fullscreen"
-    ) {
+    if (document.fullscreenElement || tvFrameRef.current?.getAttribute("class") === "fullscreen") {
       document.exitFullscreen();
       console.log("Exiting Fullscreen");
     } else {
@@ -420,17 +415,14 @@ function App() {
       overlayClasses="consent-overlay"
       location="bottom"
     >
-      This website uses external video services from the{" "}
-      <a href="https://archive.org/">Internet Archive</a> which might set cookies.
+      This website uses external video services from the <a href="https://archive.org/">Internet Archive</a> which might set cookies.
     </CookieConsent>
   );
 
   const router = createHashRouter([
     {
       path: "/:page?",
-      element: (
-        <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.station} />
-      )
+      element: <Teletext ref={teletextRef} pages={pages} timer={timer} channel={tuner.station} />
     }
   ]);
 
@@ -447,13 +439,7 @@ function App() {
                 <i className="info-icon"></i>
               </button>
               <div className="info-text">
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href=""
-                  ref={metaRef}
-                  className="disabled"
-                >
+                <a target="_blank" rel="noreferrer" href="" ref={metaRef} className="disabled">
                   Stream Metadata
                 </a>
               </div>
@@ -465,13 +451,7 @@ function App() {
         <div id="tv-footer">
           <div className="tv-footer-spacer"></div>
           <div id="tv-brand">
-            <a
-              target="_blank"
-              rel="noreferrer"
-              className="tv-brand-link"
-              title="Projektemacher product"
-              href="https://projektemacher.org/"
-            >
+            <a target="_blank" rel="noreferrer" className="tv-brand-link" title="Projektemacher product" href="https://projektemacher.org/">
               &nbsp;
             </a>
           </div>

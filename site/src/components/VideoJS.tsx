@@ -1,6 +1,6 @@
 import React from "react";
 import videojs from "video.js";
-import ChannelPlaylistPlugin from "../classes/ChannelPlaylistPlugin.ts";
+import ChannelPlaylistPlugin from "../classes/ChannelPlaylistPlugin";
 
 import "video.js/dist/video-js.css";
 import "./VideoJS.scss";
@@ -48,6 +48,12 @@ export const VideoJS = ({ options, onReady, ref: playerRef }: VideoJSProps) => {
   }, [playerRef]);
 
   return <div ref={placeholderRef} className="video-container"></div>;
+};
+
+export type VideoJSHandle = Player & {
+  channelPlaylistPlugin: (options: any) => {
+    dispose: () => void;
+  };
 };
 
 export default VideoJS;

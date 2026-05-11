@@ -20,9 +20,13 @@ type PluginsOptions = {
   };
 };
 
-const Plugin = videojs.getPlugin("plugin") as unknown as new (player: Player, options?: PluginsOptions) => {
+const Plugin = videojs.getPlugin("plugin") as unknown as new (
+  player: Player,
+  options?: PluginsOptions
+) => {
   player: Player;
   dispose(): void;
+  eventBusEl_: HTMLElement | null;
 };
 
 export default class ChannelPlaylistPlugin extends Plugin {
@@ -40,7 +44,6 @@ export default class ChannelPlaylistPlugin extends Plugin {
   _autostart: boolean = true;
   _timeouts: ReturnType<typeof setTimeout>[] = [];
   _player: Player;
-
 
   constructor(player: Player, options: PluginsOptions) {
     super(player, options);
@@ -95,7 +98,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
 
   public override dispose(): void {
     console.log(`Disposing Playlist Plugin for ${this._channel.name}`);
-    
+
     if (this._timeouts !== undefined) {
       for (const timeout of this._timeouts) {
         console.log(`Clearing timeout ${timeout}`);
@@ -211,10 +214,7 @@ export default class ChannelPlaylistPlugin extends Plugin {
           this.play(next);
         }, wait.toMillis())
       );
-      console.log(
-        `Set timer for next slot (${typeof next}) video (${next?.interval.start}) in ${wait.toMillis()}ms`,
-        next
-      );
+      console.log(`Set timer for next slot (${typeof next}) video (${next?.interval.start}) in ${wait.toMillis()}ms`, next);
     }
   }
 

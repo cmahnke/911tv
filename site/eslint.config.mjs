@@ -6,28 +6,24 @@ import eslintReact from "@eslint-react/eslint-plugin";
 export default tseslint.config(
   {
     files: ["src/**/*.{ts,tsx}"],
-    extends: [
-      eslintJs.configs.recommended,
-      ...tseslint.configs.recommended,
-      eslintReact.configs["recommended-typescript"],
-    ],
+    extends: [eslintJs.configs.recommended, ...tseslint.configs.recommended, eslintReact.configs["recommended-typescript"]],
     languageOptions: {
       parser: tseslint.parser,
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+        tsconfigRootDir: import.meta.dirname
       },
       globals: {
         ...globals.browser,
         electron: "readonly",
-        projektemacher: "readonly",
-      },
+        projektemacher: "readonly"
+      }
     },
     rules: {
       "no-warning-comments": ["warn", {}],
       "@typescript-eslint/no-unused-vars": ["warn"],
-      "no-useless-assignment": "warn",
-    },
+      "no-useless-assignment": "warn"
+    }
   },
   {
     files: ["*.config.js"],
@@ -36,16 +32,13 @@ export default tseslint.config(
       globals: {
         // Vite config runs in Node.js environment
         ...globals.node,
-        process: "readonly",
-      },
+        process: "readonly"
+      }
     },
     rules: {
-      "no-unused-vars": [
-        "warn",
-        { vars: "all", args: "after-used", ignoreRestSiblings: false },
-      ],
-      "no-console": ["warn", {}],
-    },
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+      "no-console": ["warn", {}]
+    }
   },
 
   {
@@ -54,23 +47,20 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
-        },
+          jsx: true
+        }
       },
       globals: {
         ...globals.browser,
         ...globals.node,
         electron: "readonly",
-        projektemacher: "readonly",
-      },
+        projektemacher: "readonly"
+      }
     },
     rules: {
-      "no-unused-vars": [
-        "warn",
-        { vars: "all", args: "after-used", ignoreRestSiblings: false },
-      ],
-      "no-console": ["warn", {}],
-    },
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
+      "no-console": ["warn", {}]
+    }
   },
 
   // JavaScript/JSX source files
@@ -79,35 +69,32 @@ export default tseslint.config(
     extends: [eslintJs.configs.recommended],
     settings: {
       react: {
-        version: "detect",
-      },
+        version: "detect"
+      }
     },
     languageOptions: {
       parserOptions: {
         ecmaFeatures: {
-          jsx: true,
-        },
+          jsx: true
+        }
       },
       globals: {
         ...globals.browser,
         ...globals.node,
         electron: "readonly",
-        projektemacher: "readonly",
-      },
+        projektemacher: "readonly"
+      }
     },
     rules: {
-      "no-unused-vars": [
-        "warn",
-        { vars: "all", args: "after-used", ignoreRestSiblings: false },
-      ],
+      "no-unused-vars": ["warn", { vars: "all", args: "after-used", ignoreRestSiblings: false }],
       "no-warning-comments": ["warn", {}],
       "no-console": ["warn", {}],
-      "no-useless-assignment": "warn",
+      "no-useless-assignment": "warn"
       // TODO: Readd: react/prop-types and react-refresh/only-export-components
-    },
+    }
   },
 
   {
-    ignores: ["dist/", "out/", "build/"],
+    ignores: ["dist/", "out/", "build/"]
   }
 );
