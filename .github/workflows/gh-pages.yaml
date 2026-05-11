@@ -102,6 +102,7 @@ jobs:
           npx prettier --check .
       - name: Run build - might fail if JSON files are missing
         continue-on-error: true
+        working-directory: ./site
         run: |
           npm run build
 
@@ -211,6 +212,9 @@ jobs:
         uses: actions/setup-node@v6.4.0
         with:
           node-version-file: '.nvmrc'
+
+      - name: Install dependencies
+        run: sudo apt-get install -y mediainfo imagemagick
 
       - name: Install Node dependencies
         working-directory: ./site
