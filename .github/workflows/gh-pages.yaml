@@ -83,6 +83,7 @@ jobs:
 
   lint:
     runs-on: ubuntu-latest
+    needs: [generate-json]
     permissions:
       contents: read
     steps:
