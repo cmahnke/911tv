@@ -140,6 +140,7 @@ jobs:
           sudo apt-get update
           sudo apt install -y --install-recommends wine-stable
           sudo ln -s /usr/bin/wine-stable /usr/bin/wine
+          ls -al /usr/bin/wine*
           /usr/bin/wine uninstaller --list
 
       - name: Setup Node.js

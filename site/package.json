@@ -11,6 +11,23 @@
     "url": "https://christianmahnke.de/"
   },
   "homepage": "https://911tv.projektemacher.org/",
+  "description": "In 2007, the Internet Archive set up the September 11 Television Archive, a collection of TV broadcasts from 20 channels over 7 days, totalling about 3000 hours of material. Although mainly US channels, it also includes some international channels. This digital exhibit presents the material on a virtual television screen with a minimalist user interface, allowing visitors to experience the event of that time in an immersive way, mirroring the media consumption patterns of the era.",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/cmahnke/911tv/issues"
+  },
+  "repository": {
+    "url": "git+https://github.com/cmahnke/911tv.git"
+  },
+  "license": "CC-BY-NC-4.0",
+  "keywords": [
+    "911",
+    "TV",
+    "Internet Archive",
+    "September 11 Television Archive"
+  ],
   "scripts": {
     "postinstall": "run-script-os",
     "postinstall:darwin": "patch-package",
