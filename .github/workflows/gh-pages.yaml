@@ -91,12 +91,13 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://npm.pkg.github.com"
-      - run: |
+      - working-directory: ./site
+        name: "Run linters"
+        run: |
           npm i
           npm run lint
           npm run format
           npx tsc -b --verbose
-          npx rollup --config
           npx prettier --check .
           npm run build
 
