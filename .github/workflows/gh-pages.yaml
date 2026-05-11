@@ -92,6 +92,12 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           registry-url: "https://npm.pkg.github.com"
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: generated-json
+          path: ./site/src/assets/json
+
       - working-directory: ./site
         name: "Run linters"
         run: |
@@ -101,7 +107,6 @@ jobs:
           npx tsc -b --verbose
           npx prettier --check .
       - name: Run build - might fail if JSON files are missing
-        continue-on-error: true
         working-directory: ./site
         run: |
           npm run build
